@@ -7,7 +7,6 @@ type Items = {
 };
 
 export const Popular = ({ items }: Items) => {
-  console.log(items);
   return (
     <div>
       <div className="mx-auto  px-10 py-8 flex justify-center items-center">

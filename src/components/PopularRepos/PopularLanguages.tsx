@@ -4,6 +4,7 @@ import { Languages } from "./types";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { checkLanguageExists } from "@/lib/api";
+import Loader from "@/shared/ui/Loader/Loader";
 
 const STORAGE_KEY = "popularLanguages";
 
@@ -41,6 +42,7 @@ export const PopularLanguages = () => {
 
   const searchParams = useSearchParams();
   const router = useRouter();
+  const currentLanguage = searchParams.get("language") ?? "all";
 
   useEffect(() => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(languages));
@@ -69,7 +71,14 @@ export const PopularLanguages = () => {
     setLanguage("");
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [searchParams]);
+
   const setLanguageParam = (lang: string) => {
+    setIsLoading(true);
     const params = new URLSearchParams(searchParams.toString());
     params.set("language", lang);
     router.push(`/popular?${params.toString()}`);
@@ -84,30 +93,42 @@ export const PopularLanguages = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 justify-left items-center">
-      <ul className="flex gap-4">
-        {languages.map((lang) => (
-          <li key={lang.id} className="relative">
-            <button
-              onClick={() => setLanguageParam(lang.id)}
-              className="rounded-md  py-2 pl-4 pr-10 text-sm"
-            >
-              {lang.name}
-            </button>
-            <div className="w-6">
-              {languages.length > 6 && lang.id !== "all" && (
-                <button
-                  onClick={() => deleteCurrentLang(lang.id)}
-                  className="absolute right-2 top-1/2 z-10 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full text-xs text-gray-400 transition hover:bg-red-500 hover:text-white"
+    <>
+      {isLoading && <Loader />}
+      <div className="flex flex-col gap-4 justify-left items-center">
+        <ul className="flex gap-4">
+          {languages.map((lang) => {
+            const isActive = currentLanguage === lang.id;
+            return (
+              <li key={lang.id} className="relative">
+                <div
+                  className={`flex h-9 items-center rounded-full border transition ${
+                    isActive
+                      ? "border-green-500 bg-green-500/15 text-white"
+                      : "border-zinc-700 bg-zinc-900/60 text-zinc-300 hover:border-green-500"
+                  }`}
                 >
-                  X
-                </button>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
-      <form
+                  <button
+                    onClick={() => setLanguageParam(lang.id)}
+                    className="h-full px-4 text-sm text-zinc-200 transition hover:text-white"
+                  >
+                    {lang.name}
+                  </button>
+
+                  {languages.length > 6 && lang.id !== "all" && (
+                    <button
+                      onClick={() => deleteCurrentLang(lang.id)}
+                      className="mr-2 flex h-5 w-5 items-center justify-center rounded-full text-xs text-zinc-500 transition hover:bg-red-500 hover:text-white"
+                    >
+                      X
+                    </button>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        {/* <form
         className="flex gap-4"
         onSubmit={(e) => {
           e.preventDefault();
@@ -127,7 +148,29 @@ export const PopularLanguages = () => {
         >
           ADD
         </button>
-      </form>
-    </div>
+      </form> */}
+        <form
+          className="flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 transition focus-within:border-green-500"
+          onSubmit={(e) => {
+            e.preventDefault();
+            addLanguage(language);
+          }}
+        >
+          <input
+            className="w-48 bg-transparent text-sm text-white outline-none placeholder:text-zinc-500"
+            type="text"
+            placeholder="Add language"
+            onChange={(e) => setLanguage(e.target.value)}
+            value={language}
+          />
+          <button
+            className="rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-green-500 disabled:opacity-50"
+            type="submit"
+          >
+            Add
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
