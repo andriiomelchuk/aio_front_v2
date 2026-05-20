@@ -118,7 +118,7 @@ export const PopularLanguages = () => {
                   {languages.length > 6 && lang.id !== "all" && (
                     <button
                       onClick={() => deleteCurrentLang(lang.id)}
-                      className="mr-2 flex h-5 w-5 items-center justify-center rounded-full text-xs text-zinc-500 transition hover:bg-red-500 hover:text-white"
+                      className="mr-2 flex h-5 w-5 items-center justify-center rounded-full text-xs text-zinc-500 transition hover:bg-red-500 hover:text-white cursor-pointer"
                     >
                       X
                     </button>
@@ -128,27 +128,6 @@ export const PopularLanguages = () => {
             );
           })}
         </ul>
-        {/* <form
-        className="flex gap-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          addLanguage(language);
-        }}
-      >
-        <input
-          className="border border-white-300 placeholder:text-gray-400 placeholder:text-sm rounded-md px-3 py-2"
-          type="text"
-          placeholder="Add your language"
-          onChange={(e) => setLanguage(e.target.value)}
-          value={language}
-        />
-        <button
-          className="border border-white-300 px-4 py-1 text-sm"
-          type="submit"
-        >
-          ADD
-        </button>
-      </form> */}
         <form
           className="flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 transition focus-within:border-green-500"
           onSubmit={(e) => {

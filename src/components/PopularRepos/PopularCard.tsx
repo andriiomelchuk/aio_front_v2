@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Repo } from "./types";
 
 export type Item = {
@@ -6,7 +7,6 @@ export type Item = {
 };
 
 export const PopularCard = ({ item, index }: Item) => {
-
   return (
     <div className="max-w-[720px] mx-auto pb-5">
       <div className="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-full">
@@ -14,11 +14,18 @@ export const PopularCard = ({ item, index }: Item) => {
           <p># {index + 1}</p>
           <p>{item.language}</p>
         </div>
-        <div className="relative mx-3 mt-3 overflow-hidden text-gray-700 bg-white bg-clip-border rounded-xl h-48 sm:h-56">
-          <img
+        <div className="relative mx-3 mt-3 overflow-hidden text-gray-700 bg-white bg-clip-border rounded-xl h-48 sm:h-48">
+          {/* <img
             src={item.owner.avatar_url}
             alt="card-image"
             className="object-cover w-full h-full"
+          /> */}
+          <Image
+          className="object-cover w-full h-full"
+            src={item.owner.avatar_url}
+            alt={item.owner.login}
+            width={150}
+            height={150}
           />
         </div>
         <div className="p-6 pb-8 h-38">

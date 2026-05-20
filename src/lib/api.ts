@@ -33,3 +33,54 @@ export const checkLanguageExists = async (lang: string) => {
 
   return data.total_count > 0;
 };
+
+
+/*Github battle*/
+
+// export const getProfile = async (userName: string) => {
+    
+//     const response = await fetch(`https://api.github.com/users/${userName}`)
+//     console.log(response)
+//     // return response.data
+
+// }
+
+
+// const getRepos = (userName: string) => {
+//     return fetch(`https://api.github.com/users/${userName}/repos`)
+//         .then(repos => repos.data)
+//         // .catch(handleError)
+// }
+
+
+
+// const getUserData = (userName: string) => {
+//     return Promise.all([
+//         getProfile(userName),
+//         getRepos(userName)
+//     ])
+//         .then(([profile, repos]) => {
+//             return {
+//                 profile,
+//                 score: calculateStore(profile, repos)
+//             }
+//         })
+// }
+
+// const calculateStore = (profile: any, repos: any) => {
+//     const followers = profile.followers;
+//     const totalStars = getStarCount(repos);
+//     return followers + totalStars;
+// }
+
+// const getStarCount = (repos: any) => {
+//     return repos.reduce((acc: any, repo: any) => acc + repo.stargazers_count, 0)
+// }
+
+// const sortPlayers = (players: any) => players.sort((a: any, b: any) => b.score - a.score);
+
+// export const makeBattle = (players: any) => {
+//     return Promise.all(players.map(getUserData))
+//         .then(sortPlayers)
+//         // .catch(handleError)
+// }
