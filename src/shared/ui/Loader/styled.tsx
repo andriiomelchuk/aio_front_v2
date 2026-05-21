@@ -20,8 +20,8 @@ export const LoaderContainer = styled.div`
 export const Loading = styled.span`
   width: 48px;
   height: 48px;
-  border: 5px solid #fff;
-  border-bottom-color: #ff3d00;
+  border: 5px solid var(--surface-strong);
+  border-bottom-color: var(--accent);
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;
@@ -36,7 +36,7 @@ export const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.35); /* Black background with opacity */
+  background-color: var(--shadow-color); /* Black background with opacity */
   backdrop-filter: blur(6px);
   z-index: 9998; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */

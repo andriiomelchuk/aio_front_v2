@@ -8,6 +8,7 @@ import { makeBattle } from "@/lib/api";
 import { T_BattleResult } from "./types";
 import Loader from "@/shared/ui/Loader/Loader";
 import { PlayerInfoBlock } from "./PlayerInfoBlock";
+import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
 
 export const ResultBattle = () => {
   const [winner, setWinner] = useState<T_BattleResult | null>(null);
@@ -21,12 +22,10 @@ export const ResultBattle = () => {
     if (!plOne || !plTwo) {
       return;
     }
-    makeBattle([plOne, plTwo]).then(
-      ([winner, loser]) => {
-        setWinner(winner);
-        setLoser(loser);
-      },
-    );
+    makeBattle([plOne, plTwo]).then(([winner, loser]) => {
+      setWinner(winner);
+      setLoser(loser);
+    });
   }, [plOne, plTwo]);
 
   if (!winner || !loser) {
@@ -34,9 +33,13 @@ export const ResultBattle = () => {
   }
 
   return (
-    <div className="flex justify-center flex-col">
-      <div>Result</div>
-      <div className="players flex  justify-center items-center">
+    <div className="flex flex-col items-center">
+      <PageHeader
+        eyebrow="GitHub Battle"
+        title="Battle Result"
+        description="The winner is calculated from followers and repository stars."
+      />
+      <div className="players flex  justify-center items-center mt-10">
         <div className="winner mx-5">
           <CardShell>
             <PlayerCard

@@ -4,25 +4,25 @@ import { T_PlayerLoadingProps } from "./types";
 export const PlayerLoading = ({ label }: T_PlayerLoadingProps) => {
   return (
     <div className="flex h-full flex-col justify-between items-center">
-      <label className="text-sm font-medium text-zinc-300 flex justify-center h-5 my-5">
+      <label className="my-5 flex h-5 justify-center text-sm font-medium text-muted">
         {label}
       </label>
 
       <Avatar alt="loading player" size="mid" />
 
       <div>
-        <div className="h-20 flex items-center text-xs font-semibold uppercase tracking-normal text-green-400">
+        <div className="flex h-20 items-center text-xs font-semibold uppercase tracking-normal text-accent">
           Searching
         </div>
       </div>
 
       <div className="h-20 flex flex-col justify-center items-end">
-        <div className="min-w-50 h-10 flex justify-center items-center text-xs text-zinc-500">
+        <div className="flex h-10 min-w-50 items-center justify-center text-xs text-muted">
           <span>Loading profile... Please wait</span>
         </div>
 
-        <div className="h-2 overflow-hidden rounded-full bg-zinc-800">
-          <div className="h-full min-w-50 w-1/2 animate-pulse rounded-full bg-green-500" />
+        <div className="h-2 overflow-hidden rounded-full bg-surface-strong">
+          <div className="h-full min-w-50 w-1/2 animate-pulse rounded-full bg-accent" />
         </div>
       </div>
     </div>

@@ -93,7 +93,7 @@ export const PopularLanguages = () => {
   return (
     <>
       {isPending && <Loader />}
-      <div className="flex flex-col gap-4 justify-left items-center">
+      <div className="flex flex-col items-center justify-start gap-4">
         <ul className="flex gap-4">
           {languages.map((lang) => {
             const isActive = currentLanguage === lang.id;
@@ -102,13 +102,13 @@ export const PopularLanguages = () => {
                 <div
                   className={`flex h-9 items-center rounded-full border transition ${
                     isActive
-                      ? "border-green-500 bg-green-500/15 text-white"
-                      : "border-zinc-700 bg-zinc-900/60 text-zinc-300 hover:border-green-500"
+                      ? "border-accent bg-accent-soft text-foreground"
+                      : "border-border bg-surface text-muted hover:border-accent"
                   }`}
                 >
                   <button
                     onClick={() => setLanguageParam(lang.id)}
-                    className="h-full px-4 text-sm text-zinc-200 transition hover:text-white"
+                    className="h-full px-4 text-sm transition hover:text-foreground"
                   >
                     {lang.name}
                   </button>
@@ -116,7 +116,7 @@ export const PopularLanguages = () => {
                   {languages.length > 6 && lang.id !== "all" && (
                     <button
                       onClick={() => deleteCurrentLang(lang.id)}
-                      className="mr-2 flex h-5 w-5 items-center justify-center rounded-full text-xs text-zinc-500 transition hover:bg-red-500 hover:text-white cursor-pointer"
+                      className="mr-2 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-xs text-muted transition hover:bg-danger hover:text-background"
                     >
                       X
                     </button>
@@ -127,21 +127,21 @@ export const PopularLanguages = () => {
           })}
         </ul>
         <form
-          className="flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 transition focus-within:border-green-500"
+          className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition focus-within:border-accent"
           onSubmit={(e) => {
             e.preventDefault();
             addLanguage(language);
           }}
         >
           <input
-            className="w-48 bg-transparent text-sm text-white outline-none placeholder:text-zinc-500"
+            className="w-48 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
             type="text"
             placeholder="Add language"
             onChange={(e) => setLanguage(e.target.value)}
             value={language}
           />
           <button
-            className="rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-green-500 disabled:opacity-50"
+            className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-background transition hover:opacity-85 disabled:opacity-50"
             type="submit"
           >
             Add

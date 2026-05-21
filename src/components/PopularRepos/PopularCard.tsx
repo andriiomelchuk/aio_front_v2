@@ -9,19 +9,14 @@ export type Item = {
 export const PopularCard = ({ item, index }: Item) => {
   return (
     <div className="max-w-[720px] mx-auto pb-5">
-      <div className="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-full">
+      <div className="relative flex w-full flex-col rounded-xl border border-border bg-surface text-foreground shadow-[0_18px_40px_var(--shadow-color)]">
         <div className="align-middle text-center pt-2 flex items-center justify-between mb-2 px-4">
           <p># {index + 1}</p>
           <p>{item.language}</p>
         </div>
-        <div className="relative mx-3 mt-3 overflow-hidden text-gray-700 bg-white bg-clip-border rounded-xl h-48 sm:h-48">
-          {/* <img
-            src={item.owner.avatar_url}
-            alt="card-image"
-            className="object-cover w-full h-full"
-          /> */}
+        <div className="relative mx-3 mt-3 h-48 overflow-hidden rounded-xl bg-surface-muted text-foreground sm:h-48">
           <Image
-          className="object-cover w-full h-full"
+            className="h-full w-full object-cover"
             src={item.owner.avatar_url}
             alt={item.owner.login}
             width={150}
@@ -30,21 +25,20 @@ export const PopularCard = ({ item, index }: Item) => {
         </div>
         <div className="p-6 pb-8 h-38">
           <div className="flex items-center justify-between mb-2">
-            <p className="block font-sans text-base antialiased font-medium leading-relaxed text-blue-gray-900 ">
+            <p className="block font-sans text-base font-medium leading-relaxed text-foreground antialiased">
               Stars: {item.stargazers_count}
             </p>
           </div>
           <div className="flex items-center justify-between mb-2">
-            <p className="block font-sans text-base antialiased font-medium leading-relaxed text-blue-gray-900 text-sm">
+            <p className="block font-sans text-sm font-medium leading-relaxed text-foreground antialiased">
               User: {item.owner.login}
             </p>
           </div>
           <div className="flex items-center justify-between mb-2">
-            <p className="block font-sans text-base antialiased font-medium leading-relaxed text-blue-gray-900 text-sm">
+            <p className="block font-sans text-sm font-medium leading-relaxed text-foreground antialiased">
               Repo: {item.name}
             </p>
           </div>
-          <p className="block font-sans text-sm antialiased font-normal leading-normal text-gray-700 opacity-75"></p>
         </div>
       </div>
     </div>

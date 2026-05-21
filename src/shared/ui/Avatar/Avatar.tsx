@@ -23,10 +23,10 @@ export const Avatar = ({ src, alt, size = "mid" }: T_AvatarProps) => {
 
   return (
     <div
-      className={`flex items-center justify-center rounded-full border border-zinc-700 ${classes.wrapper}`}
+      className={`flex items-center justify-center rounded-full border border-border ${classes.wrapper}`}
     >
       <div
-        className={`flex items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 font-semibold text-zinc-500 ${classes.image} ${classes.text}`}
+        className={`flex items-center justify-center rounded-full border border-border bg-surface-muted font-semibold text-muted ${classes.image} ${classes.text}`}
       >
         {src ? (
           <img

@@ -20,18 +20,14 @@ export const PlayerSlot = ({
       {isLoading ? (
         <PlayerLoading label={label} />
       ) : img ? (
-        <PlayerCard
-          name={name}
-          img={img}
-          label={label}
-        >
+        <PlayerCard name={name} img={img} label={label}>
           <div className="h-20  flex justify-center items-center flex-col">
-            <div className="text-xs font-semibold uppercase tracking-normal text-green-400 flex">
+            <div className="flex text-xs font-semibold uppercase tracking-normal text-accent">
               Ready
             </div>
             <div className="h-20  flex justify-center items-end">
               <button
-                className="h-10 min-w-50 mt-6 rounded-md border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 transition hover:border-red-500 hover:bg-red-500/10 hover:text-red-300"
+                className="mt-6 h-10 min-w-50 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted transition hover:border-danger hover:bg-danger-soft hover:text-danger"
                 onClick={() => onDelete(playerId)}
               >
                 Change player

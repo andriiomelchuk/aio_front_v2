@@ -15,14 +15,14 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
           onSubmit(playerId, userName);
         }}
       >
-        <label className="text-sm font-medium text-zinc-300 flex justify-center h-5 my-5">
+        <label className="my-5 flex h-5 justify-center text-sm font-medium text-muted">
           {label}
         </label>
         <Avatar alt="searching player" size="mid" />
         <div className="h-20 flex items-center">
           <input
-            className="mt-3 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white 
-                       outline-none transition placeholder:text-zinc-500 focus:border-green-500"
+            className="mt-3 w-full rounded-md border border-border bg-surface-muted px-3 py-2 text-sm text-foreground 
+                       outline-none transition placeholder:text-muted focus:border-accent"
             type="text"
             placeholder="Enter GitHub username"
             value={userName}
@@ -31,9 +31,9 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
         </div>
         <div className="h-20  flex justify-center items-end">
           <button
-            className="h-10 min-w-50 rounded-md border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 
-                     transition hover:border-green-500 hover:bg-green-500/10 hover:text-green-300 disabled:bg-zinc-800 
-                     disabled:text-zinc-500 disabled:border-zinc-700"
+            className="h-10 min-w-50 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted 
+                     transition hover:border-accent hover:bg-accent-soft hover:text-accent disabled:border-border 
+                     disabled:bg-surface-muted disabled:text-muted"
             type="submit"
             disabled={!userName.trim()}
           >

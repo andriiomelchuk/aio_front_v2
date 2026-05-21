@@ -3,6 +3,7 @@ import { T_PlayerData, T_PlayerId } from "./types";
 import { getGithubUser } from "@/lib/api";
 import { PlayerSlot } from "./PlayerSlot";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
 
 export const GitHub = () => {
   const [playerData, setPlayerData] = useState<T_PlayerData>({
@@ -59,7 +60,11 @@ export const GitHub = () => {
 
   return (
     <div className="flex justify-center flex-col">
-      <div>Battle</div>
+      <PageHeader
+        eyebrow="GitHub Battle"
+        title="Choose Your Players"
+        description="Enter two GitHub usernames and compare their profiles."
+      />
       <div className="players flex  justify-center items-center">
         <PlayerSlot
           playerId="playerOne"
@@ -71,14 +76,13 @@ export const GitHub = () => {
           onSubmit={handlePlayerSubmit}
         />
         <div className="flex flex-col justify-center items-center">
-          <div className="flex items-center rounded-full border px-4 py-3 font-bold h-12 w-12 mr-5 ml-5 justify-center">
+          <div className="mr-5 ml-5 flex h-12 w-12 items-center justify-center rounded-full border border-border px-4 py-3 font-bold text-foreground">
             VS
           </div>
 
           <button
             disabled={!playerData.playerOneImg || !playerData.playerTwoImg}
-            className="disabled:opacity-50 disabled:cursor-not-allowed mt-5 cursor-pointer rounded-lg border bg-zinc-550 p-2 
-            shadow-lg mr-5 ml-5 border-3 border-green-500/40 shadow-green-950/30"
+            className="mt-5 mr-5 ml-5 cursor-pointer rounded-lg border border-accent bg-accent-soft p-2 text-sm font-medium text-foreground shadow-[0_18px_40px_var(--shadow-color)] transition hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50"
             onClick={() =>
               setBattleData(playerData.playerOneName, playerData.playerTwoName)
             }
