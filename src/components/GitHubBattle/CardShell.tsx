@@ -1,6 +1,6 @@
-import { CardShellProps } from "./types";
+import { T_CardShellProps } from "./types";
 
-export const CardShell = ({ children, variant = "empty" }: CardShellProps) => {
+export const CardShell = ({ children, variant = "empty" }: T_CardShellProps) => {
   const borderClass =
     variant === "ready"
       ? "border-green-500/40 shadow-green-950/30"
@@ -10,7 +10,7 @@ export const CardShell = ({ children, variant = "empty" }: CardShellProps) => {
 
   return (
     <div
-      className={`flex min-h-72 w-50 flex-col justify-between rounded-lg border bg-zinc-950 p-6 shadow-lg justify-center items-center ${borderClass}`}
+      className={`flex min-h-96 w-60 flex-col rounded-lg border bg-zinc-950 p-6 shadow-lg justify-center items-center ${borderClass}`}
     >
       {children}
     </div>

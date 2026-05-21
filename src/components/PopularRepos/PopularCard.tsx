@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { Repo } from "./types";
+import { T_Repo } from "./types";
 
 export type Item = {
-  item: Repo;
+  item: T_Repo;
   index: number;
 };
 

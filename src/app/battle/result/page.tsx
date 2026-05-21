@@ -1,5 +1,8 @@
+import { ResultBattle } from "@/components/GitHubBattle/ResultBattle";
+
+
 export default function Result() {
     return (
-        <h1>Battle result</h1>
+        <ResultBattle></ResultBattle>
     )
 }

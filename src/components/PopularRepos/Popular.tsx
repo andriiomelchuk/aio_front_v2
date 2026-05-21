@@ -1,9 +1,9 @@
 import { PopularLanguages as Languages } from "./PopularLanguages";
 import { PopularCard } from "./PopularCard";
-import { Repo } from "./types";
+import { T_Repo } from "./types";
 
 type Items = {
-  items: Repo[];
+  items: T_Repo[];
 };
 
 export const Popular = ({ items }: Items) => {

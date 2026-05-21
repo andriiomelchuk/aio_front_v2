@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Languages } from "./types";
+import { useEffect, useState, useTransition } from "react";
+import { T_Languages } from "./types";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { checkLanguageExists } from "@/lib/api";
@@ -8,7 +8,7 @@ import Loader from "@/shared/ui/Loader/Loader";
 
 const STORAGE_KEY = "popularLanguages";
 
-const defaultLanguages: Languages[] = [
+const defaultLanguages: T_Languages[] = [
   { id: "all", name: "All" },
   { id: "javascript", name: "JavaScript" },
   { id: "ruby", name: "Ruby" },
@@ -29,14 +29,14 @@ const getInitialLanguages = () => {
   }
 
   try {
-    return JSON.parse(savedLanguages) as Languages[];
+    return JSON.parse(savedLanguages) as T_Languages[];
   } catch {
     return defaultLanguages;
   }
 };
 
 export const PopularLanguages = () => {
-  const [languages, setLanguages] = useState<Languages[]>(getInitialLanguages);
+  const [languages, setLanguages] = useState<T_Languages[]>(getInitialLanguages);
 
   const [language, setLanguage] = useState<string>("");
 
@@ -71,17 +71,15 @@ export const PopularLanguages = () => {
     setLanguage("");
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, [searchParams]);
+  const [isPending, startTransition] = useTransition();
 
   const setLanguageParam = (lang: string) => {
-    setIsLoading(true);
     const params = new URLSearchParams(searchParams.toString());
     params.set("language", lang);
-    router.push(`/popular?${params.toString()}`);
+    startTransition(() => {
+      router.push(`/popular?${params.toString()}`);
+    })
+    
   };
 
   const deleteCurrentLang = (currentLang: string) => {
@@ -94,7 +92,7 @@ export const PopularLanguages = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
+      {isPending && <Loader />}
       <div className="flex flex-col gap-4 justify-left items-center">
         <ul className="flex gap-4">
           {languages.map((lang) => {
