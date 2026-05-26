@@ -1,8 +1,10 @@
 export type T_Repo = {
   name: string;
   stargazers_count: number;
-  language: string,
+  language: string | null,
   id: number,
+  description: string | null,
+  html_url: string,
   owner: {
     avatar_url: string;
     id: number;

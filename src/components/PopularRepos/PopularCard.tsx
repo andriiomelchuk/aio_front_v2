@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { T_Repo } from "./types";
+import { Avatar } from "@/shared/ui/Avatar";
 
 export type Item = {
   item: T_Repo;
@@ -8,38 +8,45 @@ export type Item = {
 
 export const PopularCard = ({ item, index }: Item) => {
   return (
-    <div className="max-w-[720px] mx-auto pb-5">
-      <div className="relative flex w-full flex-col rounded-xl border border-border bg-surface text-foreground shadow-[0_18px_40px_var(--shadow-color)]">
-        <div className="align-middle text-center pt-2 flex items-center justify-between mb-2 px-4">
-          <p># {index + 1}</p>
-          <p>{item.language}</p>
-        </div>
-        <div className="relative mx-3 mt-3 h-48 overflow-hidden rounded-xl bg-surface-muted text-foreground sm:h-48">
-          <Image
-            className="h-full w-full object-cover"
-            src={item.owner.avatar_url}
-            alt={item.owner.login}
-            width={150}
-            height={150}
-          />
-        </div>
-        <div className="p-6 pb-8 h-38">
-          <div className="flex items-center justify-between mb-2">
-            <p className="block font-sans text-base font-medium leading-relaxed text-foreground antialiased">
-              Stars: {item.stargazers_count}
-            </p>
-          </div>
-          <div className="flex items-center justify-between mb-2">
-            <p className="block font-sans text-sm font-medium leading-relaxed text-foreground antialiased">
-              User: {item.owner.login}
-            </p>
-          </div>
-          <div className="flex items-center justify-between mb-2">
-            <p className="block font-sans text-sm font-medium leading-relaxed text-foreground antialiased">
-              Repo: {item.name}
-            </p>
-          </div>
-        </div>
+    <div className="flex h-72 flex-col rounded-lg border border-border bg-surface p-5 shadow-[0_18px_40px_var(--shadow-color)]">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <span className="text-xs font-semibold text-muted">#{index + 1}</span>
+
+        <span className="rounded-full border border-border bg-surface-muted px-2.5 py-1 text-xs text-muted">
+          {item.language || "Unknown"}
+        </span>
+      </div>
+
+      <h2 className="h-14 overflow-hidden break-words text-lg font-semibold leading-7 text-foreground">
+        {item.name}
+      </h2>
+
+      <div className="mt-2 flex items-center gap-2 text-sm text-muted">
+        <Avatar
+          src={item.owner.avatar_url}
+          alt={item.owner.login}
+          size="small"
+        />
+        <span className="truncate">{item.owner.login}</span>
+      </div>
+
+      <p className="mt-4 h-18 overflow-hidden text-sm leading-6 text-muted">
+        {item.description || "No description provided."}
+      </p>
+
+      <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
+        <span className="text-sm font-semibold text-accent">
+          Stars {item.stargazers_count.toLocaleString()}
+        </span>
+
+        <a
+          href={item.html_url}
+          target="_blank"
+          rel="noreferrer"
+          className="text-sm font-medium text-foreground transition hover:text-accent"
+        >
+          View repo
+        </a>
       </div>
     </div>
   );

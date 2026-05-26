@@ -17,16 +17,38 @@ export const ResultBattle = () => {
   const params = new URLSearchParams(searchParams.toString());
   const plOne = params.get("playerone");
   const plTwo = params.get("playertwo");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!plOne || !plTwo) {
       return;
     }
-    makeBattle([plOne, plTwo]).then(([winner, loser]) => {
-      setWinner(winner);
-      setLoser(loser);
-    });
+
+    setError(null);
+    setWinner(null);
+    setLoser(null);
+
+    makeBattle([plOne, plTwo])
+      .then(([winner, loser]) => {
+        setWinner(winner);
+        setLoser(loser);
+      })
+      .catch(() => {
+        setError("Could not load battle result");
+      });
   }, [plOne, plTwo]);
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
+        <h2 className="text-xl font-semibold text-foreground">
+          Battle result unavailable
+        </h2>
+
+        <p className="mt-2 text-sm text-muted">{error}</p>
+      </div>
+    );
+  }
 
   if (!winner || !loser) {
     return <Loader></Loader>;

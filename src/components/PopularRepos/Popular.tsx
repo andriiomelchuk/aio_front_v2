@@ -15,14 +15,26 @@ export const Popular = ({ items }: Items) => {
         title="Popular Repositories"
         description="Browse the most starred repositories by language."
       />
-      <div className="mx-auto  px-10 py-8 flex justify-center items-center">
+      <div className="mx-auto flex justify-center items-center">
         <Languages></Languages>
       </div>
-      <div className="mx-auto max-w-8xl px-10 py-8 grid xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-3 grid-cols-1 gap-6">
-        {items.map((item, index) => (
-          <PopularCard key={item.id} item={item} index={index}></PopularCard>
-        ))}
-      </div>
+      {items.length ? (
+        <div className="grid grid-cols-1 gap-5 py-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {items.map((item, index) => (
+            <PopularCard key={item.id} item={item} index={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
+          <h2 className="text-lg font-semibold text-foreground">
+            No repositories found
+          </h2>
+
+          <p className="mt-2 text-sm text-muted">
+            Try selecting another language.
+          </p>
+        </div>
+      )}
     </>
   );
 };

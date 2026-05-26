@@ -16,9 +16,10 @@ const avatarSizeClasses = {
     image: "h-36 w-36",
     text: "text-4xl",
   },
+  full: {}
 };
 
-export const Avatar = ({ src, alt, size = "mid" }: T_AvatarProps) => {
+export const Avatar = ({ src, alt, size = "mid", form = "circle" }: T_AvatarProps) => {
   const classes = avatarSizeClasses[size];
 
   return (

@@ -7,7 +7,7 @@ export async function getPopular(language: string): Promise<T_PopularResponse> {
 
   const languageQuery = language === "all" ? "" : `+language:${encodeURIComponent(language)}`;
 
-  const response = await fetch(`https://api.github.com/search/repositories?q=stars:>1${languageQuery}&sort=stars&order=desc&type=Repositories`,
+  const response = await fetch(`https://api.github.com/search/repositories?q=stars:>1${languageQuery}&sort=stars&order=desc&type=Repositories&per_page=30`,
     {
       cache: "no-store"
     })

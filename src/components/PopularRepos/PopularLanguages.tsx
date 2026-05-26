@@ -36,58 +36,77 @@ const getInitialLanguages = () => {
 };
 
 export const PopularLanguages = () => {
-  const [languages, setLanguages] = useState<T_Languages[]>(getInitialLanguages);
+  const [languages, setLanguages] =
+    useState<T_Languages[]>(getInitialLanguages);
 
   const [language, setLanguage] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentLanguage = searchParams.get("language") ?? "all";
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(languages));
   }, [languages]);
 
   const addLanguage = async (row: string) => {
-    const exists = languages.some((item) => item.id === row.toLowerCase());
+    const trimmedLanguage = row.trim();
 
-    if (exists) {
+    setError(null);
+
+    if (!trimmedLanguage) {
       return;
     }
 
-    const languageExists = await checkLanguageExists(row);
+    const exists = languages.some(
+      (item) => item.id === trimmedLanguage.toLowerCase(),
+    );
+
+    if (exists) {
+      setError("This language is already in the list.");
+      return;
+    }
+
+    const languageExists = await checkLanguageExists(trimmedLanguage);
 
     if (!languageExists) {
-      console.log("That language isn't available on GitHub");
+      setError("This language was not found on GitHub.");
       return;
     }
 
     const newLanguage = {
-      id: row.toLowerCase(),
-      name: row,
+      id: trimmedLanguage.toLowerCase(),
+      name: trimmedLanguage,
     };
 
     setLanguages([...languages, newLanguage]);
     setLanguage("");
+    setError(null);
   };
-
-  const [isPending, startTransition] = useTransition();
 
   const setLanguageParam = (lang: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("language", lang);
     startTransition(() => {
       router.push(`/popular?${params.toString()}`);
-    })
-    
+    });
   };
 
   const deleteCurrentLang = (currentLang: string) => {
+    const normalizedLang = currentLang.toLowerCase();
+
     setLanguages(
       languages.filter((item) => {
-        return item.id !== currentLang.toLowerCase();
+        return item.id !== normalizedLang;
       }),
     );
+    if (currentLanguage === normalizedLang) {
+      startTransition(() => {
+        router.push("/popular?language=all");
+      });
+    }
   };
 
   return (
@@ -143,10 +162,12 @@ export const PopularLanguages = () => {
           <button
             className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-background transition hover:opacity-85 disabled:opacity-50"
             type="submit"
+            disabled={!language.trim()}
           >
             Add
           </button>
         </form>
+        {error ? <p className="text-sm text-danger">{error}</p> : null}
       </div>
     </>
   );
