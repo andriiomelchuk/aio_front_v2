@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { T_PlayerProps } from "./types";
 import { Avatar } from "@/shared/ui/Avatar";
+import { Input } from "@/shared/ui/Input/Input";
 
 export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
   const [userName, setUserName] = useState("");
@@ -20,15 +21,14 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
         </label>
         <Avatar alt="searching player" size="mid" />
         <div className="h-20 flex items-center">
-          <input
-            className="mt-3 w-full rounded-md border border-border bg-surface-muted px-3 py-2 text-sm text-foreground 
-                       outline-none transition placeholder:text-muted focus:border-accent"
-            type="text"
-            placeholder="Enter GitHub username"
+          <Input
+            className="mt-3 w-full"
             value={userName}
+            placeholder="Enter GitHub username"
             onChange={(e) => setUserName(e.target.value)}
           />
         </div>
+
         <div className="h-20  flex justify-center items-end">
           <button
             className="h-10 min-w-50 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted 

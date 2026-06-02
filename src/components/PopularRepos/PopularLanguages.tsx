@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { checkLanguageExists } from "@/lib/api";
 import Loader from "@/shared/ui/Loader/Loader";
+import { Input } from "@/shared/ui/Input/Input";
 
 const STORAGE_KEY = "popularLanguages";
 
@@ -152,9 +153,8 @@ export const PopularLanguages = () => {
             addLanguage(language);
           }}
         >
-          <input
-            className="w-48 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
-            type="text"
+          <Input
+            variant="ghost"
             placeholder="Add language"
             onChange={(e) => setLanguage(e.target.value)}
             value={language}

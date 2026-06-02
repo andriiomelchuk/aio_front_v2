@@ -1,7 +1,7 @@
 "use client";
 import { GitHub } from "@/components/GitHubBattle";
 
-export default function Battle() {
+export default function BattlePage() {
 
     return (
         <GitHub />

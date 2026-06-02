@@ -9,7 +9,7 @@ type SearchParams = {
   }>;
 };
 
-export default async function Popular({ searchParams }: SearchParams) {
+export default async function PopularPage({ searchParams }: SearchParams) {
   const params = await searchParams;
 
   if (!params.language){

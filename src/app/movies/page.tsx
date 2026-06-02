@@ -1,5 +1,7 @@
-export default function Movies() {
+import { Movies } from "@/components/Movies";
+
+export default function MoviesPage() {
     return (
-        <h1>Movies</h1>
+        <Movies />
     )
 }
