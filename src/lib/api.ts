@@ -1,4 +1,5 @@
 import { T_BattleResult, T_Profile } from "@/components/GitHubBattle/types";
+import { T_Movie } from "@/components/Movies/types";
 import { T_LanguageCheckResponse, T_PopularResponse, T_Repo } from "@/components/PopularRepos/types";
 
 
@@ -62,7 +63,7 @@ export const getProfile = async (userName: string): Promise<T_Profile | null> =>
 
 const getRepos = async (userName: string): Promise<T_Repo[]> => {
   const response = await fetch(`https://api.github.com/users/${userName}/repos?per_page=100`)
-    if (!response.ok) {
+  if (!response.ok) {
     return [];
   }
 
@@ -77,7 +78,7 @@ const getUserData = async (userName: string): Promise<T_BattleResult> => {
     getRepos(userName)
   ]);
 
-  if(!profile){
+  if (!profile) {
     throw new Error("User not found")
   }
 
@@ -97,10 +98,57 @@ const getStarCount = (repos: T_Repo[]): number => {
   return repos.reduce((acc, repo) => acc + repo.stargazers_count, 0)
 }
 
-const sortPlayers = (players: T_BattleResult[]): T_BattleResult[] => { 
+const sortPlayers = (players: T_BattleResult[]): T_BattleResult[] => {
   return players.sort((a, b) => b.score - a.score)
 };
 
-export const makeBattle = (players: string[]) : Promise<T_BattleResult[]> => {
+export const makeBattle = (players: string[]): Promise<T_BattleResult[]> => {
   return Promise.all(players.map(getUserData)).then(sortPlayers)
+}
+
+
+
+export const getMovies = async (query: string, type: string): Promise<T_Movie[]> => {
+
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`
+    }
+  };
+
+  const response = await fetch(`https://api.themoviedb.org/3/search/${type}?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=1`, options)
+  if (!response.ok) {
+    throw new Error(`TMDB error: ${response.status}`);
+  }
+  const data = await response.json();
+
+  console.log(data)
+
+  return data.results;
+
+}
+
+export const getMovieDetails = async (movieId: string, movieType: string ) => {
+
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`
+    }
+  };
+
+  const response = await fetch(`https://api.themoviedb.org/3/${movieType}/${movieId}?language=en-US`, options)
+  console.log(response)
+   if (!response.ok) {
+    throw new Error(`TMDB error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+
+  console.log(data)
+
+  return data;
 }

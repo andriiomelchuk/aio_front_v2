@@ -1,3 +1,4 @@
+import { Button } from "@/shared/ui/Button";
 import { CardShell } from "./CardShell";
 import { PlayerCard } from "./PlayerCard";
 import { PlayerInput } from "./PlayerInput";
@@ -26,12 +27,13 @@ export const PlayerSlot = ({
               Ready
             </div>
             <div className="h-20  flex justify-center items-end">
-              <button
+              <Button
+                variant="ghost"
                 className="mt-6 h-10 min-w-50 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted transition hover:border-danger hover:bg-danger-soft hover:text-danger"
                 onClick={() => onDelete(playerId)}
               >
                 Change player
-              </button>
+              </Button>
             </div>
           </div>
         </PlayerCard>

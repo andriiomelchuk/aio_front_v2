@@ -1,8 +1,6 @@
-import { InputHTMLAttributes } from "react";
+import { T_InputProps } from "./types";
 
-type T_InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  variant?: "default" | "ghost";
-};
+
 
 export const Input = ({
   className = "",

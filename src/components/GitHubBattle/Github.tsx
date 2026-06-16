@@ -4,6 +4,7 @@ import { getGithubUser } from "@/lib/api";
 import { PlayerSlot } from "./PlayerSlot";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
+import { Button } from "@/shared/ui/Button";
 
 export const GitHub = () => {
   const [playerData, setPlayerData] = useState<T_PlayerData>({
@@ -80,15 +81,14 @@ export const GitHub = () => {
             VS
           </div>
 
-          <button
+          <Button
             disabled={!playerData.playerOneImg || !playerData.playerTwoImg}
+            label="FIGHT"
             className="mt-5 mr-5 ml-5 cursor-pointer rounded-lg border border-accent bg-accent-soft p-2 text-sm font-medium text-foreground shadow-[0_18px_40px_var(--shadow-color)] transition hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50"
             onClick={() =>
               setBattleData(playerData.playerOneName, playerData.playerTwoName)
             }
-          >
-            FIGHT
-          </button>
+          />
         </div>
         <PlayerSlot
           playerId="playerTwo"

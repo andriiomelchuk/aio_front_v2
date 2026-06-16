@@ -1,8 +1,9 @@
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
 import { MoviesSearch } from "./MoviesSearch";
 import { MoviesList } from "./MoviesList";
+import { T_MoviesList } from "./types";
 
-export const Movies = () => {
+export const Movies = ({movies, hasSearched}: T_MoviesList) => {
   return (
     <>
       <PageHeader
@@ -11,7 +12,7 @@ export const Movies = () => {
         description="Search movies, browse details, and build your watchlist."
       />
       <MoviesSearch/>
-      <MoviesList />
+      <MoviesList movies={movies} hasSearched={hasSearched}/>
     </>
   );
 };

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { checkLanguageExists } from "@/lib/api";
 import Loader from "@/shared/ui/Loader/Loader";
 import { Input } from "@/shared/ui/Input/Input";
+import { Button } from "@/shared/ui/Button";
 
 const STORAGE_KEY = "popularLanguages";
 
@@ -126,20 +127,26 @@ export const PopularLanguages = () => {
                       : "border-border bg-surface text-muted hover:border-accent"
                   }`}
                 >
-                  <button
+                  <Button
                     onClick={() => setLanguageParam(lang.id)}
-                    className="h-full px-4 text-sm transition hover:text-foreground"
+                    variant="invisible"
+                    className={`h-full px-4 text-sm transition hover:text-foreground ${
+                      isActive
+                        ? "border-accent bg-accent-soft text-foreground"
+                        : "border-border bg-surface text-muted hover:border-accent"
+                    }`}
                   >
                     {lang.name}
-                  </button>
+                  </Button>
 
                   {languages.length > 6 && lang.id !== "all" && (
-                    <button
+                    <Button
+                      variant="invisible"
                       onClick={() => deleteCurrentLang(lang.id)}
-                      className="mr-2 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-xs text-muted transition hover:bg-danger hover:text-background"
+                      className="mr-2 flex size-5 shrink-0 items-center justify-center rounded-full! p-0! text-xs text-muted hover:bg-danger hover:text-background"
                     >
                       X
-                    </button>
+                    </Button>
                   )}
                 </div>
               </li>
@@ -159,13 +166,12 @@ export const PopularLanguages = () => {
             onChange={(e) => setLanguage(e.target.value)}
             value={language}
           />
-          <button
-            className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-background transition hover:opacity-85 disabled:opacity-50"
-            type="submit"
+          <Button
+            className="px-3 py-1.5 text-sm font-medium text-background transition hover:opacity-85 disable"
             disabled={!language.trim()}
           >
             Add
-          </button>
+          </Button>
         </form>
         {error ? <p className="text-sm text-danger">{error}</p> : null}
       </div>

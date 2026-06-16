@@ -3,6 +3,7 @@ import { useState } from "react";
 import { T_PlayerProps } from "./types";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Input } from "@/shared/ui/Input/Input";
+import { Button } from "@/shared/ui/Button";
 
 export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
   const [userName, setUserName] = useState("");
@@ -30,7 +31,8 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
         </div>
 
         <div className="h-20  flex justify-center items-end">
-          <button
+          <Button
+            variant="ghost"
             className="h-10 min-w-50 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted 
                      transition hover:border-accent hover:bg-accent-soft hover:text-accent disabled:border-border 
                      disabled:bg-surface-muted disabled:text-muted"
@@ -38,7 +40,7 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
             disabled={!userName.trim()}
           >
             Search
-          </button>
+          </Button>
         </div>
       </form>
     </>
