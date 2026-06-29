@@ -1,6 +1,7 @@
-import { getPopular } from "@/lib/api";
+
 
 import { Popular as PopularRepos } from "@/components/PopularRepos";
+import { getPopular } from "@/lib/github";
 import { redirect } from "next/navigation";
 
 type SearchParams = {

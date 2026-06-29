@@ -8,6 +8,7 @@ export type T_Movie = {
   poster_path?: string | null;
   profile_path?: string | null;
   overview?: string;
+  
 }
 
 export type T_MoviesList = {

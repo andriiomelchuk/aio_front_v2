@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { T_PlayerData, T_PlayerId } from "./types";
-import { getGithubUser } from "@/lib/api";
 import { PlayerSlot } from "./PlayerSlot";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
 import { Button } from "@/shared/ui/Button";
+import { getGithubUser } from "@/lib/github";
 
 export const GitHub = () => {
   const [playerData, setPlayerData] = useState<T_PlayerData>({

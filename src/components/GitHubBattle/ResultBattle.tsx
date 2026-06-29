@@ -4,55 +4,83 @@ import { useEffect, useState } from "react";
 import { CardShell } from "./CardShell";
 import { PlayerCard } from "./PlayerCard";
 import { useSearchParams } from "next/navigation";
-import { makeBattle } from "@/lib/api";
-import { T_BattleResult } from "./types";
+import { T_BattleResult, T_BattleState } from "./types";
 import Loader from "@/shared/ui/Loader/Loader";
 import { PlayerInfoBlock } from "./PlayerInfoBlock";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
+import { makeBattle } from "@/lib/github";
 
 export const ResultBattle = () => {
-  const [winner, setWinner] = useState<T_BattleResult | null>(null);
-  const [loser, setLoser] = useState<T_BattleResult | null>(null);
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const plOne = params.get("playerone");
   const plTwo = params.get("playertwo");
-  const [error, setError] = useState<string | null>(null);
+
+  const [battleState, setBattleState] = useState<T_BattleState>({
+    winner: null,
+    loser: null,
+    error: null,
+    isLoading: false,
+  });
 
   useEffect(() => {
     if (!plOne || !plTwo) {
       return;
     }
 
-    setError(null);
-    setWinner(null);
-    setLoser(null);
+    let isCancelled = false;
+
+    setBattleState({
+      winner: null,
+      loser: null,
+      error: null,
+      isLoading: true,
+    });
 
     makeBattle([plOne, plTwo])
       .then(([winner, loser]) => {
-        setWinner(winner);
-        setLoser(loser);
+        if (isCancelled) return;
+
+        setBattleState({
+          winner,
+          loser,
+          error: null,
+          isLoading: false,
+        });
       })
       .catch(() => {
-        setError("Could not load battle result");
+        if (isCancelled) return;
+
+        setBattleState({
+          winner: null,
+          loser: null,
+          error: "Could not load battle result",
+          isLoading: false,
+        });
       });
+      
+    return () => {
+      isCancelled = true;
+    };
   }, [plOne, plTwo]);
 
-  if (error) {
+  if (battleState.error) {
     return (
       <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
         <h2 className="text-xl font-semibold text-foreground">
           Battle result unavailable
         </h2>
-
-        <p className="mt-2 text-sm text-muted">{error}</p>
+        <p>{battleState.error}</p>
+        <p className="mt-2 text-sm text-muted">{battleState.error}</p>
       </div>
     );
   }
 
-  if (!winner || !loser) {
-    return <Loader></Loader>;
+  if (battleState.isLoading || !battleState.winner || !battleState.loser) {
+    return <Loader />;
   }
+
+  const { winner, loser } = battleState;
 
   return (
     <div className="flex flex-col items-center">

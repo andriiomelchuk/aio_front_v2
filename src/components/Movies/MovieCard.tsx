@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { T_Movie } from "./types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { getTmdbImageUrl } from "@/constants";
 
 export const MovieCard = ({
   title,
@@ -18,30 +19,29 @@ export const MovieCard = ({
   const searchParams = useSearchParams();
   const params = searchParams.get("type");
 
+  const imageUrl = getTmdbImageUrl(imagePath, "w342");
+
   let movieType;
 
-  if(!media_type || media_type === "undefined") {
+  if (!media_type || media_type === "undefined") {
     movieType = params;
-  }else{
+  } else {
     movieType = media_type;
   }
 
   return (
+    
     <Link href={`/movies/${movieType}/${id}`}>
-      <article
-        className="overflow-hidden rounded-lg border border-border bg-surface transition hover:-translate-y-1 hover:border-accent"
-      >
+      <article className="overflow-hidden rounded-lg border border-border bg-surface transition hover:-translate-y-1 hover:border-accent">
         <div className="aspect-2/3 bg-surface-muted">
-          {imagePath ? (
+          {imageUrl ? (
             <img
-              src={`https://image.tmdb.org/t/p/w342${imagePath}`}
+              src={imageUrl}
               alt={`${title ?? name ?? "Unknown"} poster`}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full items-center justify-center p-3 text-center text-xs text-muted">
-              No poster
-            </div>
+            <div>No poster</div>
           )}
         </div>
 

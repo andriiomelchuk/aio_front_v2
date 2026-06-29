@@ -3,10 +3,11 @@ import { useEffect, useState, useTransition } from "react";
 import { T_Languages } from "./types";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { checkLanguageExists } from "@/lib/api";
+
 import Loader from "@/shared/ui/Loader/Loader";
 import { Input } from "@/shared/ui/Input/Input";
 import { Button } from "@/shared/ui/Button";
+import { checkLanguageExists } from "@/lib/github";
 
 const STORAGE_KEY = "popularLanguages";
 
