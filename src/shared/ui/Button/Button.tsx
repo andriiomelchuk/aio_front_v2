@@ -6,7 +6,7 @@ const variants = {
   success: "bg-green-600 text-white hover:bg-green-700",
   warning: "bg-yellow-400 text-black hover:bg-yellow-500",
   ghost: "bg-transparent text-foreground hover:bg-surface-muted",
-  invisible: "bg-transparent text-foreground"
+  invisible: "bg-transparent text-foreground",
 };
 
 export const Button = ({
@@ -15,6 +15,7 @@ export const Button = ({
   label,
   variant = "default",
   type = "submit",
+  role = "none",
   ...props
 }: T_ButtonTypes) => {
   return (

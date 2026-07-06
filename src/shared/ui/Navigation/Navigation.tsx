@@ -7,8 +7,8 @@ const navItems = [
   { id: "home", label: "Home", href: "/" },
   { id: "popular", label: "Popular", href: "/popular" },
   { id: "battle", label: "Battle", href: "/battle" },
-  { id: "todos", label: "Todos", href: "/todos" },
   { id: "movies", label: "Movies", href: "/movies" },
+    // { id: "todos", label: "Todos", href: "/todos" },
 ];
 
 export const Navigation = () => {
