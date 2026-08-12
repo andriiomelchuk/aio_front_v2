@@ -131,6 +131,7 @@ export const PopularLanguages = () => {
                   <Button
                     onClick={() => setLanguageParam(lang.id)}
                     variant="invisible"
+                    type="submit"
                     className={`h-full px-4 text-sm transition hover:text-foreground ${
                       isActive
                         ? "border-accent bg-accent-soft text-foreground"
@@ -163,11 +164,13 @@ export const PopularLanguages = () => {
         >
           <Input
             variant="ghost"
+            type="text"
             placeholder="Add language"
             onChange={(e) => setLanguage(e.target.value)}
             value={language}
           />
           <Button
+          type="submit"
             className="px-3 py-1.5 text-sm font-medium text-background transition hover:opacity-85 disable"
             disabled={!language.trim()}
           >

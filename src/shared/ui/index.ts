@@ -5,3 +5,4 @@ export * from "./Textarea";
 export * from "./Checkbox";
 export * from "./Switch";
 export * from "./Field";
+export * from "./Pagination";

@@ -2,6 +2,7 @@ import { T_ButtonTypes } from "./types";
 
 const variants = {
   default: "bg-accent text-background hover:opacity-85",
+  secondary: "border border-border bg-surface text-foreground hover:bg-surface-muted",
   danger: "bg-danger text-background hover:opacity-85",
   success: "bg-green-600 text-white hover:bg-green-700",
   warning: "bg-yellow-400 text-black hover:bg-yellow-500",
@@ -14,8 +15,7 @@ export const Button = ({
   className = "",
   label,
   variant = "default",
-  type = "submit",
-  role = "none",
+  type = "button",
   ...props
 }: T_ButtonTypes) => {
   return (
