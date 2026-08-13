@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { adminNavigation } from "../model/adminNavigation";
+import { LanguageSwitcher } from "@/shared/ui";
 
 type AdminHeaderProps = {
   onMenuClick: () => void;
@@ -27,16 +28,19 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
           </h1>
           <p className="mt-1 text-sm text-muted">{pageMeta.description}</p>
         </div>
-        <button
-          type="button"
-          onClick={onMenuClick}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-foreground transition hover:bg-surface-muted lg:hidden"
-          aria-label="Open admin menu"
-        >
-          <span className="block h-0.5 w-5 bg-current" />
-          <span className="absolute block h-0.5 w-5 -translate-y-1.5 bg-current" />
-          <span className="absolute block h-0.5 w-5 translate-y-1.5 bg-current" />
-        </button>
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher variant="flag" mode="buttons"/>
+          <button
+            type="button"
+            onClick={onMenuClick}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-foreground transition hover:bg-surface-muted lg:hidden"
+            aria-label="Open admin menu"
+          >
+            <span className="block h-0.5 w-5 bg-current" />
+            <span className="absolute block h-0.5 w-5 -translate-y-1.5 bg-current" />
+            <span className="absolute block h-0.5 w-5 translate-y-1.5 bg-current" />
+          </button>
+        </div>
       </div>
     </header>
   );

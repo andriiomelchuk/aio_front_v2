@@ -1,18 +1,21 @@
 "use client";
 
+import { useI18n } from "@/shared/i18n";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { id: "home", label: "Home", href: "/" },
-  { id: "popular", label: "Popular", href: "/popular" },
-  { id: "battle", label: "Battle", href: "/battle" },
-  { id: "movies", label: "Movies", href: "/movies" },
-    // { id: "todos", label: "Todos", href: "/todos" },
+  { id: "home", labelKey: "nav.home", href: "/" },
+  { id: "popular", labelKey: "nav.popular", href: "/popular" },
+  { id: "battle", labelKey: "nav.battle", href: "/battle" },
+  { id: "movies", labelKey: "nav.movies", href: "/movies" },
 ];
+
+
 
 export const Navigation = () => {
   const pathName = usePathname();
+  const { t } = useI18n();
 
   return (
     <nav className="flex items-center gap-4 text-sm">
@@ -30,7 +33,7 @@ export const Navigation = () => {
                 : "text-muted hover:bg-surface-muted hover:text-foreground"
             }`}
           >
-            {item.label}
+            {t(item.labelKey)}
           </Link>
         );
       })}

@@ -1,3 +1,4 @@
+import { useI18n } from "@/shared/i18n";
 import { Button } from "../Button";
 import { Select } from "../Select";
 import { T_PaginationProps } from "./types";
@@ -11,6 +12,7 @@ export const Pagination = ({
   onPageSizeChange,
 }: T_PaginationProps) => {
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const { t } = useI18n();
 
   if (totalItems === 0) {
     return null;
@@ -22,7 +24,7 @@ export const Pagination = ({
       aria-label="Pagination"
     >
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted">Rows per page</span>
+        <span className="text-sm text-muted">{t("pagination.rowsPerPage")}</span>
 
         <Select
           className="h-10 w-[90px]"
@@ -38,7 +40,7 @@ export const Pagination = ({
 
       <div className="flex items-center gap-3">
         <p className="text-sm text-muted">
-          Page {page} of {totalPages}
+          {t("pagination.pageOf", { page, totalPages })}
         </p>
 
         <div className="flex gap-2">
@@ -47,7 +49,7 @@ export const Pagination = ({
             disabled={page === 1}
             onClick={() => onPageChange(page - 1)}
           >
-            Previous
+            {t("pagination.previous")}
           </Button>
 
           <Button
@@ -55,7 +57,7 @@ export const Pagination = ({
             disabled={page === totalPages}
             onClick={() => onPageChange(page + 1)}
           >
-            Next
+            {t("pagination.next")}
           </Button>
         </div>
       </div>

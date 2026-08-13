@@ -1,3 +1,4 @@
+import { LanguageSwitcher } from "@/shared/ui";
 import { Navigation } from "@/shared/ui/Navigation";
 
 export const Header = () => {
@@ -9,6 +10,7 @@ export const Header = () => {
         </div>
 
         <Navigation/>
+        <LanguageSwitcher variant="compact" mode="select"/>
       </div>
     </header>
   );
