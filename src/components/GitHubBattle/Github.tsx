@@ -5,6 +5,7 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
 import { Button } from "@/shared/ui/Button";
 import { getGithubUser } from "@/lib/github";
+import { useI18n } from "@/shared/i18n";
 
 export const GitHub = () => {
   const [playerData, setPlayerData] = useState<T_PlayerData>({
@@ -59,17 +60,19 @@ export const GitHub = () => {
     router.push(`${pathName}/result/?${params.toString()}`);
   };
 
+  const { t } = useI18n();
+
   return (
     <div className="flex justify-center flex-col">
       <PageHeader
-        eyebrow="GitHub Battle"
-        title="Choose Your Players"
-        description="Enter two GitHub usernames and compare their profiles."
+        eyebrow={t("ghBattle.eyebrow")}
+        title={t("ghBattle.title")}
+        description={t("ghBattle.description")}
       />
       <div className="players flex  justify-center items-center">
         <PlayerSlot
           playerId="playerOne"
-          label="Player #1"
+          label={t("ghBattle.playerOneLabel")}
           name={playerData.playerOneName}
           img={playerData.playerOneImg}
           loadingPlayer={loadingPlayer}
@@ -83,7 +86,7 @@ export const GitHub = () => {
 
           <Button
             disabled={!playerData.playerOneImg || !playerData.playerTwoImg}
-            label="FIGHT"
+            label={t("ghBattle.fightButton")}
             className="mt-5 mr-5 ml-5 cursor-pointer rounded-lg border border-accent bg-accent-soft p-2 text-sm font-medium text-foreground shadow-[0_18px_40px_var(--shadow-color)] transition hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50"
             onClick={() =>
               setBattleData(playerData.playerOneName, playerData.playerTwoName)
@@ -92,7 +95,7 @@ export const GitHub = () => {
         </div>
         <PlayerSlot
           playerId="playerTwo"
-          label="Player #2"
+          label={t("ghBattle.playerTwoLabel")}
           name={playerData.playerTwoName}
           img={playerData.playerTwoImg}
           loadingPlayer={loadingPlayer}

@@ -1,3 +1,4 @@
+import { useI18n } from "@/shared/i18n";
 import { MovieCard } from "./MovieCard";
 import { T_MoviesList } from "./types";
 
@@ -5,10 +6,13 @@ export const MoviesList = ({
   movies,
   hasSearched,
 }: T_MoviesList) => {
+
+  const { t } = useI18n();
+
   if (!hasSearched) {
     return (
       <p className="mt-10 text-center text-sm text-muted">
-        Enter a title to start searching.
+        {t("movies.startSearchText")}
       </p>
     );
   }
@@ -16,7 +20,7 @@ export const MoviesList = ({
   if (movies.length === 0) {
     return (
       <p className="mt-10 text-center text-sm text-muted">
-        Nothing found. Try another title or category.
+        {t("movies.noResultsText")}
       </p>
     );
   }

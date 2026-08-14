@@ -4,6 +4,7 @@ import { PlayerCard } from "./PlayerCard";
 import { PlayerInput } from "./PlayerInput";
 import { PlayerLoading } from "./PlayerLoading";
 import { T_PlayerSlotProps } from "./types";
+import { useI18n } from "@/shared/i18n";
 
 export const PlayerSlot = ({
   playerId,
@@ -15,6 +16,7 @@ export const PlayerSlot = ({
   onSubmit,
 }: T_PlayerSlotProps) => {
   const isLoading = loadingPlayer === playerId;
+  const { t } = useI18n();
 
   return (
     <CardShell variant={isLoading ? "loading" : img ? "ready" : "empty"}>
@@ -24,7 +26,7 @@ export const PlayerSlot = ({
         <PlayerCard name={name} img={img} label={label}>
           <div className="h-20  flex justify-center items-center flex-col">
             <div className="flex text-xs font-semibold uppercase tracking-normal text-accent">
-              Ready
+              {t("ghBattle.readyPlayerLabel")}
             </div>
             <div className="h-20  flex justify-center items-end">
               <Button
@@ -32,7 +34,7 @@ export const PlayerSlot = ({
                 className="mt-6 h-10 min-w-50 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted transition hover:border-danger hover:bg-danger-soft hover:text-danger"
                 onClick={() => onDelete(playerId)}
               >
-                Change player
+                {t("ghBattle.changePlayerButton")}
               </Button>
             </div>
           </div>

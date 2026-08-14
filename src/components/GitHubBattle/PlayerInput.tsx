@@ -4,9 +4,11 @@ import { T_PlayerProps } from "./types";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Input } from "@/shared/ui/Input/Input";
 import { Button } from "@/shared/ui/Button";
+import { useI18n } from "@/shared/i18n";
 
 export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
   const [userName, setUserName] = useState("");
+  const { t } = useI18n();
 
   return (
     <>
@@ -20,13 +22,14 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
         <label className="my-5 flex h-5 justify-center text-sm font-medium text-muted">
           {label}
         </label>
-        <Avatar alt="searching player" size="mid" />
+        <Avatar alt={t("ghBattle.searchingPlayerAlt")} size="mid" />
         <div className="h-20 flex items-center">
           <Input
             className="mt-3 w-full"
             value={userName}
-            placeholder="Enter GitHub username"
+            placeholder={t("ghBattle.inputPlaceholder")}
             onChange={(e) => setUserName(e.target.value)}
+            type={"text"}
           />
         </div>
 
@@ -39,7 +42,7 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
             type="submit"
             disabled={!userName.trim()}
           >
-            Search
+            {t("ghBattle.searchButton")}
           </Button>
         </div>
       </form>

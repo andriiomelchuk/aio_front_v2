@@ -3,6 +3,7 @@ import Link from "next/link";
 import { T_Movie } from "./types";
 import { useSearchParams } from "next/navigation";
 import { getTmdbImageUrl } from "@/constants";
+import { useI18n } from "@/shared/i18n";
 
 export const MovieCard = ({
   title,
@@ -29,6 +30,10 @@ export const MovieCard = ({
     movieType = media_type;
   }
 
+  const { t } = useI18n();
+
+  const movieTitle = title ?? name ?? t("movies.unknownTitle");
+
   return (
     
     <Link href={`/movies/${movieType}/${id}`}>
@@ -37,17 +42,17 @@ export const MovieCard = ({
           {imageUrl ? (
             <img
               src={imageUrl}
-              alt={`${title ?? name ?? "Unknown"} poster`}
+              alt={t("movies.posterAlt", { title: movieTitle })}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div>No poster</div>
+            <div>{t("movies.noImage")}</div>
           )}
         </div>
 
         <div className="p-3">
           <div className="truncate text-[1rem] font-medium text-foreground">
-            {title ?? name}
+            {movieTitle}
           </div>
 
           <div className="mt-1 flex items-center justify-between text-xs text-muted">

@@ -6,18 +6,20 @@ import Loader from "@/shared/ui/Loader/Loader";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { T_MovieSearchType } from "./types";
+import { useI18n } from "@/shared/i18n";
 
 export const MoviesSearch = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathName = usePathname();
   const [isPending, startTransition] = useTransition();
+  const { t } = useI18n();
 
   const movieTypes = [
-    { label: "all", value: "multi" },
-    { label: "movie", value: "movie" },
-    { label: "series", value: "tv" },
-    { label: "person", value: "person" },
+    { label: t("movies.type.all"), value: "multi" },
+    { label: t("movies.type.movie"), value: "movie" },
+    { label: t("movies.type.series"), value: "tv" },
+    { label: t("movies.type.person"), value: "person" },
   ];
 
   const [movie, setMovie] = useState(searchParams.get("query") ?? "");
@@ -57,12 +59,12 @@ export const MoviesSearch = () => {
       >
         <div className="flex flex-row">
           <Input
-            placeholder="Type your movie to search"
+            placeholder={t("movies.searchPlaceholder")}
             className="flex h-full flex-col justify-between items-center"
             onChange={(e) => setMovie(e.target.value)}
-            value={movie}
-          />
-          <Button className="ml-3">Search</Button>
+            value={movie} 
+            type={"text"}          />
+          <Button className="ml-3" type="submit">{t("movies.searchButton")}</Button>
         </div>
         <div className="flex flex-row mt-5">
           {movieTypes.map((item) => (

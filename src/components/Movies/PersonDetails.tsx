@@ -1,6 +1,8 @@
+import { useI18n } from "@/shared/i18n";
 import { T_PersonDetails } from "./types";
 
 export const PersonDetails = ({ person }: T_PersonDetails) => {
+  const { t } = useI18n();
   return (
 
       <section className="grid gap-8 rounded-xl border border-border bg-surface p-6 shadow-[0_18px_40px_var(--shadow-color)] md:grid-cols-[280px_1fr]">
@@ -13,14 +15,14 @@ export const PersonDetails = ({ person }: T_PersonDetails) => {
             />
           ) : (
             <div className="flex aspect-2/3 items-center justify-center rounded-lg bg-surface-muted text-muted">
-              No photo
+              {t("movies.noPhoto")}
             </div>
           )}
         </div>
 
         <div>
           <p className="text-sm uppercase tracking-wide text-accent">
-            {person.known_for_department ?? "Person"}
+            {person.known_for_department ?? t("movies.person")}
           </p>
 
           <h1 className="mt-2 text-3xl font-bold text-foreground">
@@ -29,22 +31,22 @@ export const PersonDetails = ({ person }: T_PersonDetails) => {
 
           <dl className="mt-6 grid gap-4 text-sm sm:grid-cols-2">
             <div>
-              <dt className="text-muted">Birthday</dt>
+              <dt className="text-muted">{t("movies.person.birthday")}</dt>
               <dd className="mt-1 text-foreground">
-                {person.birthday ?? "Unknown"}
+                {person.birthday ?? t("movies.unknown")}
               </dd>
             </div>
 
             <div>
-              <dt className="text-muted">Place of birth</dt>
+              <dt className="text-muted">{t("movies.person.placeOfBirth")}</dt>
               <dd className="mt-1 text-foreground">
-                {person.place_of_birth ?? "Unknown"}
+                {person.place_of_birth ?? t("movies.unknown")}
               </dd>
             </div>
 
             {person.deathday && (
               <div>
-                <dt className="text-muted">Died</dt>
+                <dt className="text-muted">{t("movies.person.died")}</dt>
                 <dd className="mt-1 text-foreground">{person.deathday}</dd>
               </div>
             )}
@@ -52,18 +54,18 @@ export const PersonDetails = ({ person }: T_PersonDetails) => {
 
           <div className="mt-8">
             <h2 className="text-lg font-semibold text-foreground">
-              Biography
+              {t("movies.biography")}
             </h2>
 
             <p className="mt-2 whitespace-pre-line leading-7 text-muted">
-              {person.biography || "Biography is not available."}
+              {person.biography || t("movies.person.biographyNotAvailable")}
             </p>
           </div>
 
           {person.also_known_as?.length ? (
             <div className="mt-8">
               <h2 className="text-lg font-semibold text-foreground">
-                Also known as
+                {t("movies.alsoKnownAs")}
               </h2>
 
               <div className="mt-3 flex flex-wrap gap-2">

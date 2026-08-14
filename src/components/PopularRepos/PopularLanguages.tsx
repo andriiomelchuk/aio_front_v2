@@ -8,6 +8,7 @@ import Loader from "@/shared/ui/Loader/Loader";
 import { Input } from "@/shared/ui/Input/Input";
 import { Button } from "@/shared/ui/Button";
 import { checkLanguageExists } from "@/lib/github";
+import { useI18n } from "@/shared/i18n";
 
 const STORAGE_KEY = "popularLanguages";
 
@@ -68,14 +69,14 @@ export const PopularLanguages = () => {
     );
 
     if (exists) {
-      setError("This language is already in the list.");
+      setError(t("popular.languageAlreadyExists"));
       return;
     }
 
     const languageExists = await checkLanguageExists(trimmedLanguage);
 
     if (!languageExists) {
-      setError("This language was not found on GitHub.");
+      setError(t("popular.languageNotFound"));
       return;
     }
 
@@ -112,6 +113,8 @@ export const PopularLanguages = () => {
     }
   };
 
+  const { t } = useI18n();
+
   return (
     <>
       {isPending && <Loader />}
@@ -146,6 +149,7 @@ export const PopularLanguages = () => {
                       variant="invisible"
                       onClick={() => deleteCurrentLang(lang.id)}
                       className="mr-2 flex size-5 shrink-0 items-center justify-center rounded-full! p-0! text-xs text-muted hover:bg-danger hover:text-background"
+                      title={t("popular.deleteLanguage")}
                     >
                       X
                     </Button>
@@ -165,7 +169,7 @@ export const PopularLanguages = () => {
           <Input
             variant="ghost"
             type="text"
-            placeholder="Add language"
+            placeholder={t("popular.buttonPlaceholder")}
             onChange={(e) => setLanguage(e.target.value)}
             value={language}
           />
@@ -174,7 +178,7 @@ export const PopularLanguages = () => {
             className="px-3 py-1.5 text-sm font-medium text-background transition hover:opacity-85 disable"
             disabled={!language.trim()}
           >
-            Add
+            {t("popular.addButton")}
           </Button>
         </form>
         {error ? <p className="text-sm text-danger">{error}</p> : null}
@@ -182,3 +186,7 @@ export const PopularLanguages = () => {
     </>
   );
 };
+// function t(arg0: string): import("react").SetStateAction<string | null> {
+//   throw new Error("Function not implemented.");
+// }
+

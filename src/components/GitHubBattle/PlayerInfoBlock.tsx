@@ -1,46 +1,48 @@
+import { useI18n } from "@/shared/i18n";
 import { T_PlayerInfoProps } from "./types";
 
 export const PlayerInfoBlock = ({ profile, score }: T_PlayerInfoProps) => {
+  const { t } = useI18n();
   return (
     <div className="w-full min-w-40 rounded-md border border-border bg-surface-muted p-3 text-sm text-muted">
       <div className="mb-3 flex items-center justify-between border-b border-border pb-2">
         <span className="text-xs uppercase tracking-wide text-muted">
-          Score
+          {t("ghBattle.score")}
         </span>
         <span className="font-semibold text-accent">{score}</span>
       </div>
 
       <ul className="space-y-1.5">
         <li className="flex justify-between gap-3">
-          <span className="text-muted">Login</span>
+          <span className="text-muted">{t("ghBattle.login")}</span>
           <span className="truncate text-foreground">
             {profile.login ? profile.login : "-"}
           </span>
         </li>
 
         <li className="flex justify-between gap-3">
-          <span className="text-muted">Location</span>
+          <span className="text-muted">{t("ghBattle.location")}</span>
           <span className="truncate text-foreground">
             {profile.location ? profile.location : "-"}
           </span>
         </li>
 
         <li className="flex justify-between gap-3">
-          <span className="text-muted">Followers</span>
+          <span className="text-muted">{t("ghBattle.followers")}</span>
           <span className="font-medium text-foreground">
             {profile.followers}
           </span>
         </li>
 
         <li className="flex justify-between gap-3">
-          <span className="text-muted">Following</span>
+          <span className="text-muted">{t("ghBattle.following")}</span>
           <span className="font-medium text-foreground">
             {profile.following}
           </span>
         </li>
 
         <li className="flex justify-between gap-3">
-          <span className="text-muted">Repos</span>
+          <span className="text-muted">{t("ghBattle.repos")}</span>
           <span className="font-medium text-foreground">
             {profile.public_repos}
           </span>

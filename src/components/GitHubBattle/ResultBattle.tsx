@@ -9,12 +9,14 @@ import Loader from "@/shared/ui/Loader/Loader";
 import { PlayerInfoBlock } from "./PlayerInfoBlock";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
 import { makeBattle } from "@/lib/github";
+import { useI18n } from "@/shared/i18n";
 
 export const ResultBattle = () => {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const plOne = params.get("playerone");
   const plTwo = params.get("playertwo");
+  const { t } = useI18n();
 
   const [battleState, setBattleState] = useState<T_BattleState>({
     winner: null,
@@ -54,7 +56,7 @@ export const ResultBattle = () => {
         setBattleState({
           winner: null,
           loser: null,
-          error: "Could not load battle result",
+          error: "ghBattle.resultLoadError",
           isLoading: false,
         });
       });
@@ -65,16 +67,18 @@ export const ResultBattle = () => {
   }, [plOne, plTwo]);
 
   if (battleState.error) {
-    return (
-      <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
-        <h2 className="text-xl font-semibold text-foreground">
-          Battle result unavailable
-        </h2>
-        <p>{battleState.error}</p>
-        <p className="mt-2 text-sm text-muted">{battleState.error}</p>
-      </div>
-    );
-  }
+  return (
+    <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
+      <h2 className="text-xl font-semibold text-foreground">
+        {t("ghBattle.errorTitle")}
+      </h2>
+
+      <p className="mt-2 text-sm text-muted">
+        {t(battleState.error)}
+      </p>
+    </div>
+  );
+}
 
   if (battleState.isLoading || !battleState.winner || !battleState.loser) {
     return <Loader />;
@@ -85,17 +89,17 @@ export const ResultBattle = () => {
   return (
     <div className="flex flex-col items-center">
       <PageHeader
-        eyebrow="GitHub Battle"
-        title="Battle Result"
-        description="The winner is calculated from followers and repository stars."
+        eyebrow={t("ghBattle.resultEyebrow")}
+        title={t("ghBattle.resultTitle")}
+        description={t("ghBattle.resultDescription")}
       />
       <div className="players flex  justify-center items-center mt-10">
         <div className="winner mx-5">
           <CardShell>
             <PlayerCard
-              name={winner.profile.name || winner.profile.login || "Unknown"}
+              name={winner.profile.name || winner.profile.login || t("ghBattle.unknown")}
               img={winner.profile.avatar_url || ""}
-              label="Winner"
+              label={t("ghBattle.winnerLabel")}
             >
               <PlayerInfoBlock
                 profile={winner.profile}
@@ -107,9 +111,9 @@ export const ResultBattle = () => {
         <div className="loser mx-5">
           <CardShell>
             <PlayerCard
-              name={loser.profile.name || loser.profile.login || "Unknown"}
+              name={loser.profile.name || loser.profile.login || t("ghBattle.unknown")}
               img={loser.profile.avatar_url || ""}
-              label="Loser"
+              label={t("ghBattle.loserLabel")}
             >
               <PlayerInfoBlock
                 profile={loser.profile}

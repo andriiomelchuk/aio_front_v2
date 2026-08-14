@@ -1,19 +1,25 @@
+"use client";
+
 import { PopularLanguages as Languages } from "./PopularLanguages";
 import { PopularCard } from "./PopularCard";
 import { T_Repo } from "./types";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
+import { useI18n } from "@/shared/i18n";
 
 type Items = {
   items: T_Repo[];
 };
 
 export const Popular = ({ items }: Items) => {
+
+  const { t } = useI18n();
+  
   return (
     <>
       <PageHeader
-        eyebrow="GitHub popular"
-        title="Popular Repositories"
-        description="Browse the most starred repositories by language."
+        eyebrow={t("popular.eyebrow")}
+        title={t("popular.title")}
+        description={t("popular.description")}
       />
       <div className="mx-auto flex justify-center items-center">
         <Languages></Languages>
@@ -27,11 +33,11 @@ export const Popular = ({ items }: Items) => {
       ) : (
         <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
           <h2 className="text-lg font-semibold text-foreground">
-            No repositories found
+            {t("popular.emptyTitle")}
           </h2>
 
           <p className="mt-2 text-sm text-muted">
-            Try selecting another language.
+            {t("popular.emptyDescription")}
           </p>
         </div>
       )}

@@ -1,15 +1,18 @@
+"use client";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
 import { MoviesSearch } from "./MoviesSearch";
 import { MoviesList } from "./MoviesList";
 import { T_MoviesList } from "./types";
+import { useI18n } from "@/shared/i18n";
 
 export const Movies = ({movies, hasSearched}: T_MoviesList) => {
+  const { t } = useI18n();
   return (
     <>
       <PageHeader
-        eyebrow="Movies search page"
-        title="Movie Explorer"
-        description="Search movies, browse details, and build your watchlist."
+        eyebrow={t("movies.eyebrow")}
+        title={t("movies.title")}
+        description={t("movies.description")}
       />
       <MoviesSearch/>
       <MoviesList movies={movies} hasSearched={hasSearched}/>
