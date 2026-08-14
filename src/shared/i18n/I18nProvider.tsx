@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { dictionaries } from "./dictionaries";
 import { locales, type T_I18nContext, type T_Locale } from "./types";
 
@@ -33,15 +27,15 @@ const formatMessage = (
 };
 
 export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
-  const [locale, setLocaleState] = useState<T_Locale>(DEFAULT_LOCALE);
+  const [locale, setLocaleState] = useState<T_Locale>(() => {
+    if (typeof window === "undefined") {
+      return DEFAULT_LOCALE;
+    }
 
-  useEffect(() => {
     const savedLocale = window.localStorage.getItem(STORAGE_KEY);
 
-    if (isLocale(savedLocale)) {
-      setLocaleState(savedLocale);
-    }
-  }, []);
+    return isLocale(savedLocale) ? savedLocale : DEFAULT_LOCALE;
+  });
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -66,11 +60,7 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [locale]);
 
-  return (
-    <I18nContext.Provider value={value}>
-      {children}
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 };
 
 export const useI18n = () => {

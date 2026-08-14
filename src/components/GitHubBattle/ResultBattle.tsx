@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { CardShell } from "./CardShell";
 import { PlayerCard } from "./PlayerCard";
 import { useSearchParams } from "next/navigation";
-import { T_BattleResult, T_BattleState } from "./types";
+import { T_BattleState } from "./types";
 import Loader from "@/shared/ui/Loader/Loader";
 import { PlayerInfoBlock } from "./PlayerInfoBlock";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
@@ -22,7 +22,6 @@ export const ResultBattle = () => {
     winner: null,
     loser: null,
     error: null,
-    isLoading: false,
   });
 
   useEffect(() => {
@@ -32,13 +31,6 @@ export const ResultBattle = () => {
 
     let isCancelled = false;
 
-    setBattleState({
-      winner: null,
-      loser: null,
-      error: null,
-      isLoading: true,
-    });
-
     makeBattle([plOne, plTwo])
       .then(([winner, loser]) => {
         if (isCancelled) return;
@@ -47,7 +39,6 @@ export const ResultBattle = () => {
           winner,
           loser,
           error: null,
-          isLoading: false,
         });
       })
       .catch(() => {
@@ -57,31 +48,37 @@ export const ResultBattle = () => {
           winner: null,
           loser: null,
           error: "ghBattle.resultLoadError",
-          isLoading: false,
         });
       });
-      
+
     return () => {
       isCancelled = true;
     };
   }, [plOne, plTwo]);
 
+  const isLoadingResult =
+    Boolean(plOne && plTwo) &&
+    !battleState.error &&
+    (!battleState.winner || !battleState.loser);
+
   if (battleState.error) {
-  return (
-    <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
-      <h2 className="text-xl font-semibold text-foreground">
-        {t("ghBattle.errorTitle")}
-      </h2>
+    return (
+      <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
+        <h2 className="text-xl font-semibold text-foreground">
+          {t("ghBattle.errorTitle")}
+        </h2>
 
-      <p className="mt-2 text-sm text-muted">
-        {t(battleState.error)}
-      </p>
-    </div>
-  );
-}
+        <p className="mt-2 text-sm text-muted">{t(battleState.error)}</p>
+      </div>
+    );
+  }
 
-  if (battleState.isLoading || !battleState.winner || !battleState.loser) {
+  if (isLoadingResult) {
     return <Loader />;
+  }
+
+  if (!battleState.winner || !battleState.loser) {
+    return null;
   }
 
   const { winner, loser } = battleState;
@@ -97,7 +94,11 @@ export const ResultBattle = () => {
         <div className="winner mx-5">
           <CardShell>
             <PlayerCard
-              name={winner.profile.name || winner.profile.login || t("ghBattle.unknown")}
+              name={
+                winner.profile.name ||
+                winner.profile.login ||
+                t("ghBattle.unknown")
+              }
               img={winner.profile.avatar_url || ""}
               label={t("ghBattle.winnerLabel")}
             >
@@ -111,7 +112,11 @@ export const ResultBattle = () => {
         <div className="loser mx-5">
           <CardShell>
             <PlayerCard
-              name={loser.profile.name || loser.profile.login || t("ghBattle.unknown")}
+              name={
+                loser.profile.name ||
+                loser.profile.login ||
+                t("ghBattle.unknown")
+              }
               img={loser.profile.avatar_url || ""}
               label={t("ghBattle.loserLabel")}
             >

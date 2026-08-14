@@ -73,5 +73,4 @@ export type T_BattleState = {
   winner: T_BattleResult | null;
   loser: T_BattleResult | null;
   error: string | null;
-  isLoading: boolean;
 }

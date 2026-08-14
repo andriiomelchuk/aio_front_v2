@@ -14,7 +14,7 @@ export const PlayerLoading = ({ label }: T_PlayerLoadingProps) => {
 
       <div>
         <div className="flex h-20 items-center text-xs font-semibold uppercase tracking-normal text-accent">
-          "{t("ghBattle.searchingPlayerLabel")}"
+          {t("ghBattle.searchingPlayerLabel")}
         </div>
       </div>
 
