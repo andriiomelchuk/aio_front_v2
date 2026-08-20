@@ -1,32 +1,32 @@
-export const adminNavigation = [
+export const getAdminNavigation = (t: (key: string) => string) => [
   {
     href: "/admin",
-    label: "Dashboard",
-    title: "Dashboard",
-    description: "Overview of the admin panel",
+    label: t("admin.navigation.dashboard.label"),
+    title: t("admin.navigation.dashboard.title"),
+    description: t("admin.navigation.dashboard.description"),
   },
   {
     href: "/admin/users",
-    label: "Users",
-    title: "Users",
-    description: "Manage user accounts and permissions",
+    label: t("admin.navigation.users.label"),
+    title: t("admin.navigation.users.title"),
+    description: t("admin.navigation.users.description"),
   },
   {
     href: "/admin/ecommerce",
-    label: "E-commerce",
-    title: "E-commerce",
-    description: "Manage products, orders and sales",
+    label: t("admin.navigation.ecommerce.label"),
+    title: t("admin.navigation.ecommerce.title"),
+    description: t("admin.navigation.ecommerce.description"),
   },
   {
     href: "/admin/analytics",
-    label: "Analytics",
-    title: "Analytics",
-    description: "Track traffic, performance and reports",
+    label: t("admin.navigation.analytics.label"),
+    title: t("admin.navigation.analytics.title"),
+    description: t("admin.navigation.analytics.description"),
   },
   {
     href: "/admin/settings",
-    label: "Settings",
-    title: "Settings",
-    description: "Configure application preferences",
+    label: t("admin.navigation.settings.label"),
+    title: t("admin.navigation.settings.title"),
+    description: t("admin.navigation.settings.description"),
   },
 ] as const;

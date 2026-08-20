@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useSyncExternalStore,
+} from "react";
 import { dictionaries } from "./dictionaries";
 import { locales, type T_I18nContext, type T_Locale } from "./types";
 
@@ -26,24 +32,40 @@ const formatMessage = (
   }, message);
 };
 
+const getStoredLocale = (): T_Locale => {
+  if (typeof window === "undefined") {
+    return DEFAULT_LOCALE;
+  }
+
+  const savedLocale = window.localStorage.getItem(STORAGE_KEY);
+
+  return isLocale(savedLocale) ? savedLocale : DEFAULT_LOCALE;
+};
+
+const subscribeToLocale = (callback: () => void) => {
+  window.addEventListener("storage", callback);
+  window.addEventListener("aio-locale-change", callback);
+
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("aio-locale-change", callback);
+  };
+};
+
 export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
-  const [locale, setLocaleState] = useState<T_Locale>(() => {
-    if (typeof window === "undefined") {
-      return DEFAULT_LOCALE;
-    }
-
-    const savedLocale = window.localStorage.getItem(STORAGE_KEY);
-
-    return isLocale(savedLocale) ? savedLocale : DEFAULT_LOCALE;
-  });
+  const locale = useSyncExternalStore(
+    subscribeToLocale,
+    getStoredLocale,
+    () => DEFAULT_LOCALE,
+  );
 
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
 
   const setLocale = (nextLocale: T_Locale) => {
-    setLocaleState(nextLocale);
     window.localStorage.setItem(STORAGE_KEY, nextLocale);
+    window.dispatchEvent(new Event("aio-locale-change"));
   };
 
   const value = useMemo<T_I18nContext>(() => {

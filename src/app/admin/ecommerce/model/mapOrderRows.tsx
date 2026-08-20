@@ -1,9 +1,12 @@
 import { T_Order } from "@/entities/order";
 import { AdminBadge } from "@/widgets/AdminWidgets";
-import { orderStatusBadgeVariant, orderStatusLabel } from "./orderStatusView";
+import { orderStatusBadgeVariant, getOrderStatusLabel } from "./orderStatusView";
 import { Button } from "@/shared/ui";
 
-export const mapOrderRows = (orders: T_Order[]) => {
+export const mapOrderRows = (
+  orders: T_Order[],
+  t: (key: string) => string,
+) => {
   return orders.map((order) => ({
     id: `#${order.id}`,
     price: `$${order.price}`,
@@ -11,7 +14,7 @@ export const mapOrderRows = (orders: T_Order[]) => {
     updatedAt: order.updatedAt || "-",
     status: (
       <AdminBadge variant={orderStatusBadgeVariant[order.status]}>
-        {orderStatusLabel[order.status]}
+        {getOrderStatusLabel(order.status, t)}
       </AdminBadge>
     ),
     action: (
@@ -20,7 +23,7 @@ export const mapOrderRows = (orders: T_Order[]) => {
         variant="ghost"
         onClick={() => console.log("View order", order.id)}
       >
-        View
+        {t("admin.ecommerce.table.view")}
       </Button>
     ),
   }));

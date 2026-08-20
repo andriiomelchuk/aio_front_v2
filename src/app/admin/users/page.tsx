@@ -2,24 +2,16 @@
 import { mockUsers, T_UserStatus } from "@/entities/user";
 import { Button, Input, Pagination, Select } from "@/shared/ui";
 import { AdminCard, AdminPage, AdminTable } from "@/widgets/AdminWidgets";
-import { userColumns } from "./model/userTableColumns";
-import { useState } from "react";
+import { getUserColumns } from "./model/userTableColumns";
 import { mapUserRows } from "./model/mapUserRows";
 import { filterUsers } from "./model/filterUsers";
 import { paginate } from "@/lib/paginate";
-import { usePagination } from "@/hooks/usePagination";
 import { sortUsers, T_UserSort } from "./model/userSort";
 import { useTableControls } from "@/hooks/useTableControls";
+import { useI18n } from "@/shared/i18n";
 
 export default function UsersPage() {
-  // const [search, setSearch] = useState("");
-  // const [status, setStatus] = useState<T_UserStatus | "all">("all");
-  // const [sort, setSort] = useState<T_UserSort>("default");
-
-  // const { page, pageSize, setPage, setPageSize, resetPage, resetPagination } =
-  //   usePagination({
-  //     initialPageSize: 5,
-  //   });
+  const { t } = useI18n();
 
   const {
     search,
@@ -46,7 +38,9 @@ export default function UsersPage() {
 
   const paginatedUsers = paginate(sortedUsers, page, pageSize);
 
-  const userRows = mapUserRows(paginatedUsers);
+  const userRows = mapUserRows(paginatedUsers, t);
+
+  const userColumns = getUserColumns(t);
 
   return (
     <AdminPage
@@ -58,7 +52,7 @@ export default function UsersPage() {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            placeholder="Search user by name"
+            placeholder={t("admin.user.searchPlaceholder")}
           />
           <Select
             value={status}
@@ -66,10 +60,10 @@ export default function UsersPage() {
               setStatus(e.target.value as T_UserStatus | "all");
             }}
             options={[
-              { value: "all", label: "All users" },
-              { value: "active", label: "Active" },
-              { value: "invited", label: "Invited" },
-              { value: "blocked", label: "Blocked" },
+              { value: "all", label: t("admin.user.status.allUsers") },
+              { value: "active", label: t("admin.user.status.active") },
+              { value: "invited", label: t("admin.user.status.invited") },
+              { value: "blocked", label: t("admin.user.status.blocked") },
             ]}
           ></Select>
           <Select
@@ -78,16 +72,19 @@ export default function UsersPage() {
               setSort(e.target.value as T_UserSort);
             }}
             options={[
-              { value: "default", label: "Default sorting" },
-              { value: "name-asc", label: "Name A-Z" },
-              { value: "name-desc", label: "Name Z-A" },
-              { value: "role-asc", label: "Role A-Z" },
-              { value: "status-asc", label: "Status A-Z" },
+              { value: "default", label: t("admin.user.sorting.default") },
+              { value: "name-asc", label: t("admin.user.sorting.nameAToZ") },
+              { value: "name-desc", label: t("admin.user.sorting.nameZToA") },
+              { value: "role-asc", label: t("admin.user.sorting.roleAToZ") },
+              {
+                value: "status-asc",
+                label: t("admin.user.sorting.statusAToZ"),
+              },
             ]}
           />
           {hasActiveControls && (
             <Button variant="ghost" onClick={resetControls}>
-              Clear filters
+              {t("admin.actions.clearFilters")}
             </Button>
           )}
           <Button
@@ -95,20 +92,23 @@ export default function UsersPage() {
             className="h-10 ml-auto"
             onClick={() => console.log("Add user")}
           >
-            Add User
+            {t("admin.actions.addUser")}
           </Button>
         </>
       }
     >
       <AdminCard
-        title="Users list"
-        description={`Showing ${filteredUsers.length} of ${mockUsers.length} users`}
+        title={t("admin.user.pageTitle")}
+        description={t("admin.user.description", {
+          shown: filteredUsers.length,
+          total: mockUsers.length,
+        })}
       >
         <AdminTable
           columns={userColumns}
           rows={userRows}
           getRowKey={(user) => user.id}
-          emptyText="No users found"
+          emptyText={t("admin.user.noUserFound")}
         />
         <Pagination
           page={page}

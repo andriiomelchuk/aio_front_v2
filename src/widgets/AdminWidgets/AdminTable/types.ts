@@ -1,6 +1,7 @@
 export type T_AdminTableColumn<T> = {
   key: keyof T;
   label: string;
+  align?: "left" | "center" | "right";
 };
 
 export type T_AdminTableProps<T> = {

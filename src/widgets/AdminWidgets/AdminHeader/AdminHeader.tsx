@@ -1,14 +1,19 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { adminNavigation } from "../model/adminNavigation";
+import { getAdminNavigation } from "../model/adminNavigation";
 import { LanguageSwitcher } from "@/shared/ui";
+import { useI18n } from "@/shared/i18n";
 
 type AdminHeaderProps = {
   onMenuClick: () => void;
 };
 
 export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
+
+  const { t } = useI18n();
   const pathName = usePathname();
+
+  const adminNavigation = getAdminNavigation(t);
 
   const pageMeta = adminNavigation.find((item) =>
     item.href === "/admin"

@@ -1,6 +1,6 @@
-import { T_Orders } from "./types";
+import { T_Order } from "./types";
 
-export const mockOrders: T_Orders[] = [
+export const mockOrders: T_Order[] = [
     {
         id: 1,
         price: 100,
@@ -34,46 +34,3 @@ export const mockOrders: T_Orders[] = [
 ];
 
 
-
-//  {
-//         id: 1,
-//         price: 100,
-//         status: "active",
-//         contact: {
-//             email: "",
-//             phone: "",
-//             name: "Anna Smith",
-//             deliveryAddress: "123 Main St, Anytown, USA"
-//         },
-//         createdAt: "",
-//         updatedAt: "",
-//         products: []
-//     },
-//     {
-//         id: 2,
-//         price: 150,
-//         status: "active",
-//         contact: {
-//             email: "",
-//             phone: "",
-//             name: "Anna Smith",
-//             deliveryAddress: "123 Main St, Anytown, USA"
-//         },
-//         createdAt: "",
-//         updatedAt: "",
-//         products: []
-//     },
-//     {
-//         id: 3,
-//         price: 500,
-//         status: "active",
-//         contact: {
-//             email: "",
-//             phone: "",
-//             name: "Anna Smith",
-//             deliveryAddress: "123 Main St, Anytown, USA"
-//         },
-//         createdAt: "",
-//         updatedAt: "",
-//         products: []
-//     },

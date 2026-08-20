@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { adminNavigation } from "../model/adminNavigation";
+import { getAdminNavigation } from "../model/adminNavigation";
+import { useI18n } from "@/shared/i18n";
 
 type AdminSidebarProps = {
   isOpen: boolean;
@@ -10,7 +11,10 @@ type AdminSidebarProps = {
 };
 
 export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
+  const { t } = useI18n();
   const pathName = usePathname();
+
+  const adminNavigation = getAdminNavigation(t);
 
   return (
     <>

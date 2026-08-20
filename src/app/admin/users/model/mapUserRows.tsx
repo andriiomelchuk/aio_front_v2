@@ -3,7 +3,8 @@ import { statusBadgeVariant, statusLabel } from "./userStatusView";
 import { AdminBadge } from "@/widgets/AdminWidgets";
 import { Button } from "@/shared/ui";
 
-export const mapUserRows = (users: T_User[]) => {
+
+export const mapUserRows = (users: T_User[], t: (key: string) => string,) => {
     const userRows = users.map((user) => ({
         ...user,
         status: (
@@ -17,7 +18,7 @@ export const mapUserRows = (users: T_User[]) => {
             variant="ghost"
             onClick={() => console.log("Edit user", user.id)}
           >
-            Edit
+            {t("admin.user.editButton")}
           </Button>
         ),
       }));
