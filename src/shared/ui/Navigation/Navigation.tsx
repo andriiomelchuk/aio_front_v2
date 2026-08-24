@@ -1,10 +1,16 @@
 "use client";
 
-import { useI18n } from "@/shared/i18n";
+import { T_I18nKey, useI18n } from "@/shared/i18n";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navItems = [
+type T_NavItem = {
+  id: string;
+  labelKey: T_I18nKey;
+  href: string;
+}
+
+const navItems: T_NavItem[] = [
   { id: "home", labelKey: "nav.home", href: "/" },
   { id: "popular", labelKey: "nav.popular", href: "/popular" },
   { id: "battle", labelKey: "nav.battle", href: "/battle" },

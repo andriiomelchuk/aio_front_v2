@@ -1,17 +1,27 @@
-import { T_Dictionary } from "../../types";
 
-export const adminDe: T_Dictionary = {
+export const adminDe = {
 
-    "admin.ecommerce.pageTitle": "E-Commerce",
-    "admin.ecommerce.description": "{shown} von {total} Bestellungen angezeigt",
     "admin.actions.addUser": "Benutzer hinzufügen",
-
     "admin.actions.clearFilters": "Filter zurücksetzen",
     "admin.actions.searchOrder": "Bestellung suchen",
+    "admin.actions.cancel": "Abbrechen",
+    "admin.actions.createUser": "Benutzer erstellen",
+    "admin.actions.saveChanges": "Änderungen speichern",
+
+    "admin.validation.required": "Dieses Feld ist erforderlich",
+
 
     "admin.navigation.dashboard.label": "Dashboard",
     "admin.navigation.dashboard.title": "Dashboard",
     "admin.navigation.dashboard.description": "Übersicht über das Admin-Panel",
+
+    "admin.header.title": "Adminbereich",
+    "admin.header.description": "Anwendungsdaten verwalten",
+    "admin.header.ariaLabel.openAdminMenu": "Admin-Menü öffnen",
+    "admin.sidebar.title": "Adminbereich",
+    "admin.sidebar.description": "Verwaltungsbereich",
+    "admin.sidebar.ariaLabel.closeAdminMenuButton": "Admin-Menü schließen",
+    "admin.sidebar.ariaLabel.adminNavigation": "Admin-Navigation",
 
     "admin.navigation.users.label": "Benutzer",
     "admin.navigation.users.title": "Benutzer",
@@ -29,6 +39,8 @@ export const adminDe: T_Dictionary = {
     "admin.navigation.settings.title": "Einstellungen",
     "admin.navigation.settings.description": "Anwendungseinstellungen konfigurieren",
 
+    "admin.ecommerce.pageTitle": "E-Commerce",
+    "admin.ecommerce.description": "{shown} von {total} Bestellungen angezeigt",
     "admin.ecommerce.products": "Produkte",
     "admin.ecommerce.activeProducts": "Aktive Produkte",
     "admin.ecommerce.orders": "Bestellungen",
@@ -76,11 +88,31 @@ export const adminDe: T_Dictionary = {
 
     "admin.user.noUserFound": "Keine Benutzer gefunden",
     "admin.user.editButton": "Bearbeiten",
+    "admin.user.addUserTitle": "Benutzer hinzufügen",
 
     "admin.user.table.name": "Name",
     "admin.user.table.email": "E-Mail",
     "admin.user.table.role": "Rolle",
     "admin.user.table.status": "Status",
     "admin.user.table.action": "Aktion",
+    "admin.user.table.login": "Login",
+    "admin.user.table.password": "Passwort",
 
-};
+    "admin.user.form.nameLabel": "Vollständiger Name",
+    "admin.user.form.namePlaceholder": "Vollständigen Namen eingeben",
+    "admin.user.form.loginLabel": "Login",
+    "admin.user.form.loginPlaceholder": "Login eingeben",
+    "admin.user.form.emailLabel": "E-Mail",
+    "admin.user.form.emailPlaceholder": "E-Mail eingeben",
+    "admin.user.form.passwordLabel": "Passwort",
+    "admin.user.form.passwordPlaceholder": "Passwort eingeben",
+    "admin.user.form.roleLabel": "Rolle",
+    "admin.user.form.rolePlaceholder": "Rolle auswählen",
+    "admin.user.form.statusLabel": "Status",
+    "admin.user.form.statusPlaceholder": "Status auswählen",
+
+    "admin.user.editUserTitle": "Benutzer bearbeiten",
+
+
+
+} as const;

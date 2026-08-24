@@ -1,13 +1,25 @@
-import { T_Dictionary } from "../../types";
 
-export const adminRu: T_Dictionary = {
+export const adminRu = {
 
-    "admin.ecommerce.pageTitle": "E-commerce",
-    "admin.ecommerce.description": "Показано {shown} из {total} заказов",
+
 
     "admin.actions.clearFilters": "Очистить фильтры",
     "admin.actions.searchOrder": "Поиск заказа",
     "admin.actions.addUser": "Добавить пользователя",
+    "admin.actions.cancel": "Отмена",
+    "admin.actions.createUser": "Создать пользователя",
+    "admin.actions.saveChanges": "Сохранить изменения",
+
+    "admin.validation.required": "Это поле обязательно",
+
+    "admin.header.title": "Панель администратора",
+    "admin.header.description": "Управление данными приложения",
+    "admin.header.ariaLabel.openAdminMenu": "Открыть меню администратора",
+
+    "admin.sidebar.title": "Админ-панель",
+    "admin.sidebar.description": "Область управления",
+    "admin.sidebar.ariaLabel.closeAdminMenuButton": "Закрыть меню администратора",
+    "admin.sidebar.ariaLabel.adminNavigation": "Навигация администратора",
 
     "admin.navigation.dashboard.label": "Дашборд",
     "admin.navigation.dashboard.title": "Дашборд",
@@ -29,6 +41,8 @@ export const adminRu: T_Dictionary = {
     "admin.navigation.settings.title": "Настройки",
     "admin.navigation.settings.description": "Настройка параметров приложения",
 
+    "admin.ecommerce.pageTitle": "E-commerce",
+    "admin.ecommerce.description": "Показано {shown} из {total} заказов",
     "admin.ecommerce.products": "Товары",
     "admin.ecommerce.activeProducts": "Активные товары",
     "admin.ecommerce.orders": "Заказы",
@@ -76,11 +90,29 @@ export const adminRu: T_Dictionary = {
 
     "admin.user.noUserFound": "Пользователи не найдены",
     "admin.user.editButton": "Редактировать",
+    "admin.user.addUserTitle": "Добавить пользователя",
 
     "admin.user.table.name": "Имя",
     "admin.user.table.email": "Email",
     "admin.user.table.role": "Роль",
     "admin.user.table.status": "Статус",
     "admin.user.table.action": "Действие",
+    "admin.user.table.login": "Логин",
+    "admin.user.table.password": "Пароль",
 
-};
+    "admin.user.form.nameLabel": "Полное имя",
+    "admin.user.form.namePlaceholder": "Введите полное имя",
+    "admin.user.form.loginLabel": "Логин",
+    "admin.user.form.loginPlaceholder": "Введите логин",
+    "admin.user.form.emailLabel": "Email",
+    "admin.user.form.emailPlaceholder": "Введите email",
+    "admin.user.form.passwordLabel": "Пароль",
+    "admin.user.form.passwordPlaceholder": "Введите пароль",
+    "admin.user.form.roleLabel": "Роль",
+    "admin.user.form.rolePlaceholder": "Выберите роль",
+    "admin.user.form.statusLabel": "Статус",
+    "admin.user.form.statusPlaceholder": "Выберите статус",
+
+    "admin.user.editUserTitle": "Редактировать пользователя",
+
+} as const;

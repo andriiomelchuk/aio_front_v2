@@ -1,4 +1,6 @@
-export const getAdminNavigation = (t: (key: string) => string) => [
+import { T_I18nContext } from "@/shared/i18n";
+
+export const getAdminNavigation = (t: T_I18nContext["t"]) => [
   {
     href: "/admin",
     label: t("admin.navigation.dashboard.label"),

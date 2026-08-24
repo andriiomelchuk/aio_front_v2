@@ -1,6 +1,4 @@
-import { T_Dictionary } from "../../types";
-
-export const siteEn: T_Dictionary = {
+export const siteEn = {
     "popular.eyebrow": "GitHub popular",
     "popular.title": "Popular Repositories",
     "popular.description": "Browse the most starred repositories by language.",
@@ -81,4 +79,4 @@ export const siteEn: T_Dictionary = {
     "movies.rating": "Rating",
     "movies.releaseDate": "Release date",
     "movies.noRating": "No rating",
-};
+} as const;

@@ -1,6 +1,6 @@
-import { T_Dictionary } from "../../types";
 
-export const commonUk: T_Dictionary = {
+
+export const commonUk = {
     "language.uk": "Українська",
     "language.en": "English",
     "language.de": "Deutsch",
@@ -17,4 +17,4 @@ export const commonUk: T_Dictionary = {
     "pagination.previous": "Назад",
     "pagination.next": "Далі",
     "pagination.label": "Пагінація",
-};
+}as const;

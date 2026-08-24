@@ -20,8 +20,8 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
       ? pathName === "/admin"
       : pathName.startsWith(item.href),
   ) ?? {
-    title: "admin panel",
-    description: "Management application data",
+    title: t("admin.header.title"),
+    description: t("admin.header.description"),
   };
 
   return (
@@ -39,7 +39,7 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
             type="button"
             onClick={onMenuClick}
             className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-foreground transition hover:bg-surface-muted lg:hidden"
-            aria-label="Open admin menu"
+            aria-label={t("admin.header.ariaLabel.openAdminMenu")}
           >
             <span className="block h-0.5 w-5 bg-current" />
             <span className="absolute block h-0.5 w-5 -translate-y-1.5 bg-current" />

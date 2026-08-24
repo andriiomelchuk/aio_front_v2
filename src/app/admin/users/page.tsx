@@ -1,6 +1,6 @@
 "use client";
-import { mockUsers, T_UserStatus } from "@/entities/user";
-import { Button, Input, Pagination, Select } from "@/shared/ui";
+import { mockUsers, T_User, T_UserStatus } from "@/entities/user";
+import { Button, Input, Modal, Pagination, Select } from "@/shared/ui";
 import { AdminCard, AdminPage, AdminTable } from "@/widgets/AdminWidgets";
 import { getUserColumns } from "./model/userTableColumns";
 import { mapUserRows } from "./model/mapUserRows";
@@ -9,6 +9,9 @@ import { paginate } from "@/lib/paginate";
 import { sortUsers, T_UserSort } from "./model/userSort";
 import { useTableControls } from "@/hooks/useTableControls";
 import { useI18n } from "@/shared/i18n";
+import { useState } from "react";
+import { AddUserForm } from "@/features/admin/users/AddUserForm";
+import { EditUserForm } from "@/features/admin/users/EditUserForm";
 
 export default function UsersPage() {
   const { t } = useI18n();
@@ -32,13 +35,33 @@ export default function UsersPage() {
     initialPageSize: 5,
   });
 
-  const filteredUsers = filterUsers(mockUsers, { status, search });
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState<T_User | null>(null);
+
+  const [users, setUsers] = useState<T_User[]>(mockUsers);
+
+  const filteredUsers = filterUsers(users, { status, search });
 
   const sortedUsers = sortUsers(filteredUsers, sort);
 
   const paginatedUsers = paginate(sortedUsers, page, pageSize);
 
-  const userRows = mapUserRows(paginatedUsers, t);
+  const handleCloseEditUser = () => {
+    setSelectedUser(null);
+  };
+
+  const handleUpdateUser = (updatedUser: T_User) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.id === updatedUser.id ? updatedUser : user,
+      ),
+    );
+
+    setSelectedUser(null);
+  };
+
+  const userRows = mapUserRows(paginatedUsers, t, setSelectedUser);
 
   const userColumns = getUserColumns(t);
 
@@ -90,7 +113,7 @@ export default function UsersPage() {
           <Button
             variant="default"
             className="h-10 ml-auto"
-            onClick={() => console.log("Add user")}
+            onClick={() => setIsAddUserOpen(true)}
           >
             {t("admin.actions.addUser")}
           </Button>
@@ -101,7 +124,7 @@ export default function UsersPage() {
         title={t("admin.user.pageTitle")}
         description={t("admin.user.description", {
           shown: filteredUsers.length,
-          total: mockUsers.length,
+          total: users.length,
         })}
       >
         <AdminTable
@@ -118,6 +141,32 @@ export default function UsersPage() {
           onPageSizeChange={setPageSize}
         />
       </AdminCard>
+      <Modal
+        isOpen={isAddUserOpen}
+        title={t("admin.user.addUserTitle")}
+        onClose={() => setIsAddUserOpen(false)}
+      >
+        <AddUserForm
+          onCancel={() => setIsAddUserOpen(false)}
+          onCreate={(createdUser) => {
+            setUsers((prevUsers) => [createdUser, ...prevUsers]);
+            setIsAddUserOpen(false);
+          }}
+        />
+      </Modal>
+      {selectedUser && (
+        <Modal
+          isOpen={Boolean(selectedUser)}
+          title={t("admin.user.editUserTitle")}
+          onClose={handleCloseEditUser}
+        >
+          <EditUserForm
+            user={selectedUser}
+            onCancel={handleCloseEditUser}
+            onUpdate={handleUpdateUser}
+          />
+        </Modal>
+      )}
     </AdminPage>
   );
 }

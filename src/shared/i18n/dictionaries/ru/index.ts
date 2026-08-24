@@ -1,11 +1,11 @@
-import type { T_Dictionary } from "../../types";
+import type { T_I18nKey } from "../../types";
 
 import { adminRu } from "./admin";
 import { commonRu } from "./common";
-import { siteRu} from "./site";
+import { siteRu } from "./site";
 
-export const ru: T_Dictionary = {
+export const ru = {
   ...commonRu,
   ...siteRu,
   ...adminRu,
-};
+} satisfies Record<T_I18nKey, string>;

@@ -1,13 +1,27 @@
-import { T_Dictionary } from "../../types";
 
-export const adminUk: T_Dictionary = {
+
+export const adminUk = {
 
     "admin.actions.clearFilters": "Очистити фільтри",
     "admin.actions.searchOrder": "Пошук замовлення",
     "admin.actions.addUser": "Додати користувача",
+    "admin.actions.cancel": "Скасувати",
+    "admin.actions.createUser": "Створити користувача",
+    "admin.actions.saveChanges": "Зберегти зміни",
 
-    "admin.ecommerce.pageTitle": "E-commerce",
-    "admin.ecommerce.description": "Показано {shown} з {total} замовлень",
+    "admin.validation.required": "Це поле обов'язкове",
+
+
+
+    "admin.header.title": "Панель адміністратора",
+    "admin.header.description": "Керування даними застосунку",
+    "admin.header.ariaLabel.openAdminMenu": "Відкрити меню адміністратора",
+
+
+    "admin.sidebar.title": "Адмін-панель",
+    "admin.sidebar.description": "Область керування",
+    "admin.sidebar.ariaLabel.closeAdminMenuButton": "Закрити меню адміністратора",
+    "admin.sidebar.ariaLabel.adminNavigation": "Навігація адміністратора",
 
     "admin.navigation.dashboard.label": "Дашборд",
     "admin.navigation.dashboard.title": "Дашборд",
@@ -29,6 +43,9 @@ export const adminUk: T_Dictionary = {
     "admin.navigation.settings.title": "Налаштування",
     "admin.navigation.settings.description": "Налаштування параметрів застосунку",
 
+
+    "admin.ecommerce.pageTitle": "E-commerce",
+    "admin.ecommerce.description": "Показано {shown} з {total} замовлень",
     "admin.ecommerce.products": "Товари",
     "admin.ecommerce.activeProducts": "Активні товари",
     "admin.ecommerce.orders": "Замовлення",
@@ -59,6 +76,7 @@ export const adminUk: T_Dictionary = {
     "admin.ecommerce.table.action": "Дія",
     "admin.ecommerce.table.view": "Відкрити",
 
+
     "admin.user.pageTitle": "Список користувачів",
     "admin.user.description": "Показано {shown} з {total} користувачів",
 
@@ -76,12 +94,31 @@ export const adminUk: T_Dictionary = {
 
     "admin.user.noUserFound": "Користувачів не знайдено",
     "admin.user.editButton": "Редагувати",
+    "admin.user.addUserTitle": "Додати користувача",
 
     "admin.user.table.name": "Ім'я",
     "admin.user.table.email": "Email",
     "admin.user.table.role": "Роль",
     "admin.user.table.status": "Статус",
     "admin.user.table.action": "Дія",
+    "admin.user.table.login": "Логін",
+    "admin.user.table.password": "Пароль",
+
+    "admin.user.form.nameLabel": "Повне ім'я",
+    "admin.user.form.namePlaceholder": "Введіть повне ім'я",
+    "admin.user.form.loginLabel": "Логін",
+    "admin.user.form.loginPlaceholder": "Введіть логін",
+    "admin.user.form.emailLabel": "Email",
+    "admin.user.form.emailPlaceholder": "Введіть email",
+    "admin.user.form.passwordLabel": "Пароль",
+    "admin.user.form.passwordPlaceholder": "Введіть пароль",
+    "admin.user.form.roleLabel": "Роль",
+    "admin.user.form.rolePlaceholder": "Оберіть роль",
+    "admin.user.form.statusLabel": "Статус",
+    "admin.user.form.statusPlaceholder": "Оберіть статус",
+
+    "admin.user.editUserTitle": "Редагувати користувача",
 
 
-};
+
+} as const;

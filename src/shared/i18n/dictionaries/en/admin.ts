@@ -1,13 +1,25 @@
-import { T_Dictionary } from "../../types";
 
-export const adminEn: T_Dictionary = {
+export const adminEn = {
+
+
 
     "admin.actions.clearFilters": "Clear filters",
     "admin.actions.searchOrder": "Search order",
     "admin.actions.addUser": "Add User",
+    "admin.actions.cancel": "Cancel",
+    "admin.actions.createUser": "Create user",
+    "admin.actions.saveChanges": "Save changes",
 
-    "admin.ecommerce.pageTitle": "E-commerce",
-    "admin.ecommerce.description": "Showing {shown} of {total} orders",
+    "admin.validation.required": "This field is required",
+
+    "admin.header.title": "Admin panel",
+    "admin.header.description": "Management application data",
+    "admin.header.ariaLabel.openAdminMenu": "Open admin menu",
+
+    "admin.sidebar.title": "Admin Panel",
+    "admin.sidebar.description": "Management area",
+    "admin.sidebar.ariaLabel.closeAdminMenuButton": "Close admin menu",
+    "admin.sidebar.ariaLabel.adminNavigation": "Admin navigation",
 
     "admin.navigation.dashboard.label": "Dashboard",
     "admin.navigation.dashboard.title": "Dashboard",
@@ -29,6 +41,8 @@ export const adminEn: T_Dictionary = {
     "admin.navigation.settings.title": "Settings",
     "admin.navigation.settings.description": "Configure application preferences",
 
+    "admin.ecommerce.pageTitle": "E-commerce",
+    "admin.ecommerce.description": "Showing {shown} of {total} orders",
     "admin.ecommerce.products": "Products",
     "admin.ecommerce.activeProducts": "Active products",
     "admin.ecommerce.orders": "Orders",
@@ -76,13 +90,31 @@ export const adminEn: T_Dictionary = {
 
     "admin.user.noUserFound": "No users found",
     "admin.user.editButton": "Edit",
+    "admin.user.addUserTitle": "Add User",
 
-    "admin.user.table.name": "Name" ,
+    "admin.user.table.name": "Name",
     "admin.user.table.email": "Email",
     "admin.user.table.role": "Role",
     "admin.user.table.status": "Status",
     "admin.user.table.action": "Action",
+    "admin.user.table.login": "Login",
+    "admin.user.table.password": "Password",
+
+    "admin.user.form.nameLabel": "Full name",
+    "admin.user.form.namePlaceholder": "Enter full name",
+    "admin.user.form.loginLabel": "Login",
+    "admin.user.form.loginPlaceholder": "Enter login",
+    "admin.user.form.emailLabel": "Email",
+    "admin.user.form.emailPlaceholder": "Enter email",
+    "admin.user.form.passwordLabel": "Password",
+    "admin.user.form.passwordPlaceholder": "Enter password",
+    "admin.user.form.roleLabel": "Role",
+    "admin.user.form.rolePlaceholder": "Select role",
+    "admin.user.form.statusLabel": "Status",
+    "admin.user.form.statusPlaceholder": "Select status",
+
+    "admin.user.editUserTitle": "Edit user",
 
 
 
-};
+} as const;

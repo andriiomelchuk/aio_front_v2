@@ -34,22 +34,22 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <p className="text-base font-semibold text-foreground">
-              Admin Panel
+              {t("admin.sidebar.title")}
             </p>
-            <p className="mt-1 text-sm text-muted">Management area</p>
+            <p className="mt-1 text-sm text-muted">{t("admin.sidebar.description")}</p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
             className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-surface text-foreground transition hover:bg-surface-muted lg:hidden"
-            aria-label="Close admin menu"
+            aria-label={t("admin.sidebar.ariaLabel.closeAdminMenuButton")}
           >
             ×
           </button>
         </div>
 
-        <nav aria-label="Admin navigation">
+        <nav aria-label={t("admin.sidebar.ariaLabel.adminNavigation")}>
           <ul className="space-y-1">
             {adminNavigation.map((link) => {
               const isActive =
