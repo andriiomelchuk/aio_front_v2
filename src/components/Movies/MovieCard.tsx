@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { T_Movie } from "./types";
+import type { T_Movie } from "./types";
 import { useSearchParams } from "next/navigation";
 import { getTmdbImageUrl } from "@/constants";
 import { useI18n } from "@/shared/i18n";
@@ -35,7 +35,6 @@ export const MovieCard = ({
   const movieTitle = title ?? name ?? t("movies.unknownTitle");
 
   return (
-    
     <Link href={`/movies/${movieType}/${id}`}>
       <article className="overflow-hidden rounded-lg border border-border bg-surface transition hover:-translate-y-1 hover:border-accent">
         <div className="aspect-2/3 bg-surface-muted">
@@ -46,7 +45,9 @@ export const MovieCard = ({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div>{t("movies.noImage")}</div>
+            <div className="flex h-full items-center justify-center px-3 text-center text-sm text-muted">
+              {t("movies.noImage")}
+            </div>
           )}
         </div>
 

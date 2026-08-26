@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { T_PlayerProps } from "./types";
+import type { T_PlayerProps } from "./types";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Input } from "@/shared/ui/Input/Input";
 import { Button } from "@/shared/ui/Button";
@@ -13,7 +13,7 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
   return (
     <>
       <form
-        className="flex h-full flex-col justify-between items-center"
+        className="flex h-full w-full flex-col items-center justify-between"
         onSubmit={(e) => {
           e.preventDefault();
           onSubmit(playerId, userName);
@@ -23,9 +23,9 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
           {label}
         </label>
         <Avatar alt={t("ghBattle.searchingPlayerAlt")} size="mid" />
-        <div className="h-20 flex items-center">
+        <div className="flex h-20 w-full items-center">
           <Input
-            className="mt-3 w-full"
+            className="mt-3 h-10 w-full"
             value={userName}
             placeholder={t("ghBattle.inputPlaceholder")}
             onChange={(e) => setUserName(e.target.value)}
@@ -33,10 +33,10 @@ export const PlayerInput = ({ playerId, label, onSubmit }: T_PlayerProps) => {
           />
         </div>
 
-        <div className="h-20  flex justify-center items-end">
+        <div className="flex h-20 w-full items-end justify-center">
           <Button
             variant="ghost"
-            className="h-10 min-w-50 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted 
+            className="h-10 w-full rounded-md border border-border px-4 py-2 text-sm font-medium text-muted
                      transition hover:border-accent hover:bg-accent-soft hover:text-accent disabled:border-border 
                      disabled:bg-surface-muted disabled:text-muted"
             type="submit"

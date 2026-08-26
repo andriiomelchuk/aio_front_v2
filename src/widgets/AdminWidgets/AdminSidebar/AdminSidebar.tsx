@@ -27,7 +27,7 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
       />
       <aside
         className={[
-          "fixed left-0 top-0 z-40 h-screen w-[260px] border-r border-border bg-surface px-5 py-6 transition-transform lg:sticky lg:top-0 lg:z-auto lg:translate-x-0",
+          "fixed left-0 top-0 z-40 h-screen w-[min(260px,calc(100vw-32px))] border-r border-border bg-surface px-5 py-6 transition-transform lg:sticky lg:top-0 lg:z-auto lg:w-[260px] lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
         ].join(" ")}
       >

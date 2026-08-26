@@ -1,6 +1,6 @@
 
 
-import { T_I18nKey } from "../../types";
+import type { T_I18nKey } from "../../types";
 import { adminDe } from "./admin";
 import { commonDe } from "./common";
 import { siteDe } from "./site";

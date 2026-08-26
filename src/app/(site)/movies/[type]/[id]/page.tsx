@@ -1,6 +1,6 @@
 import { MediaDetails } from "@/components/Movies/MediaDetails";
 import { PersonDetails } from "@/components/Movies/PersonDetails";
-import { T_MovieSearchType } from "@/components/Movies/types";
+import type { T_MovieSearchType } from "@/components/Movies/types";
 import { getMediaDetails, getPersonDetails } from "@/lib/api";
 
 type PageProps = {

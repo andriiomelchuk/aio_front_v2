@@ -1,15 +1,15 @@
+"use client";
 import { useI18n } from "@/shared/i18n";
-import { T_MediaDetails, T_MediaDetailsProps } from "./types";
+import type { T_MediaDetailsProps } from "./types";
 
 export const MediaDetails = ({ details, type }: T_MediaDetailsProps) => {
-    const { t } = useI18n();
+  const { t } = useI18n();
   const title = details.title ?? details.name ?? t("movies.unknownTitle");
   const date = details.release_date ?? details.first_air_date;
   const link = "https://image.tmdb.org/t/p/w500";
 
-
   return (
-    <section className="grid gap-8 rounded-xl border border-border bg-surface p-6 shadow-[0_18px_40px_var(--shadow-color)] md:grid-cols-[280px_1fr]">
+    <section className="grid gap-6 rounded-xl border border-border bg-surface p-4 shadow-[0_18px_40px_var(--shadow-color)] md:grid-cols-[280px_1fr] md:gap-8 md:p-6">
       <div className="overflow-hidden rounded-lg bg-surface-muted">
         {details.poster_path ? (
           <img
@@ -29,7 +29,9 @@ export const MediaDetails = ({ details, type }: T_MediaDetailsProps) => {
           {type}
         </span>
 
-        <h1 className="mt-2 text-3xl font-bold text-foreground">{title}</h1>
+        <h1 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
+          {title}
+        </h1>
 
         {details.tagline && (
           <p className="mt-2 text-sm italic text-muted">{details.tagline}</p>
@@ -46,7 +48,7 @@ export const MediaDetails = ({ details, type }: T_MediaDetailsProps) => {
           ))}
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+        <div className="mt-6 grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
           <div>
             <p className="text-muted">{t("movies.releaseDate")}</p>
             <p className="text-foreground">{date || t("movies.unknown")}</p>
@@ -64,7 +66,9 @@ export const MediaDetails = ({ details, type }: T_MediaDetailsProps) => {
           {details.runtime && (
             <div>
               <p className="text-muted">{t("movies.runtime")}</p>
-              <p className="text-foreground">{details.runtime} {t("movies.min")}</p>
+              <p className="text-foreground">
+                {details.runtime} {t("movies.min")}
+              </p>
             </div>
           )}
 
@@ -97,7 +101,9 @@ export const MediaDetails = ({ details, type }: T_MediaDetailsProps) => {
         </div>
 
         <div className="mt-8">
-          <h2 className="text-lg font-semibold text-foreground">{t("movies.overview")}</h2>
+          <h2 className="text-lg font-semibold text-foreground">
+            {t("movies.overview")}
+          </h2>
 
           <p className="mt-2 leading-7 text-muted">
             {details.overview || t("movies.noDescriptionAvailable")}

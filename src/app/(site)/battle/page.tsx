@@ -1,10 +1,10 @@
-"use client";
 import { GitHub } from "@/components/GitHubBattle";
+import { Suspense } from "react";
 
 export default function BattlePage() {
-
-    return (
-        <GitHub />
-    )
-
+  return (
+    <Suspense fallback={null}>
+      <GitHub />
+    </Suspense>
+  );
 }

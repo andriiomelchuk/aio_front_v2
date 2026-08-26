@@ -1,4 +1,4 @@
-import { T_ButtonTypes } from "./types";
+import type { T_ButtonTypes } from "./types";
 
 const variants = {
   default: "bg-accent text-background hover:opacity-85",

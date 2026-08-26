@@ -1,4 +1,4 @@
-import { T_AdminPageProps } from "./types";
+import type { T_AdminPageProps } from "./types";
 
 export const AdminPage = ({
   title,
@@ -36,8 +36,8 @@ export const AdminPage = ({
           {actions && (
             <div
               className={[
-                "flex flex-wrap gap-2",
-                hasHeading ? "shrink-0" : "w-full",
+                "flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap",
+                hasHeading ? "sm:w-auto sm:shrink-0" : "",
               ].join(" ")}
             >
               {actions}

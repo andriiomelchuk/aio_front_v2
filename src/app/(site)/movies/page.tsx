@@ -1,5 +1,6 @@
 import { Movies } from "@/components/Movies";
 import { getMovies } from "@/lib/api";
+import { Suspense } from "react";
 
 type T_SearchParams = {
   searchParams: Promise<{
@@ -13,10 +14,18 @@ export default async function MoviesPage({ searchParams }: T_SearchParams) {
 
 
   if (!params.query || !params.type) {
-    return <Movies movies={[]} hasSearched={false}/>;
+    return (
+      <Suspense fallback={null}>
+        <Movies movies={[]} hasSearched={false} />
+      </Suspense>
+    );
   }
 
   const movies = await getMovies(params.query, params.type);
 
-  return <Movies movies={movies} hasSearched={true}/>;
+  return (
+    <Suspense fallback={null}>
+      <Movies movies={movies} hasSearched={true} />
+    </Suspense>
+  );
 }

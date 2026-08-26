@@ -9,4 +9,10 @@ export type T_AdminTableProps<T> = {
   rows: readonly T[];
   getRowKey: (row: T) => string | number;
   emptyText?: string;
+
+  selectedRowKey?: string | number | null;
+  onRowClick?: (row: T) => void;
+
+  selectedRowKeys?: Array<string | number>;
+  onSelectedRowKeysChange?: (keys: Array<string | number>) => void;
 };

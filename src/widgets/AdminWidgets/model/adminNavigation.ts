@@ -1,4 +1,4 @@
-import { T_I18nContext } from "@/shared/i18n";
+import type { T_I18nContext } from "@/shared/i18n";
 
 export const getAdminNavigation = (t: T_I18nContext["t"]) => [
   {
@@ -14,10 +14,10 @@ export const getAdminNavigation = (t: T_I18nContext["t"]) => [
     description: t("admin.navigation.users.description"),
   },
   {
-    href: "/admin/ecommerce",
-    label: t("admin.navigation.ecommerce.label"),
-    title: t("admin.navigation.ecommerce.title"),
-    description: t("admin.navigation.ecommerce.description"),
+    href: "/admin/orders",
+    label: t("admin.navigation.orders.label"),
+    title: t("admin.navigation.orders.title"),
+    description: t("admin.navigation.orders.description"),
   },
   {
     href: "/admin/analytics",

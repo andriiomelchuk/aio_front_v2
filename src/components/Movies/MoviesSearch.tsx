@@ -5,7 +5,7 @@ import { Input } from "@/shared/ui/Input/Input";
 import Loader from "@/shared/ui/Loader/Loader";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
-import { T_MovieSearchType } from "./types";
+import type { T_MovieSearchType } from "./types";
 import { useI18n } from "@/shared/i18n";
 
 export const MoviesSearch = () => {
@@ -51,24 +51,27 @@ export const MoviesSearch = () => {
   return (
     <>
       <form
-        className="flex flex-col items-center"
+        className="flex w-full flex-col items-center"
         onSubmit={(event) => {
           event.preventDefault();
           movieSearch();
         }}
       >
-        <div className="flex flex-row">
+        <div className="flex w-full max-w-xl flex-col gap-3 sm:flex-row">
           <Input
             placeholder={t("movies.searchPlaceholder")}
-            className="flex h-full flex-col justify-between items-center"
+            className="h-10 w-full"
             onChange={(e) => setMovie(e.target.value)}
-            value={movie} 
-            type={"text"}          />
-          <Button className="ml-3" type="submit">{t("movies.searchButton")}</Button>
+            value={movie}
+            type="text"
+          />
+          <Button className="h-10 w-full sm:w-auto" type="submit">
+            {t("movies.searchButton")}
+          </Button>
         </div>
-        <div className="flex flex-row mt-5">
+        <div className="mt-5 flex flex-wrap justify-center gap-3">
           {movieTypes.map((item) => (
-            <label key={item.label} className="flex items-center gap-2 ml-5">
+            <label key={item.label} className="flex items-center gap-2">
               <input
                 type="radio"
                 name="type"

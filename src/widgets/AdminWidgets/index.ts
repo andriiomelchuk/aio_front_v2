@@ -7,4 +7,5 @@ export * from "./AdminLayout"
 export * from "./AdminPage"
 export * from "./AdminSidebar"
 export * from "./AdminTable"
+export * from "./AdminBulkActions"
 

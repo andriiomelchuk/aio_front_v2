@@ -2,7 +2,7 @@
 
 import { PopularLanguages as Languages } from "./PopularLanguages";
 import { PopularCard } from "./PopularCard";
-import { T_Repo } from "./types";
+import type { T_Repo } from "./types";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
 import { useI18n } from "@/shared/i18n";
 

@@ -1,5 +1,5 @@
 import { Field } from "../Field";
-import { T_InputProps } from "./types";
+import type { T_InputProps } from "./types";
 
 export const Input = ({
   className = "",

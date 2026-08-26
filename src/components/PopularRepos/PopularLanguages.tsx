@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useTransition } from "react";
-import { T_Languages } from "./types";
+import type { T_Languages } from "./types";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
@@ -119,7 +119,7 @@ export const PopularLanguages = () => {
     <>
       {isPending && <Loader />}
       <div className="flex flex-col items-center justify-start gap-4">
-        <ul className="flex gap-4">
+        <ul className="flex flex-wrap justify-center gap-3">
           {languages.map((lang) => {
             const isActive = currentLanguage === lang.id;
             return (
@@ -160,22 +160,26 @@ export const PopularLanguages = () => {
           })}
         </ul>
         <form
-          className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition focus-within:border-accent"
+          className="flex w-full max-w-sm flex-col gap-2 rounded-md border border-border bg-surface p-2 transition focus-within:border-accent sm:flex-row sm:items-center"
           onSubmit={(e) => {
             e.preventDefault();
             addLanguage(language);
           }}
         >
-          <Input
-            variant="ghost"
-            type="text"
-            placeholder={t("popular.buttonPlaceholder")}
-            onChange={(e) => setLanguage(e.target.value)}
-            value={language}
-          />
+          <div className="min-w-0 flex-1">
+            <Input
+              variant="ghost"
+              type="text"
+              placeholder={t("popular.buttonPlaceholder")}
+              onChange={(e) => setLanguage(e.target.value)}
+              value={language}
+              className="h-10 w-full"
+            />
+          </div>
+
           <Button
-          type="submit"
-            className="px-3 py-1.5 text-sm font-medium text-background transition hover:opacity-85 disable"
+            type="submit"
+            className="h-10 w-full shrink-0 px-4 text-sm font-medium text-background transition hover:opacity-85 sm:w-auto"
             disabled={!language.trim()}
           >
             {t("popular.addButton")}
@@ -186,7 +190,3 @@ export const PopularLanguages = () => {
     </>
   );
 };
-// function t(arg0: string): import("react").SetStateAction<string | null> {
-//   throw new Error("Function not implemented.");
-// }
-

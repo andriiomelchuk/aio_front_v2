@@ -1,4 +1,4 @@
-import { T_Order } from "./types";
+import type { T_Order } from "./types";
 
 export const mockOrders: T_Order[] = [
     {

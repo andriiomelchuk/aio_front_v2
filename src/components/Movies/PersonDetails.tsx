@@ -1,11 +1,11 @@
 import { useI18n } from "@/shared/i18n";
-import { T_PersonDetails } from "./types";
+import type { T_PersonDetails } from "./types";
 
 export const PersonDetails = ({ person }: T_PersonDetails) => {
   const { t } = useI18n();
   return (
 
-      <section className="grid gap-8 rounded-xl border border-border bg-surface p-6 shadow-[0_18px_40px_var(--shadow-color)] md:grid-cols-[280px_1fr]">
+      <section className="grid gap-6 rounded-xl border border-border bg-surface p-4 shadow-[0_18px_40px_var(--shadow-color)] md:grid-cols-[280px_1fr] md:gap-8 md:p-6">
         <div>
           {person.profile_path ? (
             <img
@@ -25,7 +25,7 @@ export const PersonDetails = ({ person }: T_PersonDetails) => {
             {person.known_for_department ?? t("movies.person")}
           </p>
 
-          <h1 className="mt-2 text-3xl font-bold text-foreground">
+          <h1 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
             {person.name}
           </h1>
 

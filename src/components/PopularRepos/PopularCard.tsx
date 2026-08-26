@@ -1,5 +1,5 @@
 import { useI18n } from "@/shared/i18n";
-import { T_Repo } from "./types";
+import type { T_Repo } from "./types";
 import { Avatar } from "@/shared/ui/Avatar";
 
 export type Item = {

@@ -1,6 +1,6 @@
 import { useI18n } from "@/shared/i18n";
 import { MovieCard } from "./MovieCard";
-import { T_MoviesList } from "./types";
+import type { T_MoviesList } from "./types";
 
 export const MoviesList = ({
   movies,
@@ -26,7 +26,7 @@ export const MoviesList = ({
   }
 
   return (
-    <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+    <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {movies.map((movie) => (
         <MovieCard key={movie.id} {...movie} />
       ))}

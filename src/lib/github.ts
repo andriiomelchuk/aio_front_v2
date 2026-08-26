@@ -1,6 +1,6 @@
 
-import { T_BattleResult, T_Profile } from "@/components/GitHubBattle/types";
-import { T_LanguageCheckResponse, T_PopularResponse, T_Repo } from "@/components/PopularRepos/types";
+import type { T_BattleResult, T_Profile } from "@/components/GitHubBattle/types";
+import type { T_LanguageCheckResponse, T_PopularResponse, T_Repo } from "@/components/PopularRepos/types";
 
 export async function getPopular(language: string): Promise<T_PopularResponse> {
 

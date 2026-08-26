@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import type { T_I18nKey } from "@/shared/i18n";
+import type { ReactNode } from "react";
 
 export type T_PlayerData = {
     playerOneName: string;
@@ -72,5 +73,5 @@ export type T_PlayerInfoProps = {
 export type T_BattleState = {
   winner: T_BattleResult | null;
   loser: T_BattleResult | null;
-  error: string | null;
-}
+  error: T_I18nKey | null;
+};

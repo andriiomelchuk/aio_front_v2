@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { T_PlayerData, T_PlayerId } from "./types";
+import type { T_PlayerData, T_PlayerId } from "./types";
 import { PlayerSlot } from "./PlayerSlot";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
@@ -63,13 +65,13 @@ export const GitHub = () => {
   const { t } = useI18n();
 
   return (
-    <div className="flex justify-center flex-col">
+    <div className="flex flex-col justify-center">
       <PageHeader
         eyebrow={t("ghBattle.eyebrow")}
         title={t("ghBattle.title")}
         description={t("ghBattle.description")}
       />
-      <div className="players flex  justify-center items-center">
+      <div className="flex flex-col items-center justify-center gap-5 lg:flex-row">
         <PlayerSlot
           playerId="playerOne"
           label={t("ghBattle.playerOneLabel")}
@@ -79,15 +81,15 @@ export const GitHub = () => {
           onDelete={handleDeletePlayer}
           onSubmit={handlePlayerSubmit}
         />
-        <div className="flex flex-col justify-center items-center">
-          <div className="mr-5 ml-5 flex h-12 w-12 items-center justify-center rounded-full border border-border px-4 py-3 font-bold text-foreground">
+        <div className="flex w-full max-w-72 flex-col items-center justify-center lg:w-auto">
+          <div className="mx-0 flex h-12 w-12 items-center justify-center rounded-full border border-border px-4 py-3 font-bold text-foreground lg:mx-5">
             VS
           </div>
 
           <Button
             disabled={!playerData.playerOneImg || !playerData.playerTwoImg}
             label={t("ghBattle.fightButton")}
-            className="mt-5 mr-5 ml-5 cursor-pointer rounded-lg border border-accent bg-accent-soft p-2 text-sm font-medium text-foreground shadow-[0_18px_40px_var(--shadow-color)] transition hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-5 h-10 w-full cursor-pointer rounded-lg border border-accent bg-accent-soft px-4 py-2 text-sm font-medium text-foreground shadow-[0_18px_40px_var(--shadow-color)] transition hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto"
             onClick={() =>
               setBattleData(playerData.playerOneName, playerData.playerTwoName)
             }

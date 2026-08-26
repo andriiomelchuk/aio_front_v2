@@ -1,5 +1,5 @@
 import { useI18n } from "@/shared/i18n";
-import { T_PlayerInfoProps } from "./types";
+import type { T_PlayerInfoProps } from "./types";
 
 export const PlayerInfoBlock = ({ profile, score }: T_PlayerInfoProps) => {
   const { t } = useI18n();

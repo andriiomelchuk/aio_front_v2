@@ -1,7 +1,7 @@
 import "server-only";
 
 import { searchTmdb, getTmdbDetails } from "./tmdb";
-import { T_MediaDetails, T_Movie, T_Person } from "@/components/Movies/types";
+import type { T_MediaDetails, T_Movie, T_Person } from "@/components/Movies/types";
 
 export async function getMovies(
   query: string,

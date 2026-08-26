@@ -1,7 +1,7 @@
 import { useI18n } from "@/shared/i18n";
 import { Button } from "../Button";
 import { Select } from "../Select";
-import { T_PaginationProps } from "./types";
+import type { T_PaginationProps } from "./types";
 
 export const Pagination = ({
   page,

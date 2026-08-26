@@ -1,5 +1,5 @@
 import { Avatar } from "@/shared/ui/Avatar";
-import { T_PlayerLoadingProps } from "./types";
+import type { T_PlayerLoadingProps } from "./types";
 import { useI18n } from "@/shared/i18n";
 
 export const PlayerLoading = ({ label }: T_PlayerLoadingProps) => {

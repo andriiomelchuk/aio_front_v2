@@ -26,14 +26,15 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-surface/95 px-4 py-4 backdrop-blur lg:px-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="truncate text-lg font-semibold text-foreground">
+          <h1 className="break-words text-lg font-semibold text-foreground sm:truncate">
             {pageMeta.title}
           </h1>
           <p className="mt-1 text-sm text-muted">{pageMeta.description}</p>
         </div>
-        <div className="flex items-center gap-2">
+
+        <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-end">
           <LanguageSwitcher variant="flag" mode="buttons"/>
           <button
             type="button"

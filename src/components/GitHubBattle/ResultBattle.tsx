@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { CardShell } from "./CardShell";
 import { PlayerCard } from "./PlayerCard";
 import { useSearchParams } from "next/navigation";
-import { T_BattleState } from "./types";
+import type { T_BattleState } from "./types";
 import Loader from "@/shared/ui/Loader/Loader";
 import { PlayerInfoBlock } from "./PlayerInfoBlock";
 import { PageHeader } from "@/shared/ui/PageHeader/PageHeader";
@@ -63,7 +63,7 @@ export const ResultBattle = () => {
 
   if (battleState.error) {
     return (
-      <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-6 text-center">
+      <div className="mx-auto max-w-xl rounded-lg border border-border bg-surface p-4 text-center sm:p-6">
         <h2 className="text-xl font-semibold text-foreground">
           {t("ghBattle.errorTitle")}
         </h2>
@@ -90,8 +90,8 @@ export const ResultBattle = () => {
         title={t("ghBattle.resultTitle")}
         description={t("ghBattle.resultDescription")}
       />
-      <div className="players flex  justify-center items-center mt-10">
-        <div className="winner mx-5">
+      <div className="mt-10 flex flex-col items-center justify-center gap-5 lg:flex-row">
+        <div className="w-full max-w-72 lg:w-auto">
           <CardShell>
             <PlayerCard
               name={
@@ -109,7 +109,7 @@ export const ResultBattle = () => {
             </PlayerCard>
           </CardShell>
         </div>
-        <div className="loser mx-5">
+        <div className="w-full max-w-72 lg:w-auto">
           <CardShell>
             <PlayerCard
               name={

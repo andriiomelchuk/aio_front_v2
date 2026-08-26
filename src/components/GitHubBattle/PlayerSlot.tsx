@@ -3,7 +3,7 @@ import { CardShell } from "./CardShell";
 import { PlayerCard } from "./PlayerCard";
 import { PlayerInput } from "./PlayerInput";
 import { PlayerLoading } from "./PlayerLoading";
-import { T_PlayerSlotProps } from "./types";
+import type { T_PlayerSlotProps } from "./types";
 import { useI18n } from "@/shared/i18n";
 
 export const PlayerSlot = ({
@@ -24,14 +24,14 @@ export const PlayerSlot = ({
         <PlayerLoading label={label} />
       ) : img ? (
         <PlayerCard name={name} img={img} label={label}>
-          <div className="h-20  flex justify-center items-center flex-col">
+          <div className="flex h-20 w-full flex-col items-center justify-center">
             <div className="flex text-xs font-semibold uppercase tracking-normal text-accent">
               {t("ghBattle.readyPlayerLabel")}
             </div>
-            <div className="h-20  flex justify-center items-end">
+            <div className="flex h-20 w-full items-end justify-center">
               <Button
                 variant="ghost"
-                className="mt-6 h-10 min-w-50 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted transition hover:border-danger hover:bg-danger-soft hover:text-danger"
+                className="mt-6 h-10 w-full rounded-md border border-border px-4 py-2 text-sm font-medium text-muted transition hover:border-danger hover:bg-danger-soft hover:text-danger"
                 onClick={() => onDelete(playerId)}
               >
                 {t("ghBattle.changePlayerButton")}

@@ -1,4 +1,4 @@
-import { T_AvatarProps } from "./types";
+import type { T_AvatarProps } from "./types";
 
 const avatarSizeClasses = {
   small: {
