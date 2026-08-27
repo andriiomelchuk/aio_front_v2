@@ -5,9 +5,11 @@ export const adminUk = {
     "admin.actions.clearFilters": "Очистити фільтри",
     "admin.actions.searchOrder": "Пошук замовлення",
     "admin.actions.addUser": "Додати користувача",
+    "admin.actions.addCategory": "Додати категорію",
     "admin.actions.cancel": "Скасувати",
     "admin.actions.createUser": "Створити користувача",
     "admin.actions.saveChanges": "Зберегти зміни",
+    "admin.actions.createCategory": "Створити категорію",
 
     "admin.validation.required": "Це поле обов'язкове",
 
@@ -34,6 +36,14 @@ export const adminUk = {
     "admin.navigation.orders.label": "Замовлення",
     "admin.navigation.orders.title": "Замовлення",
     "admin.navigation.orders.description": "Керування замовленнями та продажами",
+
+    "admin.navigation.products.label": "Товари",
+    "admin.navigation.products.title": "Товари",
+    "admin.navigation.products.description": "Керування товарами",
+
+    "admin.navigation.categories.label": "Категорії",
+    "admin.navigation.categories.title": "Категорії",
+    "admin.navigation.categories.description": "Керування категоріями товарів",
 
     "admin.navigation.analytics.label": "Аналітика",
     "admin.navigation.analytics.title": "Аналітика",
@@ -131,6 +141,41 @@ export const adminUk = {
     "admin.bulk.selected": "Вибрано: {count}",
     "admin.bulk.selectAction": "Оберіть дію",
     "admin.bulk.apply": "Застосувати",
+
+    "admin.categories.searchPlaceholder": "Пошук категорії за назвою",
+    "admin.categories.pageTitle": "Категорії",
+    "admin.categories.description": "Показано {shown} з {total} категорій",
+    "admin.categories.noUserFound": "Категорії не знайдено",
+
+    "admin.categories.table.id": "ID категорії",
+    "admin.categories.table.name": "Назва",
+    "admin.categories.table.slug": "Slug",
+    "admin.categories.table.status": "Статус",
+    "admin.categories.table.action": "Дія",
+    "admin.categories.table.editButton": "Редагувати",
+
+    "admin.categories.status.allCategories": "Усі категорії",
+    "admin.categories.status.active": "Активні",
+    "admin.categories.status.inactive": "Неактивні",
+
+    "admin.categories.sorting.default": "Сортування за замовчуванням",
+    "admin.categories.sorting.nameAToZ": "Назва A-Z",
+    "admin.categories.sorting.nameZToA": "Назва Z-A",
+    "admin.categories.sorting.statusAToZ": "Статус A-Z",
+
+    "admin.categories.bulk.activateSelected": "Активувати вибрані",
+    "admin.categories.bulk.deactivateSelected": "Деактивувати вибрані",
+    "admin.categories.bulk.deleteSelected": "Видалити вибрані",
+
+    "admin.category.addCategoryTitle": "Додати категорію",
+    "admin.category.editCategoryTitle": "Редагувати категорію",
+
+    "admin.category.form.nameLabel": "Назва",
+    "admin.category.form.namePlaceholder": "Введіть назву категорії",
+    "admin.category.form.slugLabel": "Slug",
+    "admin.category.form.slugPlaceholder": "Введіть slug категорії",
+    "admin.category.form.statusLabel": "Статус",
+    "admin.category.form.statusPlaceholder": "Оберіть статус",
 
 
 

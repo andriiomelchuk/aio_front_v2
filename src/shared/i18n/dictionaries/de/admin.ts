@@ -2,11 +2,13 @@
 export const adminDe = {
 
     "admin.actions.addUser": "Benutzer hinzufügen",
+    "admin.actions.addCategory": "Kategorie hinzufügen",
     "admin.actions.clearFilters": "Filter zurücksetzen",
     "admin.actions.searchOrder": "Bestellung suchen",
     "admin.actions.cancel": "Abbrechen",
     "admin.actions.createUser": "Benutzer erstellen",
     "admin.actions.saveChanges": "Änderungen speichern",
+    "admin.actions.createCategory": "Kategorie erstellen",
 
     "admin.validation.required": "Dieses Feld ist erforderlich",
 
@@ -30,6 +32,14 @@ export const adminDe = {
     "admin.navigation.orders.label": "Bestellungen",
     "admin.navigation.orders.title": "Bestellungen",
     "admin.navigation.orders.description": "Bestellungen und Verkäufe verwalten",
+
+    "admin.navigation.products.label": "Produkte",
+    "admin.navigation.products.title": "Produkte",
+    "admin.navigation.products.description": "Produkte verwalten",
+
+    "admin.navigation.categories.label": "Kategorien",
+    "admin.navigation.categories.title": "Kategorien",
+    "admin.navigation.categories.description": "Produktkategorien verwalten",
 
     "admin.navigation.analytics.label": "Analytics",
     "admin.navigation.analytics.title": "Analytics",
@@ -126,6 +136,41 @@ export const adminDe = {
     "admin.bulk.selected": "{count} ausgewählt",
     "admin.bulk.selectAction": "Aktion auswählen",
     "admin.bulk.apply": "Anwenden",
+
+    "admin.categories.searchPlaceholder": "Kategorie nach Namen suchen",
+    "admin.categories.pageTitle": "Kategorien",
+    "admin.categories.description": "{shown} von {total} Kategorien angezeigt",
+    "admin.categories.noUserFound": "Keine Kategorien gefunden",
+
+    "admin.categories.table.id": "Kategorie-ID",
+    "admin.categories.table.name": "Name",
+    "admin.categories.table.slug": "Slug",
+    "admin.categories.table.status": "Status",
+    "admin.categories.table.action": "Aktion",
+    "admin.categories.table.editButton": "Bearbeiten",
+
+    "admin.categories.status.allCategories": "Alle Kategorien",
+    "admin.categories.status.active": "Aktiv",
+    "admin.categories.status.inactive": "Inaktiv",
+
+    "admin.categories.sorting.default": "Standardsortierung",
+    "admin.categories.sorting.nameAToZ": "Name A-Z",
+    "admin.categories.sorting.nameZToA": "Name Z-A",
+    "admin.categories.sorting.statusAToZ": "Status A-Z",
+
+    "admin.categories.bulk.activateSelected": "Ausgewählte aktivieren",
+    "admin.categories.bulk.deactivateSelected": "Ausgewählte deaktivieren",
+    "admin.categories.bulk.deleteSelected": "Ausgewählte löschen",
+
+    "admin.category.addCategoryTitle": "Kategorie hinzufügen",
+    "admin.category.editCategoryTitle": "Kategorie bearbeiten",
+
+    "admin.category.form.nameLabel": "Name",
+    "admin.category.form.namePlaceholder": "Kategorienamen eingeben",
+    "admin.category.form.slugLabel": "Slug",
+    "admin.category.form.slugPlaceholder": "Kategorie-Slug eingeben",
+    "admin.category.form.statusLabel": "Status",
+    "admin.category.form.statusPlaceholder": "Status auswählen",
 
 
 

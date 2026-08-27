@@ -6,9 +6,11 @@ export const adminEn = {
     "admin.actions.clearFilters": "Clear filters",
     "admin.actions.searchOrder": "Search order",
     "admin.actions.addUser": "Add User",
+    "admin.actions.addCategory": "Add category",
     "admin.actions.cancel": "Cancel",
     "admin.actions.createUser": "Create user",
     "admin.actions.saveChanges": "Save changes",
+    "admin.actions.createCategory": "Create category",
 
     "admin.validation.required": "This field is required",
 
@@ -32,6 +34,14 @@ export const adminEn = {
     "admin.navigation.orders.label": "Orders",
     "admin.navigation.orders.title": "Orders",
     "admin.navigation.orders.description": "Manage customer orders and sales",
+
+    "admin.navigation.products.label": "Products",
+    "admin.navigation.products.title": "Products",
+    "admin.navigation.products.description": "Manage products",
+
+    "admin.navigation.categories.label": "Categories",
+    "admin.navigation.categories.title": "Categories",
+    "admin.navigation.categories.description": "Manage product categories",
 
     "admin.navigation.analytics.label": "Analytics",
     "admin.navigation.analytics.title": "Analytics",
@@ -129,7 +139,42 @@ export const adminEn = {
     "admin.bulk.selectAction": "Select action",
     "admin.bulk.apply": "Apply",
 
+    "admin.categories.searchPlaceholder": "Search category by name",
+    "admin.categories.pageTitle": "Categories",
+    "admin.categories.description": "Showing {shown} of {total} categories",
+    "admin.categories.noUserFound": "Category not found",
 
 
+    "admin.categories.table.id": "Category ID",
+    "admin.categories.table.name": "Name",
+    "admin.categories.table.slug": "Slug",
+    "admin.categories.table.status": "Status",
+    "admin.categories.table.action": "Action",
+    "admin.categories.table.editButton": "Edit",
+
+    "admin.categories.status.allCategories": "All categories",
+    "admin.categories.status.active": "Active",
+    "admin.categories.status.inactive": "Inactive",
+
+    "admin.categories.sorting.default": "Default sorting",
+    "admin.categories.sorting.nameAToZ": "Name A-Z",
+    "admin.categories.sorting.nameZToA": "Name Z-A",
+    "admin.categories.sorting.statusAToZ": "Status A-Z",
+
+    "admin.categories.bulk.activateSelected": "Activate selected",
+    "admin.categories.bulk.deactivateSelected": "Deactivate selected",
+    "admin.categories.bulk.deleteSelected": "Delete selected",
+
+
+
+    "admin.category.addCategoryTitle": "Add category",
+    "admin.category.editCategoryTitle": "Edit category",
+
+    "admin.category.form.nameLabel": "Name",
+    "admin.category.form.namePlaceholder": "Enter category name",
+    "admin.category.form.slugLabel": "Slug",
+    "admin.category.form.slugPlaceholder": "Enter category slug",
+    "admin.category.form.statusLabel": "Status",
+    "admin.category.form.statusPlaceholder": "Select status",
 
 } as const;

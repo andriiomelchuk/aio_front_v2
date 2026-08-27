@@ -10,11 +10,13 @@ export const mapUserRows = (
   t: T_I18nContext["t"],
   onEdit: (user: T_User) => void,
 ) => {
-
-
-  const userRows = users.map((user) => ({
-    ...user,
+  return users.map((user) => ({
+    id: user.id,
+    name: user.name,
+    login: user.login,
+    email: user.email,
     password: "*******",
+    role: user.role,
     status: (
       <AdminBadge variant={statusBadgeVariant[user.status]}>
         {statusLabel[user.status]}
@@ -24,12 +26,13 @@ export const mapUserRows = (
       <Button
         className="h-10"
         variant="ghost"
-        onClick={() => onEdit(user)}
+        onClick={(event) => {
+          event.stopPropagation();
+          onEdit(user);
+        }}
       >
         {t("admin.user.editButton")}
       </Button>
     ),
   }));
-
-  return userRows;
 };

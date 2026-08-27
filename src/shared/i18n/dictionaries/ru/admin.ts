@@ -6,9 +6,11 @@ export const adminRu = {
     "admin.actions.clearFilters": "Очистить фильтры",
     "admin.actions.searchOrder": "Поиск заказа",
     "admin.actions.addUser": "Добавить пользователя",
+    "admin.actions.addCategory": "Добавить категорию",
     "admin.actions.cancel": "Отмена",
     "admin.actions.createUser": "Создать пользователя",
     "admin.actions.saveChanges": "Сохранить изменения",
+    "admin.actions.createCategory": "Создать категорию",
 
     "admin.validation.required": "Это поле обязательно",
 
@@ -32,6 +34,14 @@ export const adminRu = {
     "admin.navigation.orders.label": "Заказы",
     "admin.navigation.orders.title": "Заказы",
     "admin.navigation.orders.description": "Управление заказами и продажами",
+
+    "admin.navigation.products.label": "Товары",
+    "admin.navigation.products.title": "Товары",
+    "admin.navigation.products.description": "Управление товарами",
+
+    "admin.navigation.categories.label": "Категории",
+    "admin.navigation.categories.title": "Категории",
+    "admin.navigation.categories.description": "Управление категориями товаров",
 
     "admin.navigation.analytics.label": "Аналитика",
     "admin.navigation.analytics.title": "Аналитика",
@@ -127,6 +137,41 @@ export const adminRu = {
     "admin.bulk.selected": "Выбрано: {count}",
     "admin.bulk.selectAction": "Выберите действие",
     "admin.bulk.apply": "Применить",
+
+    "admin.categories.searchPlaceholder": "Поиск категории по названию",
+    "admin.categories.pageTitle": "Категории",
+    "admin.categories.description": "Показано {shown} из {total} категорий",
+    "admin.categories.noUserFound": "Категории не найдены",
+
+    "admin.categories.table.id": "ID категории",
+    "admin.categories.table.name": "Название",
+    "admin.categories.table.slug": "Slug",
+    "admin.categories.table.status": "Статус",
+    "admin.categories.table.action": "Действие",
+    "admin.categories.table.editButton": "Редактировать",
+
+    "admin.categories.status.allCategories": "Все категории",
+    "admin.categories.status.active": "Активные",
+    "admin.categories.status.inactive": "Неактивные",
+
+    "admin.categories.sorting.default": "Сортировка по умолчанию",
+    "admin.categories.sorting.nameAToZ": "Название A-Z",
+    "admin.categories.sorting.nameZToA": "Название Z-A",
+    "admin.categories.sorting.statusAToZ": "Статус A-Z",
+
+    "admin.categories.bulk.activateSelected": "Активировать выбранные",
+    "admin.categories.bulk.deactivateSelected": "Деактивировать выбранные",
+    "admin.categories.bulk.deleteSelected": "Удалить выбранные",
+
+    "admin.category.addCategoryTitle": "Добавить категорию",
+    "admin.category.editCategoryTitle": "Редактировать категорию",
+
+    "admin.category.form.nameLabel": "Название",
+    "admin.category.form.namePlaceholder": "Введите название категории",
+    "admin.category.form.slugLabel": "Slug",
+    "admin.category.form.slugPlaceholder": "Введите slug категории",
+    "admin.category.form.statusLabel": "Статус",
+    "admin.category.form.statusPlaceholder": "Выберите статус",
 
 
 

@@ -9,8 +9,51 @@ export type T_User = {
   password: string;
   role: T_UserRole;
   status: T_UserStatus;
+  address?: T_UserAddress;
+  phone?: string;
+  company?: T_UserCompany;
+  shipping?: T_ShippingAddress;
 };
+
+export type T_UserAddress = {
+  country?: string;
+  city?: string;
+  street?: string,
+  suite?: string,
+  zipcode?: string,
+}
+
+export type T_UserCompany = {
+  name: string;
+  address: T_UserAddress;
+  phone: string;
+}
+
+export type T_ShippingAddress = {
+  country: string;
+  city: string;
+  street: string,
+  suite: string,
+  zipcode: string,
+}
 
 export type T_CreateUserDto = Omit<T_User, "id">;
 
 export type T_UpdateUserDto = T_User;
+
+export type T_JsonPlaceholderUser = {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  address: {
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+  };
+  company: {
+    name: string;
+  };
+};

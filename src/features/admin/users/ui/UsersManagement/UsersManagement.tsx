@@ -1,16 +1,17 @@
 "use client";
-import { mockUsers, type T_User } from "@/entities/user";
+import { type T_User } from "@/entities/user";
 import { Pagination } from "@/shared/ui";
 import { AdminCard, AdminPage, AdminTable } from "@/widgets/AdminWidgets";
 
 import { paginate } from "@/lib/paginate";
 
 import { useI18n } from "@/shared/i18n";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UsersToolbar } from "../UsersToolbar";
 import { UsersBulkActions } from "../UsersBulkActions";
 import { UsersModals } from "../UsersModals";
 import { filterUsers, getUserColumns, mapUserRows, sortUsers, useUsersTableControls } from "../../model";
+import { getUsers } from "@/shared/api/users";
 
 export function UsersManagement() {
   const { t } = useI18n();
@@ -29,7 +30,16 @@ export function UsersManagement() {
 
   const [bulkAction, setBulkAction] = useState("");
 
-  const [users, setUsers] = useState<T_User[]>(mockUsers);
+  const [users, setUsers] = useState<T_User[]>([]);
+
+  useEffect(() => {
+  const loadUsers = async () => {
+    const users = await getUsers();
+    setUsers(users);
+  };
+
+  loadUsers();
+}, []);
 
   const filteredUsers = filterUsers(users, {
     status: tableControls.status,
@@ -105,7 +115,7 @@ export function UsersManagement() {
       <AdminCard
         title={t("admin.user.pageTitle")}
         description={t("admin.user.description", {
-          shown: filteredUsers.length,
+          shown: paginatedUsers.length,
           total: users.length,
         })}
       >
