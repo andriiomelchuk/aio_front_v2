@@ -2,7 +2,7 @@
 export const adminEn = {
 
 
-    //Actions
+
     "admin.actions.clearFilters": "Clear filters",
     "admin.actions.searchOrder": "Search order",
     "admin.actions.addUser": "Add User",
@@ -11,28 +11,18 @@ export const adminEn = {
     "admin.actions.createUser": "Create user",
     "admin.actions.saveChanges": "Save changes",
     "admin.actions.createCategory": "Create category",
-    "admin.actions.addProduct": "Add product",
-    "admin.actions.createProduct": "Create product",
 
     "admin.validation.required": "This field is required",
 
-    //Bulk actions
-    "admin.bulk.selected": "{count} selected",
-    "admin.bulk.selectAction": "Select action",
-    "admin.bulk.apply": "Apply",
-
-    //Header
     "admin.header.title": "Admin panel",
     "admin.header.description": "Management application data",
     "admin.header.ariaLabel.openAdminMenu": "Open admin menu",
 
-    //Sidebar
     "admin.sidebar.title": "Admin Panel",
     "admin.sidebar.description": "Management area",
     "admin.sidebar.ariaLabel.closeAdminMenuButton": "Close admin menu",
     "admin.sidebar.ariaLabel.adminNavigation": "Admin navigation",
 
-    //Navigation
     "admin.navigation.dashboard.label": "Dashboard",
     "admin.navigation.dashboard.title": "Dashboard",
     "admin.navigation.dashboard.description": "Overview of the admin panel",
@@ -61,7 +51,6 @@ export const adminEn = {
     "admin.navigation.settings.title": "Settings",
     "admin.navigation.settings.description": "Configure application preferences",
 
-    //Orders
     "admin.orders.pageTitle": "Orders",
     "admin.orders.description": "Showing {shown} of {total} orders",
     "admin.orders.products": "Products",
@@ -100,7 +89,6 @@ export const adminEn = {
     "admin.orders.bulk.inProcessSelected": "In process selected",
     "admin.orders.bulk.completeSelected": "Complete selected",
 
-    //Users
     "admin.user.pageTitle": "Users list",
     "admin.user.description": "Showing {shown} of {total} users",
 
@@ -147,11 +135,15 @@ export const adminEn = {
     "admin.user.bulk.deleteSelected": "Delete selected",
     "admin.user.bulk.activateSelected": "Activate selected",
 
-    //Categories
+    "admin.bulk.selected": "{count} selected",
+    "admin.bulk.selectAction": "Select action",
+    "admin.bulk.apply": "Apply",
+
     "admin.categories.searchPlaceholder": "Search category by name",
     "admin.categories.pageTitle": "Categories",
     "admin.categories.description": "Showing {shown} of {total} categories",
     "admin.categories.noUserFound": "Category not found",
+
 
     "admin.categories.table.id": "Category ID",
     "admin.categories.table.name": "Name",
@@ -173,7 +165,8 @@ export const adminEn = {
     "admin.categories.bulk.deactivateSelected": "Deactivate selected",
     "admin.categories.bulk.deleteSelected": "Delete selected",
 
-    //Category
+
+
     "admin.category.addCategoryTitle": "Add category",
     "admin.category.editCategoryTitle": "Edit category",
 
@@ -183,117 +176,5 @@ export const adminEn = {
     "admin.category.form.slugPlaceholder": "Enter category slug",
     "admin.category.form.statusLabel": "Status",
     "admin.category.form.statusPlaceholder": "Select status",
-
-    //Products
-
-    "admin.products.pageTitle": "Products",
-    "admin.products.description": "Showing {shown} of {total} products",
-    "admin.products.noProductFound": "No products found",
-
-    "admin.products.search.placeholder.title": "Search product by name",
-    "admin.products.search.placeholder.sku": "Search product by SKU",
-    "admin.products.search.placeholder.category": "Search product by category",
-    "admin.products.search.placeholder.price": "Search product by price",
-    "admin.products.search.placeholder.stock": "Search product by stock quantity",
-
-    "admin.products.status.allProducts": "All products",
-    "admin.products.status.draft": "Draft",
-    "admin.products.status.active": "Active",
-    "admin.products.status.archived": "Archived",
-
-    "admin.products.sorting.default": "Default sorting",
-    "admin.products.sorting.nameAToZ": "Name A-Z",
-    "admin.products.sorting.nameZToA": "Name Z-A",
-    "admin.products.sorting.statusAToZ": "Status A-Z",
-
-    "admin.products.stock.all": "All stock statuses",
-    "admin.products.stock.inStock": "In stock",
-    "admin.products.stock.lowStock": "Low stock",
-    "admin.products.stock.outOfStock": "Out of stock",
-
-    "admin.products.table.id": "Product ID",
-    "admin.products.table.title": "Product",
-    "admin.products.table.sku": "SKU",
-    "admin.products.table.category": "Category",
-    "admin.products.table.price": "Current price",
-    "admin.products.table.oldPrice": "Old price",
-    "admin.products.table.discount": "Discount",
-    "admin.products.table.stock": "Stock",
-    "admin.products.table.status": "Status",
-    "admin.products.table.action": "Action",
-    "admin.products.table.editButton": "Edit",
-
-    "admin.products.search.field.title": "Name",
-    "admin.products.search.field.sku": "SKU",
-    "admin.products.search.field.category": "Category",
-    "admin.products.search.field.price": "Price",
-    "admin.products.search.field.stock": "Stock",
-
-    //Product form
-    "admin.product.form.createTitle": "Add product",
-    "admin.product.form.editTitle": "Edit product",
-    "admin.product.form.createDescription": "Create a product for the catalog",
-    "admin.product.form.editDescription": "Update product information",
-
-    "admin.product.form.sections.main": "Main information",
-    "admin.product.form.sections.description": "Description",
-    "admin.product.form.sections.pricing": "Pricing",
-    "admin.product.form.sections.stock": "Stock",
-    "admin.product.form.sections.media": "Media",
-    "admin.product.form.sections.attributes": "Attributes and variants",
-    "admin.product.form.sections.seo": "SEO",
-    "admin.product.form.sections.shipping": "Shipping",
-    "admin.product.form.sections.system": "System information",
-
-    "admin.product.form.idLabel": "Product ID",
-    "admin.product.form.titleLabel": "Title",
-    "admin.product.form.titlePlaceholder": "Enter product title",
-    "admin.product.form.slugLabel": "Slug",
-    "admin.product.form.slugPlaceholder": "Enter product slug",
-    "admin.product.form.skuLabel": "SKU",
-    "admin.product.form.skuPlaceholder": "Enter SKU",
-    "admin.product.form.brandLabel": "Brand",
-    "admin.product.form.brandPlaceholder": "Enter brand",
-    "admin.product.form.categoryLabel": "Category",
-    "admin.product.form.categoryPlaceholder": "Enter category ID",
-    "admin.product.form.statusLabel": "Status",
-    "admin.product.form.shortDescriptionLabel": "Short description",
-    "admin.product.form.shortDescriptionPlaceholder": "Enter short description",
-    "admin.product.form.descriptionLabel": "Description",
-    "admin.product.form.descriptionPlaceholder": "Enter product description",
-    "admin.product.form.priceLabel": "Current price",
-    "admin.product.form.pricePlaceholder": "Enter current price",
-    "admin.product.form.oldPriceLabel": "Old price",
-    "admin.product.form.oldPricePlaceholder": "Enter old price",
-    "admin.product.form.discountLabel": "Discount",
-    "admin.product.form.discountPlaceholder": "Enter discount percentage",
-    "admin.product.form.currencyLabel": "Currency",
-    "admin.product.form.stockQuantityLabel": "Stock quantity",
-    "admin.product.form.stockQuantityPlaceholder": "Enter stock quantity",
-    "admin.product.form.stockStatusLabel": "Stock status",
-    "admin.product.form.thumbnailLabel": "Main image",
-    "admin.product.form.thumbnailPlaceholder": "Enter main image URL",
-    "admin.product.form.imagesLabel": "Images",
-    "admin.product.form.imagesPlaceholder": "Enter image URLs",
-    "admin.product.form.attributesLabel": "Attributes",
-    "admin.product.form.attributesPlaceholder": "Enter product attributes",
-    "admin.product.form.variantsLabel": "Variants",
-    "admin.product.form.variantsPlaceholder": "Enter product variants",
-    "admin.product.form.seoTitleLabel": "SEO title",
-    "admin.product.form.seoTitlePlaceholder": "Enter SEO title",
-    "admin.product.form.seoDescriptionLabel": "SEO description",
-    "admin.product.form.seoDescriptionPlaceholder": "Enter SEO description",
-    "admin.product.form.seoKeywordsLabel": "SEO keywords",
-    "admin.product.form.seoKeywordsPlaceholder": "Enter SEO keywords",
-    "admin.product.form.weightLabel": "Weight",
-    "admin.product.form.weightPlaceholder": "Enter weight",
-    "admin.product.form.widthLabel": "Width",
-    "admin.product.form.widthPlaceholder": "Enter width",
-    "admin.product.form.heightLabel": "Height",
-    "admin.product.form.heightPlaceholder": "Enter height",
-    "admin.product.form.depthLabel": "Depth",
-    "admin.product.form.depthPlaceholder": "Enter depth",
-    "admin.product.form.createdAtLabel": "Created at",
-    "admin.product.form.updatedAtLabel": "Updated at",
 
 } as const;

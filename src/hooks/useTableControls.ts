@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { usePagination } from "./usePagination";
 
-type T_UseTableControlsParams<
-  TStatus extends string,
-  TSort extends string,
-  TStock extends string = never,
-> = {
+type T_UseTableControlsParams<TStatus extends string, TSort extends string> = {
   initialStatus: TStatus;
-  initialStockStatus?: TStock,
   initialSort: TSort;
   initialPageSize?: number;
 };
@@ -15,16 +10,13 @@ type T_UseTableControlsParams<
 export const useTableControls = <
   TStatus extends string,
   TSort extends string,
-  TStock extends string = never,
 >({
   initialStatus,
-  initialStockStatus,
   initialSort,
   initialPageSize = 5,
-}: T_UseTableControlsParams<TStatus, TSort, TStock>) => {
+}: T_UseTableControlsParams<TStatus, TSort>) => {
   const [search, setSearchState] = useState("");
   const [status, setStatusState] = useState<TStatus>(initialStatus);
-  const [stock, setStockState] = useState<TStock | undefined>(initialStockStatus);
   const [sort, setSortState] = useState<TSort>(initialSort);
 
   const {
@@ -48,11 +40,6 @@ export const useTableControls = <
     resetPage();
   };
 
-  const setStock = (nextStock: TStock | undefined) => {
-    setStockState(nextStock);
-    resetPage();
-  };
-
   const setSort = (nextSort: TSort) => {
     setSortState(nextSort);
     resetPage();
@@ -62,23 +49,20 @@ export const useTableControls = <
     setSearchState("");
     setStatusState(initialStatus);
     setSortState(initialSort);
-    setStockState(initialStockStatus)
     resetPagination();
   };
 
   const hasActiveControls =
-    search !== "" || status !== initialStatus || sort !== initialSort || stock !== initialStockStatus;
+    search !== "" || status !== initialStatus || sort !== initialSort;
 
   return {
     search,
     status,
-    stock,
     sort,
     page,
     pageSize,
     setSearch,
     setStatus,
-    setStock,
     setSort,
     setPage,
     setPageSize,

@@ -1,5 +1,4 @@
-import type { T_OrderStatus } from "@/entities/order"
-import type { T_OrderSort } from "./types"
+import { T_OrderSort, T_OrderStatus } from "@/entities/order"
 import { useTableControls } from "@/hooks"
 
 export const useOrdersTableControls = () => {

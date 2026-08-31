@@ -1,5 +1,4 @@
-import type { T_CategoriesStatus } from "@/entities/categories/model/types"
-import type { T_CategoriesSort } from "./types"
+import {  T_CategoriesSort, T_CategoriesStatus } from "@/entities/categories/model/types"
 import { useTableControls } from "@/hooks"
 
 export const useCategoriesTableControls = () => {

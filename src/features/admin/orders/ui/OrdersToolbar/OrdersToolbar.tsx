@@ -1,5 +1,4 @@
-import type { T_OrderStatus } from "@/entities/order";
-import type { T_OrderSort } from "../../model/types";
+import type { T_OrderSort, T_OrderStatus } from "@/entities/order";
 import { useI18n } from "@/shared/i18n";
 import { Button, Input, Select } from "@/shared/ui";
 import type { T_OrdersToolbarProps } from "./types";

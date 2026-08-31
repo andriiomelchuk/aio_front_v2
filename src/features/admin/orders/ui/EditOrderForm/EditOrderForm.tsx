@@ -4,7 +4,7 @@ import { useI18n } from "@/shared/i18n";
 import { useState, type SyntheticEvent } from "react";
 import type { T_EditOrderData, T_EditOrderFormProps } from "./types";
 import { Button, Input, Select } from "@/shared/ui";
-import { updateOrder } from "@/shared/api/orders";
+import { updateOrder } from "@/shared/api/order";
 
 
 
