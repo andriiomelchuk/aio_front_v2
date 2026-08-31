@@ -1,6 +1,5 @@
-import type { T_CreateUserDto, T_JsonPlaceholderUser, T_UpdateUserDto, T_User } from "@/entities/user";
-
-
+import type { T_CreateUserDto, T_UpdateUserDto, T_User } from "@/entities/user";
+import type { T_JsonPlaceholderUser } from "./types";
 
 export const createUser = async (user: T_CreateUserDto) => {
   console.log("Create user request:", user);
@@ -20,7 +19,7 @@ export const updateUser = async (user: T_UpdateUserDto) => {
 export const getUsers = async (): Promise<T_User[]> => {
   const response = await fetch("https://jsonplaceholder.typicode.com/users");
 
-  if(!response.ok){
+  if (!response.ok) {
     throw new Error("Failed to fetch users");
   }
 
@@ -51,6 +50,5 @@ export const getUsers = async (): Promise<T_User[]> => {
       },
       phone: user.phone,
     },
-  }))
-  
-}
+  }));
+};

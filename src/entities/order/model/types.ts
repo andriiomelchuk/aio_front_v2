@@ -8,4 +8,4 @@ export type T_Order = {
   updatedAt: string;
 }
 
-export type T_OrderSort = "default" | "price-asc" | "price-desc" | "id-asc" | "id-desc";
+export type T_UpdateOrderDto = T_Order;

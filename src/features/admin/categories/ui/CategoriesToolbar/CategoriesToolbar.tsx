@@ -1,4 +1,5 @@
-import { T_CategoriesSort, T_CategoriesStatus } from "@/entities/categories/model/types";
+import type { T_CategoriesStatus } from "@/entities/categories/model/types";
+import type { T_CategoriesSort } from "../../model/types";
 import { useI18n } from "@/shared/i18n";
 import { Button, Input, Select } from "@/shared/ui";
 import { T_CategoriesToolbarProps } from "./types";
