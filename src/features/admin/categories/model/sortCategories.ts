@@ -1,4 +1,5 @@
-import { T_Categories, T_CategoriesSort } from "@/entities/categories/model/types";
+import type { T_Categories } from "@/entities/categories/model/types";
+import type { T_CategoriesSort } from "./types";
 
 
 export const sortCategories = (

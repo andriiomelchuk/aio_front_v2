@@ -1,4 +1,6 @@
-import type { T_Order } from "@/entities/order";
-
-
-export type T_UpdateOrderDto = T_Order;
+export type T_OrderSort =
+  | "default"
+  | "price-asc"
+  | "price-desc"
+  | "id-asc"
+  | "id-desc";

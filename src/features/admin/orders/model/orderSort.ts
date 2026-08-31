@@ -1,4 +1,5 @@
-import type { T_Order, T_OrderSort } from "@/entities/order";
+import type { T_Order } from "@/entities/order";
+import type { T_OrderSort } from "./types";
 
 export const orderSort = (orders: T_Order[], sort: T_OrderSort): T_Order[] => {
     const sortedOrders = [...orders];
