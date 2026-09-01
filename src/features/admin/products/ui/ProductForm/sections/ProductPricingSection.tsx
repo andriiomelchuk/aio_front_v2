@@ -9,11 +9,18 @@ const currencyOptions = [
   { value: "UAH", label: "UAH" },
 ];
 
-export const ProductPricingSection = ({ product }: T_ProductSectionProps) => {
+export const ProductPricingSection = ({
+  product,
+  errors,
+  sectionControl,
+}: T_ProductSectionProps) => {
   const { t } = useI18n();
 
   return (
-    <ProductFormSection title={t("admin.product.form.sections.pricing")}>
+    <ProductFormSection
+      title={t("admin.product.form.sections.pricing")}
+      {...sectionControl}
+    >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Input
           label={t("admin.product.form.priceLabel")}
@@ -24,6 +31,7 @@ export const ProductPricingSection = ({ product }: T_ProductSectionProps) => {
           defaultValue={product?.price ?? ""}
           placeholder={t("admin.product.form.pricePlaceholder")}
           className="h-10 w-full"
+          error={errors?.price}
         />
 
         <Input
@@ -35,6 +43,7 @@ export const ProductPricingSection = ({ product }: T_ProductSectionProps) => {
           defaultValue={product?.oldPrice ?? ""}
           placeholder={t("admin.product.form.oldPricePlaceholder")}
           className="h-10 w-full"
+          error={errors?.oldPrice}
         />
 
         <Input
@@ -47,6 +56,7 @@ export const ProductPricingSection = ({ product }: T_ProductSectionProps) => {
           defaultValue={product?.discountPercentage ?? ""}
           placeholder={t("admin.product.form.discountPlaceholder")}
           className="h-10 w-full"
+          error={errors?.discountPercentage}
         />
 
         <Select

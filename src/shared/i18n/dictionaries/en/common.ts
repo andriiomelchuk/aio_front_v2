@@ -11,6 +11,8 @@ export const commonEn = {
     "nav.popular": "Popular",
     "nav.battle": "Battle",
     "nav.movies": "Movies",
+    "nav.products": "Products",
+    "nav.categories": "Categories",
 
     "pagination.rowsPerPage": "Rows per page",
     "pagination.pageOf": "Page {page} of {totalPages}",

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getAdminNavigation } from "../model/adminNavigation";
 import { useI18n } from "@/shared/i18n";
+import { isAdminModuleEnabled } from "@/shared/config/adminModules";
 
 type AdminSidebarProps = {
   isOpen: boolean;
@@ -14,7 +15,13 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
   const { t } = useI18n();
   const pathName = usePathname();
 
-  const adminNavigation = getAdminNavigation(t);
+  const adminNavigation = getAdminNavigation(t).filter((link) => {
+    if(!("module" in link)) {
+      return true;
+    }
+
+     return isAdminModuleEnabled(link.module);
+  });
 
   return (
     <>

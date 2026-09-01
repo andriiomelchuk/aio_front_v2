@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { LanguageSwitcher } from "@/shared/ui";
 import { Navigation } from "@/shared/ui/Navigation";
+import { siteNavigation } from "./model/SiteNavigation";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +21,7 @@ export const Header = () => {
         </div>
 
         <div className="hidden items-center gap-4 md:flex">
-          <Navigation />
+          <Navigation items={siteNavigation}/>
           <LanguageSwitcher variant="compact" mode="select" />
         </div>
 
@@ -42,7 +43,7 @@ export const Header = () => {
       {isMenuOpen && (
         <div className="absolute left-0 right-0 top-full z-40 border-b border-border bg-surface px-4 py-4 shadow-lg md:hidden">
           <div className="flex flex-col gap-4">
-            <Navigation direction="column" onNavigate={closeMenu} />
+            <Navigation items={siteNavigation} direction="column" onNavigate={closeMenu} />
 
             <div className="border-t border-border pt-4">
               <LanguageSwitcher variant="flag" mode="buttons" />

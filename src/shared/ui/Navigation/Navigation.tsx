@@ -4,24 +4,15 @@ import type { T_I18nKey } from "@/shared/i18n";
 import { useI18n } from "@/shared/i18n";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { T_NavigationProps } from "./styles";
+import type { T_NavigationProps } from "./types";
 
-type T_NavItem = {
-  id: string;
-  labelKey: T_I18nKey;
-  href: string;
-};
 
-const navItems: T_NavItem[] = [
-  { id: "home", labelKey: "nav.home", href: "/" },
-  { id: "popular", labelKey: "nav.popular", href: "/popular" },
-  { id: "battle", labelKey: "nav.battle", href: "/battle" },
-  { id: "movies", labelKey: "nav.movies", href: "/movies" },
-];
+
 
 
 
 export const Navigation = ({
+  items = [],
   direction = "row",
   onNavigate,
 }: T_NavigationProps) => {
@@ -35,7 +26,7 @@ export const Navigation = ({
 
   return (
     <nav className={navClass}>
-      {navItems.map((item) => {
+      {items.map((item) => {
         const isActive =
           item.href === "/" ? pathName === "/" : pathName.startsWith(item.href);
 

@@ -11,3 +11,14 @@ export type T_ProductForm = {
   onCreate?: (product: T_CreateProductDto) => void;
   onUpdate?: (product: T_UpdateProductDto) => void;
 };
+
+export type T_ProductFormErrors = Partial<
+  Record<
+    | keyof T_CreateProductDto
+    | "variantTitle"
+    | "variantSku"
+    | "variantPrice"
+    | "variantStockQuantity",
+    string
+  >
+>;

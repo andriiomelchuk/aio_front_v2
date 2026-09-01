@@ -13,7 +13,6 @@ import Link from "next/link";
 
 export const ProductsToolbar = ({
   tableControls,
-  onAddProductClick,
 }: T_ProductsToolbarProps) => {
   const { t } = useI18n();
   const searchPlaceholderByField = {
@@ -110,7 +109,6 @@ export const ProductsToolbar = ({
         <Button
           variant="default"
           className="h-10 w-full sm:ml-auto sm:w-auto"
-          onClick={onAddProductClick}
         >
           {t("admin.actions.addProduct")}
         </Button>

@@ -3,11 +3,18 @@ import { Input, Select } from "@/shared/ui";
 import { ProductFormSection } from "../ProductFormSection";
 import type { T_ProductSectionProps } from "./types";
 
-export const ProductStockSection = ({ product }: T_ProductSectionProps) => {
+export const ProductStockSection = ({
+  product,
+  errors,
+  sectionControl,
+}: T_ProductSectionProps) => {
   const { t } = useI18n();
 
   return (
-    <ProductFormSection title={t("admin.product.form.sections.stock")}>
+    <ProductFormSection
+      title={t("admin.product.form.sections.stock")}
+      {...sectionControl}
+    >
       <div className="grid gap-4 md:grid-cols-2">
         <Input
           label={t("admin.product.form.stockQuantityLabel")}
@@ -17,6 +24,7 @@ export const ProductStockSection = ({ product }: T_ProductSectionProps) => {
           defaultValue={product?.stockQuantity ?? ""}
           placeholder={t("admin.product.form.stockQuantityPlaceholder")}
           className="h-10 w-full"
+          error={errors?.stockQuantity}
         />
 
         <Select

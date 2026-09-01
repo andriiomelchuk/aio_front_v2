@@ -6,8 +6,13 @@ import type {
 import type { T_JsonPlaceholderProductsResponse } from "./types";
 
 const PRODUCTS_STORAGE_KEY = "admin-products-overrides";
+const DELETED_PRODUCTS_STORAGE_KEY = "admin-products-deleted";
 
 type T_ProductOverrides = Record<string, T_Product>;
+export type T_BulkUpdateProductsDto = {
+  ids: Array<string | number>;
+  changes: Partial<Omit<T_Product, "id" | "createdAt">>;
+};
 
 const getStoredProductOverrides = (): T_ProductOverrides => {
   if (typeof window === "undefined") {
@@ -23,6 +28,20 @@ const getStoredProductOverrides = (): T_ProductOverrides => {
   }
 };
 
+const getDeletedProductIds = (): string[] => {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  try {
+    return JSON.parse(
+      localStorage.getItem(DELETED_PRODUCTS_STORAGE_KEY) ?? "[]",
+    ) as string[];
+  } catch {
+    return [];
+  }
+};
+
 const saveStoredProductOverrides = (products: T_ProductOverrides) => {
   if (typeof window === "undefined") {
     return;
@@ -31,16 +50,38 @@ const saveStoredProductOverrides = (products: T_ProductOverrides) => {
   localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
 };
 
+const saveDeletedProductIds = (ids: string[]) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  localStorage.setItem(DELETED_PRODUCTS_STORAGE_KEY, JSON.stringify(ids));
+};
+
+const deleteStoredProductOverride = (id: string) => {
+  const overrides = getStoredProductOverrides();
+
+  delete overrides[id];
+
+  saveStoredProductOverrides(overrides);
+};
+
 const mergeProductsWithOverrides = (
   products: T_Product[],
-  overrides: T_ProductOverrides
+  overrides: T_ProductOverrides,
+  deletedProductIds: string[],
 ) => {
-  const productIds = new Set(products.map((product) => product.id));
-  const updatedProducts = products.map(
-    (product) => overrides[product.id] ?? product
+  const deletedProductIdsSet = new Set(deletedProductIds);
+  const visibleProducts = products.filter(
+    (product) => !deletedProductIdsSet.has(product.id),
+  );
+  const productIds = new Set(visibleProducts.map((product) => product.id));
+  const updatedProducts = visibleProducts.map(
+    (product) => overrides[product.id] ?? product,
   );
   const createdProducts = Object.values(overrides).filter(
-    (product) => !productIds.has(product.id)
+    (product) =>
+      !productIds.has(product.id) && !deletedProductIdsSet.has(product.id),
   );
 
   return [...createdProducts, ...updatedProducts];
@@ -67,11 +108,15 @@ export const createProduct = async (
   };
 
   const overrides = getStoredProductOverrides();
+  const deletedProductIds = getDeletedProductIds();
 
   saveStoredProductOverrides({
     ...overrides,
     [newProduct.id]: newProduct,
   });
+  saveDeletedProductIds(
+    deletedProductIds.filter((productId) => productId !== newProduct.id),
+  );
 
   return newProduct;
 };
@@ -102,8 +147,49 @@ export const updateProduct = async (
   return updatedProduct;
 };
 
+export const deleteProduct = async (id: string | number) => {
+  const productId = String(id);
+  const deletedProductIds = getDeletedProductIds();
+
+  deleteStoredProductOverride(productId);
+  saveDeletedProductIds([...new Set([...deletedProductIds, productId])]);
+
+  return productId;
+};
+
+export const bulkUpdateProducts = async ({
+  ids,
+  changes,
+}: T_BulkUpdateProductsDto): Promise<T_Product[]> => {
+  const productIds = ids.map(String);
+  const products = await getProducts();
+  const updatedProducts = products
+    .filter((product) => productIds.includes(product.id))
+    .map((product) => ({
+      ...product,
+      ...changes,
+      id: product.id,
+      createdAt: product.createdAt,
+      updatedAt: new Date().toISOString(),
+    }));
+
+  const overrides = getStoredProductOverrides();
+  const nextOverrides = updatedProducts.reduce(
+    (acc, product) => ({
+      ...acc,
+      [product.id]: product,
+    }),
+    overrides,
+  );
+
+  saveStoredProductOverrides(nextOverrides);
+
+  return updatedProducts;
+};
+
 export const getProducts = async (): Promise<T_Product[]> => {
   const overrides = getStoredProductOverrides();
+  const deletedProductIds = getDeletedProductIds();
   let allProducts: T_Product[] = [];
 
   try {
@@ -179,7 +265,7 @@ export const getProducts = async (): Promise<T_Product[]> => {
     return allProducts;
   }
 
-  return mergeProductsWithOverrides(allProducts, overrides);
+  return mergeProductsWithOverrides(allProducts, overrides, deletedProductIds);
 };
 
 export const getProductById = async (id: string): Promise<T_Product> => {

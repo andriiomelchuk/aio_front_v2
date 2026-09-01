@@ -13,7 +13,6 @@ import Link from "next/link";
 export const mapProductsRows = (
   products: T_Product[],
   t: T_I18nContext["t"],
-  onEdit: (product: T_Product) => void,
 ) => {
   return products.map((product) => ({
     id: product.id,
@@ -23,15 +22,13 @@ export const mapProductsRows = (
     price: product.discountPercentage
       ? product.price - (product.price * product.discountPercentage) / 100
       : product.price,
-    // price: `${product.price} ${product.currency}`,
     discount: product.discountPercentage
       ? `${product.discountPercentage}%`
       : "",
     old_price: product.discountPercentage ? product.price : "",
     stock: (
       <AdminBadge variant={productsStockBadgeVariant[product.stockStatus]}>
-        {getProductsStockLabel(product.stockStatus, t)} ·{" "}
-        {product.stockQuantity}
+        {getProductsStockLabel(product.stockStatus, t)}: {product.stockQuantity}
       </AdminBadge>
     ),
     status: (
@@ -44,10 +41,7 @@ export const mapProductsRows = (
         <Button
           className="h-10"
           variant="ghost"
-          onClick={(event) => {
-            event.stopPropagation();
-            onEdit(product);
-          }}
+          onClick={(event) => event.stopPropagation()}
         >
           {t("admin.products.table.editButton")}
         </Button>

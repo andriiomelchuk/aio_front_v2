@@ -5,11 +5,15 @@ import type { T_ProductSectionProps } from "./types";
 
 export const ProductDescriptionSection = ({
   product,
+  sectionControl,
 }: T_ProductSectionProps) => {
   const { t } = useI18n();
 
   return (
-    <ProductFormSection title={t("admin.product.form.sections.description")}>
+    <ProductFormSection
+      title={t("admin.product.form.sections.description")}
+      {...sectionControl}
+    >
       <div className="grid gap-4">
         <Textarea
           label={t("admin.product.form.shortDescriptionLabel")}

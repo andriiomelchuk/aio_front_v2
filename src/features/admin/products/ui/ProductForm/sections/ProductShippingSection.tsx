@@ -3,11 +3,17 @@ import { Input } from "@/shared/ui";
 import { ProductFormSection } from "../ProductFormSection";
 import type { T_ProductSectionProps } from "./types";
 
-export const ProductShippingSection = ({ product }: T_ProductSectionProps) => {
+export const ProductShippingSection = ({
+  product,
+  sectionControl,
+}: T_ProductSectionProps) => {
   const { t } = useI18n();
 
   return (
-    <ProductFormSection title={t("admin.product.form.sections.shipping")}>
+    <ProductFormSection
+      title={t("admin.product.form.sections.shipping")}
+      {...sectionControl}
+    >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Input
           label={t("admin.product.form.weightLabel")}

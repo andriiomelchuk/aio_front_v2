@@ -3,11 +3,17 @@ import { Input, Textarea } from "@/shared/ui";
 import { ProductFormSection } from "../ProductFormSection";
 import type { T_ProductSectionProps } from "./types";
 
-export const ProductSeoSection = ({ product }: T_ProductSectionProps) => {
+export const ProductSeoSection = ({
+  product,
+  sectionControl,
+}: T_ProductSectionProps) => {
   const { t } = useI18n();
 
   return (
-    <ProductFormSection title={t("admin.product.form.sections.seo")}>
+    <ProductFormSection
+      title={t("admin.product.form.sections.seo")}
+      {...sectionControl}
+    >
       <div className="grid gap-4">
         <Input
           label={t("admin.product.form.seoTitleLabel")}

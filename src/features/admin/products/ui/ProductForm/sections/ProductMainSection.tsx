@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import type { T_Categories } from "@/entities/categories/model/types";
+import { getCategories } from "@/shared/api/categories";
 import { useI18n } from "@/shared/i18n";
 import { Input, Select } from "@/shared/ui";
 import { ProductFormSection } from "../ProductFormSection";
@@ -6,11 +9,59 @@ import type { T_ProductMainSectionProps } from "./types";
 export const ProductMainSection = ({
   product,
   isEditMode,
+  errors,
+  sectionControl,
 }: T_ProductMainSectionProps) => {
   const { t } = useI18n();
+  const [categories, setCategories] = useState<T_Categories[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    product?.categoryId ?? "",
+  );
+
+  useEffect(() => {
+    setSelectedCategoryId(product?.categoryId ?? "");
+  }, [product?.categoryId]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCategories = async () => {
+      try {
+        const categories = await getCategories();
+
+        if (isMounted) {
+          setCategories(categories);
+        }
+      } catch {
+        if (isMounted) {
+          setCategories([]);
+        }
+      }
+    };
+
+    loadCategories();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const categoryOptions = [
+    {
+      value: "",
+      label: t("admin.product.form.categoryPlaceholder"),
+    },
+    ...categories.map((category) => ({
+      value: category.id,
+      label: category.name,
+    })),
+  ];
 
   return (
-    <ProductFormSection title={t("admin.product.form.sections.main")}>
+    <ProductFormSection
+      title={t("admin.product.form.sections.main")}
+      {...sectionControl}
+    >
       <div className="grid gap-4 md:grid-cols-2">
         {isEditMode && (
           <Input
@@ -30,6 +81,7 @@ export const ProductMainSection = ({
           defaultValue={product?.title ?? ""}
           placeholder={t("admin.product.form.titlePlaceholder")}
           className="h-10 w-full"
+          error={errors?.title}
         />
 
         <Input
@@ -39,6 +91,7 @@ export const ProductMainSection = ({
           defaultValue={product?.slug ?? ""}
           placeholder={t("admin.product.form.slugPlaceholder")}
           className="h-10 w-full"
+          error={errors?.slug}
         />
 
         <Input
@@ -48,6 +101,7 @@ export const ProductMainSection = ({
           defaultValue={product?.sku ?? ""}
           placeholder={t("admin.product.form.skuPlaceholder")}
           className="h-10 w-full"
+          error={errors?.sku}
         />
 
         <Input
@@ -59,13 +113,14 @@ export const ProductMainSection = ({
           className="h-10 w-full"
         />
 
-        <Input
+        <Select
           label={t("admin.product.form.categoryLabel")}
           name="categoryId"
-          type="text"
-          defaultValue={product?.categoryId ?? ""}
-          placeholder={t("admin.product.form.categoryPlaceholder")}
+          value={selectedCategoryId}
+          options={categoryOptions}
           className="h-10 w-full"
+          error={errors?.categoryId}
+          onChange={(event) => setSelectedCategoryId(event.target.value)}
         />
 
         <Select

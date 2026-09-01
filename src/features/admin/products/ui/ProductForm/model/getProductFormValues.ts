@@ -22,56 +22,80 @@ const getNumberValue = (formData: FormData, key: string) => {
   return Number(value);
 };
 
-const getLinesValue = (formData: FormData, key: string) => {
-  return getStringValue(formData, key)
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-};
-
 const getImagesValue = (formData: FormData): T_ProductImage[] => {
-  const thumbnail = getStringValue(formData, "thumbnail");
+  const rawImages = getStringValue(formData, "images");
 
-  return getLinesValue(formData, "images").map((url, index) => ({
-    id: `${index}-${url}`,
-    url,
-    alt: getStringValue(formData, "title"),
-    isMain: url === thumbnail || index === 0,
-  }));
+  try {
+    const images = JSON.parse(rawImages) as T_ProductImage[];
+
+    if (Array.isArray(images)) {
+      return images;
+    }
+
+    return [];
+  } catch {
+    return [];
+  }
 };
 
 const getAttributesValue = (formData: FormData): T_ProductAttribute[] => {
-  return getLinesValue(formData, "attributes").map((line) => {
-    const [name, ...valueParts] = line.split(":");
+  const rawAttributes = getStringValue(formData, "attributes");
 
-    return {
-      name: name.trim(),
-      value: valueParts.join(":").trim(),
-    };
-  });
+  try {
+    const attributes = JSON.parse(rawAttributes) as T_ProductAttribute[];
+
+    if (Array.isArray(attributes)) {
+      return attributes
+        .map((attribute) => ({
+          name: String(attribute.name ?? "").trim(),
+          value: String(attribute.value ?? "").trim(),
+        }))
+        .filter((attribute) => attribute.name || attribute.value);
+    }
+  } catch {
+    return [];
+  }
+
+  return [];
 };
 
 const getVariantsValue = (formData: FormData): T_ProductVariant[] | undefined => {
-  const variants = getLinesValue(formData, "variants").map((line, index) => {
-    const [title, sku] = line.split("|").map((value) => value.trim());
+  const rawVariants = getStringValue(formData, "variants");
 
-    return {
-      id: `${index}-${sku || title}`,
-      title: title || sku,
-      sku: sku || title,
-      price: getNumberValue(formData, "price") ?? 0,
-      oldPrice: getNumberValue(formData, "oldPrice"),
-      discountPercentage: getNumberValue(formData, "discountPercentage"),
-      stockQuantity: getNumberValue(formData, "stockQuantity") ?? 0,
-      stockStatus: getStringValue(
-        formData,
-        "stockStatus"
-      ) as T_ProductStockStatus,
-      attributes: [],
-    };
-  });
+  try {
+    const variants = JSON.parse(rawVariants) as T_ProductVariant[];
 
-  return variants.length > 0 ? variants : undefined;
+    if (Array.isArray(variants)) {
+      const preparedVariants = variants
+        .map((variant) => ({
+          id: String(variant.id ?? "").trim(),
+          title: String(variant.title ?? "").trim(),
+          sku: String(variant.sku ?? "").trim(),
+          price: Number(variant.price) || 0,
+          oldPrice: variant.oldPrice ? Number(variant.oldPrice) : undefined,
+          discountPercentage: variant.discountPercentage
+            ? Number(variant.discountPercentage)
+            : undefined,
+          stockQuantity: Number(variant.stockQuantity) || 0,
+          stockStatus: variant.stockStatus,
+          attributes: Array.isArray(variant.attributes)
+            ? variant.attributes
+                .map((attribute) => ({
+                  name: String(attribute.name ?? "").trim(),
+                  value: String(attribute.value ?? "").trim(),
+                }))
+                .filter((attribute) => attribute.name || attribute.value)
+            : [],
+        }))
+        .filter((variant) => variant.title || variant.sku);
+
+      return preparedVariants.length > 0 ? preparedVariants : undefined;
+    }
+  } catch {
+    return undefined;
+  }
+
+  return undefined;
 };
 
 export const getProductFormValues = (

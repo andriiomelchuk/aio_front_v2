@@ -42,6 +42,7 @@ export type T_ProductImage = {
   url: string;
   alt?: string;
   isMain?: boolean;
+  sortOrder?: number;
 };
 
 export type T_Product = {
@@ -76,6 +77,7 @@ export type T_Product = {
 
   createdAt: string;
   updatedAt: string;
+  updatedBy?: string;
 };
 
 export type T_CreateProductDto = Omit<

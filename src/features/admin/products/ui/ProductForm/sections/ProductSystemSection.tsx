@@ -3,11 +3,17 @@ import { Input } from "@/shared/ui";
 import { ProductFormSection } from "../ProductFormSection";
 import type { T_ProductSectionProps } from "./types";
 
-export const ProductSystemSection = ({ product }: T_ProductSectionProps) => {
+export const ProductSystemSection = ({
+  product,
+  sectionControl,
+}: T_ProductSectionProps) => {
   const { t } = useI18n();
 
   return (
-    <ProductFormSection title={t("admin.product.form.sections.system")}>
+    <ProductFormSection
+      title={t("admin.product.form.sections.system")}
+      {...sectionControl}
+    >
       <div className="grid gap-4 md:grid-cols-2">
         <Input
           label={t("admin.product.form.createdAtLabel")}
@@ -23,6 +29,15 @@ export const ProductSystemSection = ({ product }: T_ProductSectionProps) => {
           name="updatedAt"
           type="text"
           defaultValue={product?.updatedAt ?? ""}
+          className="h-10 w-full"
+          disabled
+        />
+
+        <Input
+          label={t("admin.product.form.updatedByLabel")}
+          name="updatedBy"
+          type="text"
+          defaultValue={product?.updatedBy ?? ""}
           className="h-10 w-full"
           disabled
         />
