@@ -11,6 +11,8 @@ export const commonDe = {
     "nav.popular": "Beliebt",
     "nav.battle": "Battle",
     "nav.movies": "Filme",
+    "nav.products": "Produkte",
+    "nav.categories": "Kategorien",
 
     "pagination.rowsPerPage": "Zeilen pro Seite",
     "pagination.pageOf": "Seite {page} von {totalPages}",

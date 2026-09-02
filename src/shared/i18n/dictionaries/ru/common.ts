@@ -11,6 +11,8 @@ export const commonRu = {
     "nav.popular": "Популярное",
     "nav.battle": "Батл",
     "nav.movies": "Фильмы",
+    "nav.products": "Товары",
+    "nav.categories": "Категории",
 
     "pagination.rowsPerPage": "Строк на странице",
     "pagination.pageOf": "Страница {page} из {totalPages}",

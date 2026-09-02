@@ -14,13 +14,6 @@ export const ProductMainSection = ({
 }: T_ProductMainSectionProps) => {
   const { t } = useI18n();
   const [categories, setCategories] = useState<T_Categories[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(
-    product?.categoryId ?? "",
-  );
-
-  useEffect(() => {
-    setSelectedCategoryId(product?.categoryId ?? "");
-  }, [product?.categoryId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -116,11 +109,10 @@ export const ProductMainSection = ({
         <Select
           label={t("admin.product.form.categoryLabel")}
           name="categoryId"
-          value={selectedCategoryId}
+          defaultValue={product?.categoryId ?? ""}
           options={categoryOptions}
           className="h-10 w-full"
           error={errors?.categoryId}
-          onChange={(event) => setSelectedCategoryId(event.target.value)}
         />
 
         <Select

@@ -34,13 +34,28 @@ export function ProductsManagement() {
 
   const [products, setProducts] = useState<T_Product[]>([]);
 
-  const loadProducts = async () => {
+  const reloadProducts = async () => {
     const products = await getProducts();
+
     setProducts(products);
   };
 
   useEffect(() => {
-    loadProducts();
+    let isMounted = true;
+
+    const loadInitialProducts = async () => {
+      const products = await getProducts();
+
+      if (isMounted) {
+        setProducts(products);
+      }
+    };
+
+    loadInitialProducts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const filteredProducts = filterProducts(products, {
@@ -78,7 +93,7 @@ export function ProductsManagement() {
       });
     }
 
-    await loadProducts();
+    await reloadProducts();
     setSelectedProductIds([]);
     setBulkAction("");
   };

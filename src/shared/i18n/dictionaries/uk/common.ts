@@ -11,6 +11,8 @@ export const commonUk = {
     "nav.popular": "Популярне",
     "nav.battle": "Батл",
     "nav.movies": "Фільми",
+    "nav.products": "Товари",
+    "nav.categories": "Категорії",
 
     "pagination.rowsPerPage": "Рядків на сторінці",
     "pagination.pageOf": "Сторінка {page} з {totalPages}",
