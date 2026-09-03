@@ -1,25 +1,25 @@
 import type { T_Product } from "@/entities/product/model/types";
+import { useAppDispatch, useAppSelector } from "@/shared/store/hooks";
+import { toggleProductInComparison } from "./comparisonSlice";
 
-const compareProductIds = new Set<string>();
 
 export const useCompare = () => {
-  const addToCompare = (product: T_Product) => {
-    compareProductIds.add(product.id);
-    console.log("Add to compare:", product.id);
-  };
 
-  const removeFromCompare = (product: T_Product) => {
-    compareProductIds.delete(product.id);
-    console.log("Remove from compare:", product.id);
-  };
+  const dispatch = useAppDispatch();
+
+  const products = useAppSelector((state) => state.comparison.products);
 
   const isInCompare = (productId: string) => {
-    return compareProductIds.has(productId);
-  };
+    return products.some((product) => product.id === productId);
+  }
+
+  const toggleProductInCompare = (product: T_Product) => {
+    dispatch(toggleProductInComparison(product));
+  }
 
   return {
-    addToCompare,
-    removeFromCompare,
-    isInCompare,
+    products,
+    toggleProductInCompare,
+    isInCompare
   };
-};
+}

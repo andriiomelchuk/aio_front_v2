@@ -166,16 +166,8 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <AddToCartControl product={product} />
+            <AddToCartControl product={product} disabled={!isAvailable} />
 
-            {/* <Button
-              type="button"
-              variant="secondary"
-              className={actionButtonClass}
-              aria-label={t("products.addToWishlist")}
-            >
-              <HeartIcon />
-            </Button> */}
             <AddToWishlistButton product={product} />
 
             <Button

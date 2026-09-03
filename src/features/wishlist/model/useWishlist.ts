@@ -1,25 +1,24 @@
-import { T_Product } from "@/entities/product/model/types";
+
+import { useAppDispatch, useAppSelector } from "@/shared/store/hooks";
+import { toggleWishlist } from "./wishlistSlice";
 
 export const useWishlist = () => {
 
-    const wishlistProductIds = new Set<string>();
+    const dispatch = useAppDispatch();
 
-    const addToWishlist = (product: T_Product) => {
-        console.log("Add to wishlist:", product);
-    };
-
-    const removeFromWishlist = (product: T_Product) => {
-        console.log("Remove from wishlist:", product);
-    }
+    const productIds = useAppSelector((state) => state.wishlist.productIds);
 
     const isInWishlist = (productId: string) => {
-        return wishlistProductIds.has(productId);
-    };
+        return productIds.includes(productId);
+    }
 
+    const toggleProductWishlist = (productId: string) => {
+        dispatch(toggleWishlist(productId));
+    }
 
     return {
-        addToWishlist,
-        removeFromWishlist,
+        productIds,
         isInWishlist,
+        toggleProductWishlist,
     };
 }

@@ -9,3 +9,7 @@ export type T_AddToCartButtonProps = {
   product: T_Product;
   disabled?: boolean;
 };
+
+export type T_CartState = {
+  products: T_CartItem[];
+};
