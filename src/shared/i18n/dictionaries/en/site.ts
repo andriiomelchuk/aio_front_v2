@@ -1,4 +1,7 @@
 export const siteEn = {
+    "home.title": "Main page",
+    "todos.title": "Todos",
+
     "popular.eyebrow": "GitHub popular",
     "popular.title": "Popular Repositories",
     "popular.description": "Browse the most starred repositories by language.",
@@ -98,4 +101,19 @@ export const siteEn = {
     "products.detail.shipping": "Shipping",
     "products.detail.weight": "Weight",
     "products.detail.dimensions": "Dimensions",
+    "cart.title": "Cart",
+    "cart.description": "Review your products, adjust quantities, and continue to checkout.",
+    "cart.table.product": "Product",
+    "cart.table.basePrice": "Base price",
+    "cart.table.quantity": "Quantity",
+    "cart.table.total": "Total",
+    "cart.table.remove": "Remove product",
+    "cart.summary.title": "Order summary",
+    "cart.summary.subtotal": "Subtotal",
+    "cart.summary.discount": "Discount",
+    "cart.summary.shipping": "Shipping",
+    "cart.summary.shippingCalculatedLater": "Calculated later",
+    "cart.summary.total": "Total",
+    "cart.checkout": "Checkout",
+    "cart.continueShopping": "Continue shopping",
 } as const;

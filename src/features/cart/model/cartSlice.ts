@@ -13,11 +13,18 @@ const cartSlice = createSlice({
             const cartItem = action.payload;
             const existingItem = state.products.find((item) => item.product.id === cartItem.product.id);
             if (existingItem) {
-                existingItem.quantity += cartItem.quantity;
+                existingItem.quantity = Math.min(
+                    existingItem.quantity + cartItem.quantity,
+                    existingItem.product.stockQuantity,
+                );
+
                 return;
             }
 
-            state.products.push(cartItem);
+            state.products.push({
+                ...cartItem,
+                quantity: Math.min(cartItem.quantity, cartItem.product.stockQuantity),
+            });
         },
         removeCartItem: (state, action: PayloadAction<string>) => {
             const productId = action.payload;
@@ -50,9 +57,12 @@ const cartSlice = createSlice({
         },
         removeAllCartItems: (state) => {
             state.products = [];
-        }
+        },
+        restoreCart: (state, action: PayloadAction<T_CartState>) => {
+            state.products = action.payload.products;
+        },
     }
 })
 
-export const { addCartItem, removeCartItem, increaseCartItemQuantity, decreaseCartItemQuantity, setCartItemQuantity, removeAllCartItems } = cartSlice.actions;
+export const { addCartItem, removeCartItem, increaseCartItemQuantity, decreaseCartItemQuantity, setCartItemQuantity, removeAllCartItems, restoreCart } = cartSlice.actions;
 export default cartSlice.reducer;

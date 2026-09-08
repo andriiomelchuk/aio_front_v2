@@ -1,15 +1,21 @@
+"use client";
+
+import { useI18n } from "@/shared/i18n";
 import type { T_AdminTableColumn, T_AdminTableProps } from "./types";
 
 export const AdminTable = <T extends Record<string, React.ReactNode>>({
   columns,
   rows,
   getRowKey,
-  emptyText = "No data found",
+  emptyText,
   selectedRowKey,
   onRowClick,
   selectedRowKeys,
   onSelectedRowKeysChange,
 }: T_AdminTableProps<T>) => {
+  const { t } = useI18n();
+  const tableEmptyText = emptyText ?? t("admin.table.noDataFound");
+
   const getAlignClass = (align: T_AdminTableColumn<T>["align"]) => {
     if (align === "center") {
       return "text-center";
@@ -50,7 +56,7 @@ export const AdminTable = <T extends Record<string, React.ReactNode>>({
           <tr className="border-b border-border text-muted">
             {isMultipleSelection && (
               <th className="w-10 px-3 py-2">
-                <span className="sr-only">Select</span>
+                <span className="sr-only">{t("admin.table.select")}</span>
               </th>
             )}
             {columns.map((column) => (
@@ -71,7 +77,7 @@ export const AdminTable = <T extends Record<string, React.ReactNode>>({
                 colSpan={columns.length + (isMultipleSelection ? 1 : 0)}
                 className="px-3 py-8 text-center text-sm text-muted"
               >
-                {emptyText}
+                {tableEmptyText}
               </td>
             </tr>
           ) : (
@@ -96,7 +102,7 @@ export const AdminTable = <T extends Record<string, React.ReactNode>>({
                         checked={isRowChecked(rowKey)}
                         onChange={() => toggleRowCheck(rowKey)}
                         onClick={(event) => event.stopPropagation()}
-                        aria-label="Select row"
+                        aria-label={t("admin.table.selectRow")}
                       />
                     </td>
                   )}

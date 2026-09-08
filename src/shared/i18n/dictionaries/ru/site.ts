@@ -1,5 +1,8 @@
 
 export const siteRu = {
+    "home.title": "Главная страница",
+    "todos.title": "Задачи",
+
     "popular.eyebrow": "Популярное на GitHub",
     "popular.title": "Популярные репозитории",
     "popular.description": "Смотри репозитории с наибольшим количеством звёзд по языку программирования.",
@@ -98,4 +101,19 @@ export const siteRu = {
     "products.detail.shipping": "Доставка",
     "products.detail.weight": "Вес",
     "products.detail.dimensions": "Размеры",
+    "cart.title": "Корзина",
+    "cart.description": "Проверь товары, измени количество и перейди к оформлению заказа.",
+    "cart.table.product": "Товар",
+    "cart.table.basePrice": "Базовая цена",
+    "cart.table.quantity": "Количество",
+    "cart.table.total": "Итого",
+    "cart.table.remove": "Удалить товар",
+    "cart.summary.title": "Сводка заказа",
+    "cart.summary.subtotal": "Подытог",
+    "cart.summary.discount": "Скидка",
+    "cart.summary.shipping": "Доставка",
+    "cart.summary.shippingCalculatedLater": "Рассчитывается позже",
+    "cart.summary.total": "Итого",
+    "cart.checkout": "Оформить заказ",
+    "cart.continueShopping": "Продолжить покупки",
 } as const;

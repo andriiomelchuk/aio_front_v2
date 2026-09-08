@@ -1,6 +1,9 @@
 
 
 export const siteUk = {
+    "home.title": "Головна сторінка",
+    "todos.title": "Завдання",
+
     "popular.eyebrow": "Популярне на GitHub",
     "popular.title": "Популярні репозиторії",
     "popular.description": "Переглядай репозиторії з найбільшою кількістю зірок за мовою програмування.",
@@ -99,4 +102,19 @@ export const siteUk = {
     "products.detail.shipping": "Доставка",
     "products.detail.weight": "Вага",
     "products.detail.dimensions": "Розміри",
+    "cart.title": "Кошик",
+    "cart.description": "Перевір товари, зміни кількість і переходь до оформлення замовлення.",
+    "cart.table.product": "Товар",
+    "cart.table.basePrice": "Базова ціна",
+    "cart.table.quantity": "Кількість",
+    "cart.table.total": "Разом",
+    "cart.table.remove": "Видалити товар",
+    "cart.summary.title": "Підсумок замовлення",
+    "cart.summary.subtotal": "Проміжний підсумок",
+    "cart.summary.discount": "Знижка",
+    "cart.summary.shipping": "Доставка",
+    "cart.summary.shippingCalculatedLater": "Розраховується пізніше",
+    "cart.summary.total": "Разом",
+    "cart.checkout": "Оформити замовлення",
+    "cart.continueShopping": "Продовжити покупки",
 }as const;

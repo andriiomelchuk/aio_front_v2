@@ -5,8 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import type { T_Product } from "@/entities/product/model/types";
 import { ProductForm } from "../ProductForm";
 import { getProductById, updateProduct } from "@/shared/api/products";
+import { useI18n } from "@/shared/i18n";
 
 export const EditProductPageContent = () => {
+  const { t } = useI18n();
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const [product, setProduct] = useState<T_Product | null>(null);
@@ -18,19 +20,19 @@ export const EditProductPageContent = () => {
         const loadedProduct = await getProductById(params.id);
         setProduct(loadedProduct);
       } catch {
-        setError("Product not found");
+        setError(t("admin.product.edit.notFound"));
       }
     };
 
     loadProduct();
-  }, [params.id]);
+  }, [params.id, t]);
 
   if (error) {
     return <div className="p-4 text-danger">{error}</div>;
   }
 
   if (!product) {
-    return <div className="p-4 text-muted">Loading...</div>;
+    return <div className="p-4 text-muted">{t("admin.product.edit.loading")}</div>;
   }
 
   return (

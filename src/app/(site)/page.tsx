@@ -1,6 +1,12 @@
 
+"use client";
+
+import { useI18n } from "@/shared/i18n";
+
 export default function Home() {
+  const { t } = useI18n();
+
   return (
-   <main>Main page</main>
+   <main>{t("home.title")}</main>
   );
 }

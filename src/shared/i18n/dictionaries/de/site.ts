@@ -1,6 +1,9 @@
 
 
 export const siteDe = {
+    "home.title": "Startseite",
+    "todos.title": "Aufgaben",
+
     "popular.eyebrow": "Beliebt auf GitHub",
     "popular.title": "Beliebte Repositories",
     "popular.description": "Durchsuche die Repositories mit den meisten Sternen nach Programmiersprache.",
@@ -99,4 +102,19 @@ export const siteDe = {
     "products.detail.shipping": "Versand",
     "products.detail.weight": "Gewicht",
     "products.detail.dimensions": "Abmessungen",
+    "cart.title": "Warenkorb",
+    "cart.description": "Prüfe deine Produkte, passe die Mengen an und fahre mit dem Checkout fort.",
+    "cart.table.product": "Produkt",
+    "cart.table.basePrice": "Basispreis",
+    "cart.table.quantity": "Menge",
+    "cart.table.total": "Gesamt",
+    "cart.table.remove": "Produkt entfernen",
+    "cart.summary.title": "Bestellübersicht",
+    "cart.summary.subtotal": "Zwischensumme",
+    "cart.summary.discount": "Rabatt",
+    "cart.summary.shipping": "Versand",
+    "cart.summary.shippingCalculatedLater": "Wird später berechnet",
+    "cart.summary.total": "Gesamt",
+    "cart.checkout": "Zur Kasse",
+    "cart.continueShopping": "Weiter einkaufen",
 } as const;
