@@ -24,33 +24,40 @@ export const AddToCartControl = ({
   };
 
   return (
-    <div className="flex flex-wrap gap-3">
-      <div className="flex h-12 overflow-hidden rounded-md border border-border">
-        <Button
-          type="button"
-          variant="ghost"
-          className="h-12 w-12 rounded-none px-0"
-          disabled={disabled || quantity <= 1}
-          onClick={decreaseQuantity}
-          aria-label={t("products.quantityDecrease")}
-        >
-          -
-        </Button>
+    <div className="flex flex-wrap items-start gap-3">
+      <div>
+        <div className="flex h-12 overflow-hidden rounded-md border border-border">
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-12 w-12 rounded-none px-0"
+            disabled={disabled || quantity <= 1}
+            onClick={decreaseQuantity}
+            aria-label={t("products.quantityDecrease")}
+          >
+            -
+          </Button>
 
-        <span className="flex h-12 min-w-14 items-center justify-center border-x border-border px-4 font-semibold text-foreground">
-          {quantity}
-        </span>
+          <span className="flex h-12 min-w-14 items-center justify-center border-x border-border px-4 font-semibold text-foreground">
+            {quantity}
+          </span>
 
-        <Button
-          type="button"
-          variant="ghost"
-          className="h-12 w-12 rounded-none px-0"
-          disabled={disabled || quantity >= maxQuantity}
-          onClick={increaseQuantity}
-          aria-label={t("products.quantityIncrease")}
-        >
-          +
-        </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-12 w-12 rounded-none px-0"
+            disabled={disabled || quantity >= maxQuantity}
+            onClick={increaseQuantity}
+            aria-label={t("products.quantityIncrease")}
+          >
+            +
+          </Button>
+        </div>
+        <p className="mt-2 text-xs text-muted">
+          {t("cart.item.maxAvailable", {
+            count: maxQuantity,
+          })}
+        </p>
       </div>
 
       <Button

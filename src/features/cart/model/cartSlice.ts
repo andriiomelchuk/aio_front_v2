@@ -32,8 +32,17 @@ const cartSlice = createSlice({
         },
         increaseCartItemQuantity: (state, action: PayloadAction<string>) => {
             const productId = action.payload;
-            state.products = state.products.map((item) => item.product.id === productId
-                ? { ...item, quantity: item.quantity + 1 } : item)
+
+            const cartItem = state.products.find((item) => item.product.id === productId);
+
+            if (!cartItem) return;
+
+            cartItem.quantity = Math.min(
+                cartItem.quantity + 1,
+                cartItem.product.stockQuantity,
+            );
+
+
         },
         decreaseCartItemQuantity: (state, action: PayloadAction<string>) => {
             const productId = action.payload;
@@ -44,7 +53,7 @@ const cartSlice = createSlice({
                 return;
             }
 
-            state.products = state.products.filter((item) => item.product.id !== productId)
+             state.products = state.products.filter((item) => item.product.id !== productId)
         },
         setCartItemQuantity: (state, action: PayloadAction<{ productId: string, quantity: number }>) => {
             const { productId, quantity } = action.payload;

@@ -1,6 +1,8 @@
 import type { T_Product } from "@/entities/product/model/types";
 import { useAppDispatch, useAppSelector } from "@/shared/store/hooks";
-import { toggleProductInComparison } from "./comparisonSlice";
+import { useCallback } from "react";
+import { loadComparisonFromStorage } from "./comparisonStorage";
+import { restoreComparison, toggleProductInComparison } from "./comparisonSlice";
 
 
 export const useCompare = () => {
@@ -17,9 +19,18 @@ export const useCompare = () => {
     dispatch(toggleProductInComparison(product));
   }
 
+  const restoreComparisonFromStorage = useCallback(() => {
+      const savedComparison = loadComparisonFromStorage();
+  
+      if (!savedComparison) return;
+  
+      dispatch(restoreComparison(savedComparison));
+    }, [dispatch]);
+
   return {
     products,
     toggleProductInCompare,
-    isInCompare
+    isInCompare,
+    restoreComparisonFromStorage
   };
 }

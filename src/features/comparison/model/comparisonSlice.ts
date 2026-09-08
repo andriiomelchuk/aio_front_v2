@@ -18,9 +18,12 @@ const comparisonSlice = createSlice({
             } else {
                 state.products.push(product)
             }
-        }
+        },
+        restoreComparison: (state, action: PayloadAction<T_ComparisonState>) => {
+            state.products = action.payload.products;
+        },
     }
 })
 
-export const { toggleProductInComparison } = comparisonSlice.actions
+export const { toggleProductInComparison, restoreComparison } = comparisonSlice.actions
 export default comparisonSlice.reducer

@@ -57,31 +57,38 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 md:justify-center">
+      <div className="flex items-start justify-between gap-3 md:block md:text-center">
         <span className="text-sm text-muted md:hidden">
           {t("cart.table.quantity")}
         </span>
-        <div className="flex h-10 overflow-hidden rounded-md border border-border">
-          <Button
-            type="button"
-            variant="ghost"
-            className="h-10 w-10 text-foreground transition hover:bg-surface-muted"
-            onClick={() => decreaseQuantity(item.product)}
-          >
-            -
-          </Button>
-          <span className="flex h-10 min-w-12 items-center justify-center border-x border-border px-3 font-semibold">
-            {item.quantity}
-          </span>
-          <Button
-            type="button"
-            variant="ghost"
-            className="h-10 w-10 text-foreground transition hover:bg-surface-muted"
-            onClick={() => increaseQuantity(item.product)}
-            disabled={item.quantity >= item.product.stockQuantity}
-          >
-            +
-          </Button>
+        <div className="flex flex-col items-end md:items-center">
+          <div className="flex h-10 overflow-hidden rounded-md border border-border">
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-10 w-10 text-foreground transition hover:bg-surface-muted"
+              onClick={() => decreaseQuantity(item.product)}
+            >
+              -
+            </Button>
+            <span className="flex h-10 min-w-12 items-center justify-center border-x border-border px-3 font-semibold">
+              {item.quantity}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-10 w-10 text-foreground transition hover:bg-surface-muted"
+              onClick={() => increaseQuantity(item.product)}
+              disabled={item.quantity >= item.product.stockQuantity}
+            >
+              +
+            </Button>
+          </div>
+          <p className="mt-2 text-xs text-muted">
+            {t("cart.item.maxAvailable", {
+              count: item.product.stockQuantity,
+            })}
+          </p>
         </div>
       </div>
 
