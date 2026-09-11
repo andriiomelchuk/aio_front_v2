@@ -13,6 +13,7 @@ export const commonUk = {
     "nav.movies": "Фільми",
     "nav.products": "Товари",
     "nav.categories": "Категорії",
+    "nav.wishlist": "Обране",
 
     "pagination.rowsPerPage": "Рядків на сторінці",
     "pagination.pageOf": "Сторінка {page} з {totalPages}",

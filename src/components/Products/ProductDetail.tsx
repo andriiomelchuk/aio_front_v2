@@ -3,12 +3,10 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useI18n } from "@/shared/i18n";
-import { Button } from "@/shared/ui";
-
-import { CompareIcon } from "./icons";
 import type { T_ProductDetailProps } from "./types";
 import { AddToCartControl } from "@/features/cart/ui/AddToCartControls";
 import { AddToWishlistButton } from "@/features/wishlist/ui/AddToWishlistButton";
+import { CompareToggleButton } from "@/features/comparison/ui/CompareToggleButton";
 
 
 export const ProductDetail = ({ product }: T_ProductDetailProps) => {
@@ -57,9 +55,6 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
     low_stock: t("products.stock.lowStock"),
     out_of_stock: t("products.stock.outOfStock"),
   }[product.stockStatus];
-
-  const actionButtonClass =
-    "inline-flex h-12 w-12 shrink-0 items-center justify-center px-0";
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -170,14 +165,7 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
 
             <AddToWishlistButton product={product} />
 
-            <Button
-              type="button"
-              variant="secondary"
-              className={actionButtonClass}
-              aria-label={t("products.forComparison")}
-            >
-              <CompareIcon />
-            </Button>
+            <CompareToggleButton product={product} />
           </div>
 
           <div className="mt-8 space-y-6">

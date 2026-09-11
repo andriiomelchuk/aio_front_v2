@@ -156,7 +156,7 @@ export const adminEn = {
     "admin.categories.searchPlaceholder": "Search category by name",
     "admin.categories.pageTitle": "Categories",
     "admin.categories.description": "Showing {shown} of {total} categories",
-    "admin.categories.noUserFound": "Category not found",
+    "admin.categories.notFound": "No categories found",
 
     "admin.categories.table.id": "Category ID",
     "admin.categories.table.name": "Name",

@@ -2,8 +2,6 @@
 import Link from "next/link";
 import { useI18n } from "@/shared/i18n";
 import type { T_ProductCardProps } from "./types";
-import { Button } from "@/shared/ui";
-import { HeartIcon } from "./icons";
 import { AddToCartButton } from "@/features/cart";
 import { AddToWishlistButton } from "@/features/wishlist/ui/AddToWishlistButton";
 import { CompareToggleButton } from "@/features/comparison/ui/CompareToggleButton";
@@ -12,9 +10,6 @@ export const ProductCard = ({ product }: T_ProductCardProps) => {
   const { t } = useI18n();
 
   const isAvailable = product.stockStatus !== "out_of_stock";
-  const actionButtonClass =
-    "inline-flex h-12 w-12 shrink-0 items-center justify-center px-0";
-
   const mainImage =
     product.images.find((image) => image.isMain)?.url ?? product.thumbnail;
 
@@ -86,18 +81,7 @@ export const ProductCard = ({ product }: T_ProductCardProps) => {
         </div>
       </Link>
       <div className="flex gap-2 border-t border-border p-4 pt-3">
-        {isAvailable ? (
-          <AddToCartButton product={product} />
-        ) : (
-          <Button
-            type="button"
-            variant="secondary"
-            aria-label={t("products.addToWishlist")}
-            className={actionButtonClass}
-          >
-            <HeartIcon />
-          </Button>
-        )}
+        <AddToCartButton product={product} disabled={!isAvailable} />
 
         <CompareToggleButton product={product} />
 

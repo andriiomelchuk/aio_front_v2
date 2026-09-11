@@ -52,7 +52,7 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
             className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-surface text-foreground transition hover:bg-surface-muted lg:hidden"
             aria-label={t("admin.sidebar.ariaLabel.closeAdminMenuButton")}
           >
-            ×
+            X
           </button>
         </div>
 

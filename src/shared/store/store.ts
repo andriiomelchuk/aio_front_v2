@@ -4,6 +4,7 @@ import comparisonReducer from "@/features/comparison/model/comparisonSlice";
 import cartReducer from "@/features/cart/model/cartSlice";
 import { cartMiddleware } from "@/features/cart/model/cartMiddleware";
 import { comparisonMiddleware } from "@/features/comparison/model/comparisonMiddleware";
+import { wishlistMiddleware } from "@/features/wishlist/model/wishlistMiddleware";
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
     cartMiddleware,
-    comparisonMiddleware
+    comparisonMiddleware,
+    wishlistMiddleware,
   ),
 
 });

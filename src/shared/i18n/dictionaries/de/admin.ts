@@ -147,7 +147,7 @@ export const adminDe = {
     "admin.categories.searchPlaceholder": "Kategorie nach Namen suchen",
     "admin.categories.pageTitle": "Kategorien",
     "admin.categories.description": "{shown} von {total} Kategorien angezeigt",
-    "admin.categories.noUserFound": "Keine Kategorien gefunden",
+    "admin.categories.notFound": "Keine Kategorien gefunden",
 
     "admin.categories.table.id": "Kategorie-ID",
     "admin.categories.table.name": "Name",

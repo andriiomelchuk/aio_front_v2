@@ -148,7 +148,7 @@ export const adminRu = {
     "admin.categories.searchPlaceholder": "Поиск категории по названию",
     "admin.categories.pageTitle": "Категории",
     "admin.categories.description": "Показано {shown} из {total} категорий",
-    "admin.categories.noUserFound": "Категории не найдены",
+    "admin.categories.notFound": "Категории не найдены",
 
     "admin.categories.table.id": "ID категории",
     "admin.categories.table.name": "Название",

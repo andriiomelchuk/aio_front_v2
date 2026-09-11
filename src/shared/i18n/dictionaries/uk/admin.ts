@@ -152,7 +152,7 @@ export const adminUk = {
     "admin.categories.searchPlaceholder": "Пошук категорії за назвою",
     "admin.categories.pageTitle": "Категорії",
     "admin.categories.description": "Показано {shown} з {total} категорій",
-    "admin.categories.noUserFound": "Категорії не знайдено",
+    "admin.categories.notFound": "Категорії не знайдено",
 
     "admin.categories.table.id": "ID категорії",
     "admin.categories.table.name": "Назва",

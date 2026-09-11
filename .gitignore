@@ -42,5 +42,5 @@ yarn-error.log*
 next-env.d.ts
 
 
-notes.md
-*.md
+# local project documentation
+/techdocs/

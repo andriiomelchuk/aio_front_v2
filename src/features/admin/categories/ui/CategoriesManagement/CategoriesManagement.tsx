@@ -139,7 +139,7 @@ export function CategoriesManagement() {
           onRowClick={(category) => setSelectedCategoryId(category.id)}
           selectedRowKeys={selectedCategoriesIds}
           onSelectedRowKeysChange={setSelectedCategoriesIds}
-          emptyText={t("admin.categories.noUserFound")}
+          emptyText={t("admin.categories.notFound")}
         />
 
         <CategoriesBulkActions

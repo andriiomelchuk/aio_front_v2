@@ -1,6 +1,12 @@
 
 import { useAppDispatch, useAppSelector } from "@/shared/store/hooks";
-import { toggleWishlist } from "./wishlistSlice";
+import { useCallback } from "react";
+import { loadWishlistFromStorage } from "./wishlistStorage";
+import {
+    clearWishlist,
+    restoreWishlist,
+    toggleWishlist,
+} from "./wishlistSlice";
 
 export const useWishlist = () => {
 
@@ -16,9 +22,23 @@ export const useWishlist = () => {
         dispatch(toggleWishlist(productId));
     }
 
+    const clearAllWishlist = () => {
+        dispatch(clearWishlist());
+    };
+
+    const restoreWishlistFromStorage = useCallback(() => {
+        const savedWishlist = loadWishlistFromStorage();
+
+        if (!savedWishlist) return;
+
+        dispatch(restoreWishlist(savedWishlist));
+    }, [dispatch]);
+
     return {
         productIds,
         isInWishlist,
         toggleProductWishlist,
+        clearAllWishlist,
+        restoreWishlistFromStorage,
     };
 }

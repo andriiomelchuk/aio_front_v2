@@ -8,4 +8,5 @@ export const siteNavigation: T_NavItem[] = [
   { id: "movies", labelKey: "nav.movies", href: "/movies" },
   { id: "products", labelKey: "nav.products", href: "/products" },
   { id: "categories", labelKey: "nav.categories", href: "/categories" },
+  { id: "wishlist", labelKey: "nav.wishlist", href: "/wishlist" },
 ] as const;

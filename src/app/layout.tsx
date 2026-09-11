@@ -5,6 +5,7 @@ import { I18nProvider } from "@/shared/i18n";
 import { StoreProvider } from "@/shared/store/StoreProvider";
 import { CartInitializer } from "@/features/cart/ui/CartInitializer";
 import { ComparisonInitializer } from "@/features/comparison/ui/ComparisonInitializer";
+import { WishlistInitializer } from "@/features/wishlist";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
           <I18nProvider>
             <CartInitializer />
             <ComparisonInitializer />
+            <WishlistInitializer />
             {children}
           </I18nProvider>
         </StoreProvider>

@@ -34,15 +34,11 @@ const cartSlice = createSlice({
             const productId = action.payload;
 
             const cartItem = state.products.find((item) => item.product.id === productId);
-
             if (!cartItem) return;
-
             cartItem.quantity = Math.min(
                 cartItem.quantity + 1,
                 cartItem.product.stockQuantity,
             );
-
-
         },
         decreaseCartItemQuantity: (state, action: PayloadAction<string>) => {
             const productId = action.payload;
@@ -61,7 +57,7 @@ const cartSlice = createSlice({
             if (!cartItem) return;
 
             if (quantity > 0) {
-                cartItem.quantity = quantity;
+                cartItem.quantity = Math.min(cartItem.quantity, cartItem.product.stockQuantity);
             }
         },
         removeAllCartItems: (state) => {

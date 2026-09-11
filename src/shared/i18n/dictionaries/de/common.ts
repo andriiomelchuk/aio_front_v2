@@ -13,6 +13,7 @@ export const commonDe = {
     "nav.movies": "Filme",
     "nav.products": "Produkte",
     "nav.categories": "Kategorien",
+    "nav.wishlist": "Wunschliste",
 
     "pagination.rowsPerPage": "Zeilen pro Seite",
     "pagination.pageOf": "Seite {page} von {totalPages}",
