@@ -13,6 +13,7 @@ import Link from "next/link";
 export const mapProductsRows = (
   products: T_Product[],
   t: T_I18nContext["t"],
+  canManage = true,
 ) => {
   return products.map((product) => ({
     id: product.id,
@@ -36,7 +37,7 @@ export const mapProductsRows = (
         {getProductsStatusLabel(product.status, t)}
       </AdminBadge>
     ),
-    action: (
+    action: canManage ? (
       <Link href={`/admin/products/${product.id}/edit`}>
         <Button
           className="h-10"
@@ -46,6 +47,6 @@ export const mapProductsRows = (
           {t("admin.products.table.editButton")}
         </Button>
       </Link>
-    ),
+    ) : null,
   }));
 };

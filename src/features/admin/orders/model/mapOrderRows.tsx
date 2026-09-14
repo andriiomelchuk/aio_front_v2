@@ -2,12 +2,11 @@ import type { T_Order } from "@/entities/order";
 import type { T_I18nContext } from "@/shared/i18n";
 import { AdminBadge } from "@/widgets/AdminWidgets";
 import { orderStatusBadgeVariant, getOrderStatusLabel } from "./orderStatusView";
-import { Button } from "@/shared/ui";
+import Link from "next/link";
 
 export const mapOrderRows = (
   orders: T_Order[],
   t: T_I18nContext["t"],
-  onEdit: (user: T_Order) => void, 
 ) => {
   return orders.map((order) => ({
     id: order.id,
@@ -21,13 +20,13 @@ export const mapOrderRows = (
       </AdminBadge>
     ),
     action: (
-      <Button
-        className="h-10"
-        variant="ghost"
-        onClick={() => onEdit(order)}
+      <Link
+        href={`/admin/orders/${encodeURIComponent(order.id)}`}
+        className="inline-flex h-10 items-center rounded-md px-4 text-sm hover:bg-surface-muted"
+        onClick={(event) => event.stopPropagation()}
       >
         {t("admin.orders.table.view")}
-      </Button>
+      </Link>
     ),
   }));
 };

@@ -3,9 +3,12 @@ import type { T_AddUserFormProps, T_UserData } from "./types";
 import { Button, Input, Select } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
 import { createUser } from "@/shared/api/users";
+import { useAdminAccess } from "@/features/auth";
+import { assignableStaffRoles, canAssignStaffRoles } from "@/shared/config/adminRoles";
 
 export const AddUserForm = ({ onCancel, onCreate }: T_AddUserFormProps) => {
   const { t } = useI18n();
+  const { role } = useAdminAccess();
   const [user, setUser] = useState<T_UserData>({
     name: "",
     login: "",
@@ -25,7 +28,7 @@ export const AddUserForm = ({ onCancel, onCreate }: T_AddUserFormProps) => {
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!user.role || !user.status) {
+    if (!role || !canAssignStaffRoles(role) || !user.role || !user.status) {
       return;
     }
 
@@ -96,9 +99,10 @@ export const AddUserForm = ({ onCancel, onCreate }: T_AddUserFormProps) => {
           onChange={(event) => updateUser("role", event.target.value)}
           options={[
             { value: "", label: t("admin.user.form.rolePlaceholder") },
-            { value: "Admin", label: "Admin" },
-            { value: "Editor", label: "Editor" },
-            { value: "User", label: "User" },
+            ...assignableStaffRoles.map((staffRole) => ({
+              value: staffRole,
+              label: t(`admin.auth.role.${staffRole}`),
+            })),
           ]}
         />
 

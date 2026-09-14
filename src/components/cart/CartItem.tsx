@@ -23,11 +23,13 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
   return (
     <article className="grid gap-4 p-4 sm:p-5 md:grid-cols-[minmax(0,1fr)_120px_130px_120px_44px] md:items-center md:gap-4">
       <div className="flex min-w-0 gap-4">
-        <div className="h-24 w-24 shrink-0 overflow-hidden rounded-md bg-surface-muted sm:h-28 sm:w-28 md:h-20 md:w-20">
-          <img
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-md bg-surface-muted sm:h-28 sm:w-28 md:h-20 md:w-20">
+          <Image
             src={mainImage}
             alt={item.product.title}
-            className="h-full w-full object-cover"
+            fill
+            sizes="112px"
+            className="object-cover"
           />
         </div>
 
@@ -113,3 +115,4 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
     </article>
   );
 };
+import Image from "next/image";

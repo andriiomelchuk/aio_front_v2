@@ -257,8 +257,12 @@ export const getProducts = async (): Promise<T_Product[]> => {
       createdAt: product.meta.createdAt,
       updatedAt: product.meta.updatedAt,
     }));
-  } catch {
-    allProducts = [];
+  } catch (error) {
+    if (Object.keys(overrides).length > 0) {
+      return mergeProductsWithOverrides([], overrides, deletedProductIds);
+    }
+
+    throw error;
   }
 
   if (typeof window === "undefined") {

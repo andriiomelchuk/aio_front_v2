@@ -7,6 +7,8 @@ import { Button, Input, Select } from "@/shared/ui";
 
 import type { T_EditUserData, T_EditUserFormProps } from "./types";
 import { updateUser } from "@/shared/api/users";
+import { useAdminAccess } from "@/features/auth";
+import { assignableStaffRoles, canAssignStaffRoles } from "@/shared/config/adminRoles";
 
 export const EditUserForm = ({
   user,
@@ -14,12 +16,12 @@ export const EditUserForm = ({
   onUpdate,
 }: T_EditUserFormProps) => {
   const { t } = useI18n();
+  const { role } = useAdminAccess();
 
   const [formData, setFormData] = useState<T_EditUserData>({
     name: user.name,
     login: user.login,
     email: user.email,
-    password: user.password,
     role: user.role,
     status: user.status,
   });
@@ -33,6 +35,8 @@ export const EditUserForm = ({
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!role || !canAssignStaffRoles(role) || user.role === "developer") return;
 
     const updatedUser = await updateUser({
       ...user,
@@ -78,17 +82,6 @@ export const EditUserForm = ({
           required
         />
 
-        <Input
-          label={t("admin.user.form.passwordLabel")}
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={(event) => updateField("password", event.target.value)}
-          placeholder={t("admin.user.form.passwordPlaceholder")}
-          className="h-10 w-full"
-          required
-        />
-
         <Select
           label={t("admin.user.form.roleLabel")}
           name="role"
@@ -96,9 +89,10 @@ export const EditUserForm = ({
           value={formData.role}
           onChange={(event) => updateField("role", event.target.value)}
           options={[
-            { value: "Admin", label: "Admin" },
-            { value: "Editor", label: "Editor" },
-            { value: "User", label: "User" },
+            ...assignableStaffRoles.map((staffRole) => ({
+              value: staffRole,
+              label: t(`admin.auth.role.${staffRole}`),
+            })),
           ]}
         />
 

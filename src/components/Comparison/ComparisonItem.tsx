@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { AddToCartButton } from "@/features/cart";
 import { useCompare } from "@/features/comparison/model/useCompare";
 import { useI18n } from "@/shared/i18n";
@@ -26,14 +27,16 @@ export const ComparisonItem = ({product, priceCalc}: T_ComparisonItemProps) => {
       className="overflow-hidden rounded-lg border border-border bg-surface"
     >
       <Link href={`/products/${product.slug}`}>
-        <div className="aspect-square bg-surface-muted">
+        <div className="relative aspect-square bg-surface-muted">
           {mainImage ? (
-            <img
+            <Image
               src={mainImage}
               alt={t("products.imageAlt", {
                 title: product.title,
               })}
-              className="h-full w-full object-cover"
+              fill
+              sizes="(max-width: 639px) 100vw, 320px"
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full items-center justify-center px-3 text-center text-sm text-muted">

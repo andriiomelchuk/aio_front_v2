@@ -2,6 +2,7 @@ import { CategoryProducts } from "@/components/Categories";
 import { getCategories } from "@/shared/api/categories";
 import { getProducts } from "@/shared/api/products";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 type T_CategoryPageProps = {
   params: Promise<{
@@ -24,11 +25,13 @@ export default async function CategoryPage({ params }: T_CategoryPageProps) {
     notFound();
   }
 
-  const categoryProducts = products.filter(
-    (product) =>
-      product.status === "active" &&
-      product.categoryId.toLowerCase() === normalizedSlug,
+  return (
+    <Suspense fallback={null}>
+      <CategoryProducts
+        category={category}
+        products={products}
+        categories={categories}
+      />
+    </Suspense>
   );
-
-  return <CategoryProducts category={category} products={categoryProducts} />;
 }

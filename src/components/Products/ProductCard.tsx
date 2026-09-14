@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useI18n } from "@/shared/i18n";
 import type { T_ProductCardProps } from "./types";
 import { AddToCartButton } from "@/features/cart";
@@ -28,12 +29,14 @@ export const ProductCard = ({ product }: T_ProductCardProps) => {
   return (
     <article className="overflow-hidden rounded-lg border border-border bg-surface transition-colors hover:border-accent">
       <Link href={`/products/${product.slug}`}>
-        <div className="aspect-square bg-surface-muted">
+        <div className="relative aspect-square bg-surface-muted">
           {mainImage ? (
-            <img
+            <Image
               src={mainImage}
               alt={t("products.imageAlt", { title: product.title })}
-              className="h-full w-full object-cover"
+              fill
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full items-center justify-center px-3 text-center text-sm text-muted">

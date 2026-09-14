@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useI18n } from "@/shared/i18n";
 import type { T_CategoryCardProps } from "./types";
 
@@ -16,12 +17,14 @@ export const CategoryCard = ({
       href={`/categories/${category.slug}`}
       className="group overflow-hidden rounded-lg border border-border bg-surface transition-colors hover:border-accent"
     >
-      <div className="aspect-[4/3] overflow-hidden bg-surface-muted">
+      <div className="relative aspect-[4/3] overflow-hidden bg-surface-muted">
         {coverImage ? (
-          <img
+          <Image
             src={coverImage}
             alt={t("categories.imageAlt", { name: category.name })}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            fill
+            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
           <div className="flex h-full items-center justify-center px-4 text-center text-5xl font-bold text-muted">

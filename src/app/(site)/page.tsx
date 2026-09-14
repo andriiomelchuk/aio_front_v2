@@ -1,12 +1,6 @@
 
-"use client";
-
-import { useI18n } from "@/shared/i18n";
+import { HomePage } from "@/components/Home";
 
 export default function Home() {
-  const { t } = useI18n();
-
-  return (
-   <main>{t("home.title")}</main>
-  );
+  return <HomePage />;
 }

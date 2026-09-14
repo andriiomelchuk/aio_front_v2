@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { useI18n } from "@/shared/i18n";
 import type { T_ProductDetailProps } from "./types";
@@ -67,12 +68,15 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)] lg:items-start">
         <div className="space-y-4">
-          <div className="overflow-hidden rounded-lg border border-border bg-surface-muted">
+          <div className="relative aspect-square overflow-hidden rounded-lg border border-border bg-surface-muted">
             {selectedImageUrl ? (
-              <img
+              <Image
                 src={selectedImageUrl}
                 alt={t("products.imageAlt", { title: product.title })}
-                className="aspect-square h-full w-full object-cover"
+                fill
+                priority
+                sizes="(max-width: 1023px) 100vw, 55vw"
+                className="object-cover"
               />
             ) : (
               <div className="flex aspect-square items-center justify-center px-4 text-center text-sm text-muted">
@@ -99,9 +103,11 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
                     ].join(" ")}
                     aria-label={image.alt ?? product.title}
                   >
-                    <img
+                    <Image
                       src={image.url}
                       alt={image.alt ?? product.title}
+                      width={160}
+                      height={160}
                       className="aspect-square h-full w-full object-cover"
                     />
                   </button>

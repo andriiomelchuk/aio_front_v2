@@ -5,12 +5,14 @@ import cartReducer from "@/features/cart/model/cartSlice";
 import { cartMiddleware } from "@/features/cart/model/cartMiddleware";
 import { comparisonMiddleware } from "@/features/comparison/model/comparisonMiddleware";
 import { wishlistMiddleware } from "@/features/wishlist/model/wishlistMiddleware";
+import authReducer from "@/features/auth/model/authSlice";
 
 export const store = configureStore({
   reducer: {
     wishlist: wishlistReducer,
     comparison: comparisonReducer,
     cart: cartReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
     cartMiddleware,

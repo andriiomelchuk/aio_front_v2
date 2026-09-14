@@ -1,4 +1,6 @@
-export type T_UserRole = "Admin" | "Editor" | "User";
+import type { T_StaffRole } from "@/shared/config/adminRoles";
+
+export type T_UserRole = T_StaffRole;
 export type T_UserStatus = "active" | "invited" | "blocked";
 
 export type T_User = {
@@ -6,7 +8,6 @@ export type T_User = {
   name: string;
   login: string;
   email: string;
-  password: string;
   role: T_UserRole;
   status: T_UserStatus;
   address?: T_UserAddress;
@@ -37,6 +38,6 @@ export type T_ShippingAddress = {
   zipcode: string,
 }
 
-export type T_CreateUserDto = Omit<T_User, "id">;
+export type T_CreateUserDto = Omit<T_User, "id"> & { password: string };
 
 export type T_UpdateUserDto = T_User;

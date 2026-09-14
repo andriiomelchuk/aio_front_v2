@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { getAdminNavigation } from "../model/adminNavigation";
 import { useI18n } from "@/shared/i18n";
 import { isAdminModuleEnabled } from "@/shared/config/adminModules";
+import { hasAdminPermission } from "@/shared/config/adminPermissions";
+import { useAdminAccess } from "@/features/auth";
 
 type AdminSidebarProps = {
   isOpen: boolean;
@@ -14,13 +16,14 @@ type AdminSidebarProps = {
 export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
   const { t } = useI18n();
   const pathName = usePathname();
+  const { role } = useAdminAccess();
 
   const adminNavigation = getAdminNavigation(t).filter((link) => {
-    if(!("module" in link)) {
-      return true;
-    }
-
-     return isAdminModuleEnabled(link.module);
+    return Boolean(
+      role &&
+      (role === "developer" || isAdminModuleEnabled(link.module)) &&
+      hasAdminPermission(role, link.module),
+    );
   });
 
   return (

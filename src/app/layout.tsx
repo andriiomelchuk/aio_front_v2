@@ -6,6 +6,8 @@ import { StoreProvider } from "@/shared/store/StoreProvider";
 import { CartInitializer } from "@/features/cart/ui/CartInitializer";
 import { ComparisonInitializer } from "@/features/comparison/ui/ComparisonInitializer";
 import { WishlistInitializer } from "@/features/wishlist";
+import { ToastProvider } from "@/shared/ui";
+import { AuthInitializer } from "@/features/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,9 +20,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AVO Portfolio Project",
+  title: {
+    default: "AIO",
+    template: "%s | AIO",
+  },
   description:
-    "Powered by Next.js, TypeScript, TailwindCSS, Redux Toolkit, and i18next.",
+    "A modular web platform with commerce, movie discovery, and GitHub tools.",
 };
 
 export default function RootLayout({
@@ -30,16 +35,19 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="uk"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <StoreProvider>
           <I18nProvider>
-            <CartInitializer />
-            <ComparisonInitializer />
-            <WishlistInitializer />
-            {children}
+            <ToastProvider>
+              <CartInitializer />
+              <ComparisonInitializer />
+              <WishlistInitializer />
+              <AuthInitializer />
+              {children}
+            </ToastProvider>
           </I18nProvider>
         </StoreProvider>
       </body>

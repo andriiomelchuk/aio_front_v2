@@ -13,6 +13,7 @@ import Link from "next/link";
 
 export const ProductsToolbar = ({
   tableControls,
+  canManage,
 }: T_ProductsToolbarProps) => {
   const { t } = useI18n();
   const searchPlaceholderByField = {
@@ -105,14 +106,14 @@ export const ProductsToolbar = ({
           {t("admin.actions.clearFilters")}
         </Button>
       )}
-      <Link href="/admin/products/new">
+      {canManage && <Link href="/admin/products/new">
         <Button
           variant="default"
           className="h-10 w-full sm:ml-auto sm:w-auto"
         >
           {t("admin.actions.addProduct")}
         </Button>
-      </Link>
+      </Link>}
     </>
   );
 };

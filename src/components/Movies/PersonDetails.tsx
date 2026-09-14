@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useI18n } from "@/shared/i18n";
 import type { T_PersonDetails } from "./types";
 
@@ -6,15 +7,18 @@ export const PersonDetails = ({ person }: T_PersonDetails) => {
   return (
 
       <section className="grid gap-6 rounded-xl border border-border bg-surface p-4 shadow-[0_18px_40px_var(--shadow-color)] md:grid-cols-[280px_1fr] md:gap-8 md:p-6">
-        <div>
+        <div className="relative aspect-2/3 overflow-hidden rounded-lg bg-surface-muted">
           {person.profile_path ? (
-            <img
+            <Image
               src={`https://image.tmdb.org/t/p/w500${person.profile_path}`}
               alt={person.name}
-              className="w-full rounded-lg object-cover"
+              fill
+              priority
+              sizes="(max-width: 767px) 100vw, 280px"
+              className="object-cover"
             />
           ) : (
-            <div className="flex aspect-2/3 items-center justify-center rounded-lg bg-surface-muted text-muted">
+            <div className="flex h-full items-center justify-center text-muted">
               {t("movies.noPhoto")}
             </div>
           )}

@@ -11,7 +11,7 @@ import { UsersToolbar } from "../UsersToolbar";
 import { UsersBulkActions } from "../UsersBulkActions";
 import { UsersModals } from "../UsersModals";
 import { filterUsers, getUserColumns, mapUserRows, sortUsers, useUsersTableControls } from "../../model";
-import { getUsers } from "@/shared/api/users";
+import { deleteUser, getUsers, updateUser } from "@/shared/api/users";
 
 export function UsersManagement() {
   const { t } = useI18n();
@@ -54,31 +54,26 @@ export function UsersManagement() {
     tableControls.pageSize,
   );
 
-  const handleConfirmBulkAction = () => {
+  const handleConfirmBulkAction = async () => {
     if (bulkAction === "block") {
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
+      setUsers(await Promise.all(users.map((user) =>
           selectedUserIds.includes(user.id)
-            ? { ...user, status: "blocked" }
-            : user,
-        ),
-      );
+            ? updateUser({ ...user, status: "blocked" })
+            : Promise.resolve(user),
+      )));
     }
 
     if (bulkAction === "active") {
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
+      setUsers(await Promise.all(users.map((user) =>
           selectedUserIds.includes(user.id)
-            ? { ...user, status: "active" }
-            : user,
-        ),
-      );
+            ? updateUser({ ...user, status: "active" })
+            : Promise.resolve(user),
+      )));
     }
 
     if (bulkAction === "delete") {
-      setUsers((prevUsers) =>
-        prevUsers.filter((user) => !selectedUserIds.includes(user.id)),
-      );
+      await Promise.all(selectedUserIds.map((id) => deleteUser(Number(id))));
+      setUsers((prevUsers) => prevUsers.filter((user) => !selectedUserIds.includes(user.id)));
     }
 
     setSelectedUserIds([]);

@@ -1,5 +1,5 @@
 import type { T_Product } from "@/entities/product/model/types";
-import { useAppDispatch } from "@/shared/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/shared/store/hooks";
 import { addCartItem, decreaseCartItemQuantity, increaseCartItemQuantity, removeAllCartItems, removeCartItem, restoreCart, setCartItemQuantity } from "./cartSlice";
 import { loadCartFromStorage } from "./cartStorage";
 import { useCallback } from "react";
@@ -7,6 +7,10 @@ import { useCallback } from "react";
 
 export const useCart = () => {
   const dispatch = useAppDispatch();
+  const products = useAppSelector((state) => state.cart.products);
+
+  const getCartItemQuantity = (productId: string) =>
+    products.find((item) => item.product.id === productId)?.quantity ?? 0;
 
   const addToCart = (product: T_Product, quantity = 1) => {
     dispatch(addCartItem({ product, quantity }));
@@ -49,7 +53,7 @@ export const useCart = () => {
     decreaseQuantity,
     setQuantity,
     clearCart,
+    getCartItemQuantity,
     restoreCartFromStorage
   };
 };
-

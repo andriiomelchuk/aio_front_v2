@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/shared/ui";
+import { Button, useToast } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
 import { CartIcon } from "@/components/Products/icons";
 import { useCart } from "../../model/useCart";
@@ -11,15 +11,23 @@ export const AddToCartButton = ({
   disabled = false,
 }: T_AddToCartButtonProps) => {
   const { t } = useI18n();
-  const { addToCart } = useCart();
+  const { addToCart, getCartItemQuantity } = useCart();
+  const { showToast } = useToast();
+  const isCartLimitReached =
+    getCartItemQuantity(product.id) >= product.stockQuantity;
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    showToast({ message: t("notifications.cart.added") });
+  };
 
   return (
     <Button
       type="button"
-      disabled={disabled}
+      disabled={disabled || isCartLimitReached}
       className="inline-flex h-12 w-12 shrink-0 items-center justify-center px-0"
       aria-label={t("products.addToCart")}
-      onClick={() => addToCart(product)}
+      onClick={handleAddToCart}
     >
       <CartIcon />
     </Button>

@@ -15,8 +15,7 @@ export const mapUserRows = (
     name: user.name,
     login: user.login,
     email: user.email,
-    password: "*******",
-    role: user.role,
+    role: t(`admin.auth.role.${user.role}`),
     status: (
       <AdminBadge variant={statusBadgeVariant[user.status]}>
         {statusLabel[user.status]}

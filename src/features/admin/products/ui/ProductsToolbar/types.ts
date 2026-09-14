@@ -4,4 +4,5 @@ import type { useProductsTableControls } from "../../model/useProductsTableContr
 
 export type T_ProductsToolbarProps = {
   tableControls: ReturnType<typeof useProductsTableControls>;
+  canManage: boolean;
 };

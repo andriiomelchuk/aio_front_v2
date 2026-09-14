@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { calculateCartTotals } from "@/features/cart";
 import { useI18n } from "@/shared/i18n";
 import { useAppSelector } from "@/shared/store/hooks";
 import { CartItem } from "./CartItem";
@@ -10,22 +12,7 @@ export const CartManagement = () => {
 
   const currency = products[0]?.product.currency ?? "USD";
 
-  const subTotal = products.reduce((sum, item) => {
-    const oldPrice = item.product.discountPercentage
-      ? item.product.price
-      : (item.product.oldPrice ?? item.product.price);
-
-    return sum + oldPrice * item.quantity;
-  }, 0);
-
-  const total = products.reduce((sum, item) => {
-    const productDiscount = item.product.discountPercentage ?? 0;
-    const finalPrice = item.product.price * (1 - productDiscount / 100);
-
-    return sum + finalPrice * item.quantity;
-  }, 0);
-
-  const discount = subTotal - total;
+  const { subtotal, discount, itemsTotal } = calculateCartTotals(products);
 
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -64,7 +51,7 @@ export const CartManagement = () => {
             <div className="flex justify-between gap-4">
               <span className="text-muted">{t("cart.summary.subtotal")}</span>
               <span className="font-semibold text-foreground">
-                {subTotal.toFixed(2)} {currency}
+                {subtotal.toFixed(2)} {currency}
               </span>
             </div>
 
@@ -89,24 +76,24 @@ export const CartManagement = () => {
                 {t("cart.summary.total")}
               </span>
               <span className="text-xl font-bold text-foreground">
-                {total.toFixed(2)} {currency}
+                {itemsTotal.toFixed(2)} {currency}
               </span>
             </div>
           </div>
 
-          <button
-            type="button"
-            className="mt-5 h-12 w-full rounded-md bg-accent px-5 font-semibold text-background transition hover:opacity-90"
+          <Link
+            href="/checkout"
+            className="mt-5 flex h-12 w-full items-center justify-center rounded-md bg-accent px-5 font-semibold text-background transition hover:opacity-90"
           >
             {t("cart.checkout")}
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            className="mt-3 h-11 w-full rounded-md border border-border px-5 text-sm font-semibold text-foreground transition hover:bg-surface-muted"
+          <Link
+            href="/products"
+            className="mt-3 flex h-11 w-full items-center justify-center rounded-md border border-border px-5 text-sm font-semibold text-foreground transition hover:bg-surface-muted"
           >
             {t("cart.continueShopping")}
-          </button>
+          </Link>
         </aside>
       </div>
     </main>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { T_AvatarProps } from "./types";
 
 const avatarSizeClasses = {
@@ -19,7 +20,7 @@ const avatarSizeClasses = {
   full: {}
 };
 
-export const Avatar = ({ src, alt, size = "mid", form = "circle" }: T_AvatarProps) => {
+export const Avatar = ({ src, alt, size = "mid" }: T_AvatarProps) => {
   const classes = avatarSizeClasses[size];
 
   return (
@@ -30,10 +31,12 @@ export const Avatar = ({ src, alt, size = "mid", form = "circle" }: T_AvatarProp
         className={`flex items-center justify-center rounded-full border border-border bg-surface-muted font-semibold text-muted ${classes.image} ${classes.text}`}
       >
         {src ? (
-          <img
-            className="h-full w-full rounded-full object-cover"
+          <Image
+            className="rounded-full object-cover"
             src={src}
             alt={alt}
+            width={144}
+            height={144}
           />
         ) : (
           <span>?</span>

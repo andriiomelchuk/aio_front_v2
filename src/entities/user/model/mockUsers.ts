@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { T_User } from "./types";
 
 export const mockUsers: T_User[] = [
@@ -7,8 +6,7 @@ export const mockUsers: T_User[] = [
     name: "Anna Smith",
     login: "anna",
     email: "anna@example.com",
-    password: "123456",
-    role: "Admin",
+    role: "admin",
     status: "active",
   },
   {
@@ -16,8 +14,7 @@ export const mockUsers: T_User[] = [
     name: "Mark Stone",
     login: "mark",
     email: "mark@example.com",
-    password: "123456",
-    role: "Editor",
+    role: "manager",
     status: "invited",
   },
 ];

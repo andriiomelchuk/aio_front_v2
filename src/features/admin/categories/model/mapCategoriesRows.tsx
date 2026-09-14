@@ -8,6 +8,7 @@ export const mapCategoriesRows = (
   categories: T_Categories[],
   t: T_I18nContext["t"],
   onEdit: (category: T_Categories) => void,
+  canManage = true,
 ) => {
   return categories.map((category) => ({
     id: category.id,
@@ -19,7 +20,7 @@ export const mapCategoriesRows = (
         {getCategoriesStatusLabel(category.status, t)}
       </AdminBadge>
     ),
-    action: (
+    action: canManage ? (
       <Button
         className="h-10"
         variant="ghost"
@@ -30,6 +31,6 @@ export const mapCategoriesRows = (
       >
         {t("admin.categories.table.editButton")}
       </Button>
-    ),
+    ) : null,
   }));
 };

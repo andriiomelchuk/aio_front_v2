@@ -15,4 +15,5 @@ export type T_CategoriesProps = {
 export type T_CategoryProductsProps = {
   category: T_Categories;
   products: T_Product[];
+  categories: T_Categories[];
 };

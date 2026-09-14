@@ -57,8 +57,11 @@ const cartSlice = createSlice({
             if (!cartItem) return;
 
             if (quantity > 0) {
-                cartItem.quantity = Math.min(cartItem.quantity, cartItem.product.stockQuantity);
+                cartItem.quantity = Math.min(quantity, cartItem.product.stockQuantity);
+                return;
             }
+
+            state.products = state.products.filter((item) => item.product.id !== productId);
         },
         removeAllCartItems: (state) => {
             state.products = [];

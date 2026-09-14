@@ -2,6 +2,7 @@ import type { T_I18nContext } from "@/shared/i18n";
 
 export const getAdminNavigation = (t: T_I18nContext["t"]) => [
   {
+    module: "dashboard",
     href: "/admin",
     label: t("admin.navigation.dashboard.label"),
     title: t("admin.navigation.dashboard.title"),
@@ -20,6 +21,13 @@ export const getAdminNavigation = (t: T_I18nContext["t"]) => [
     label: t("admin.navigation.orders.label"),
     title: t("admin.navigation.orders.title"),
     description: t("admin.navigation.orders.description"),
+  },
+  {
+    module: "customers",
+    href: "/admin/customers",
+    label: t("admin.navigation.customers.label"),
+    title: t("admin.navigation.customers.title"),
+    description: t("admin.navigation.customers.description"),
   },
   {
     module: "products",
@@ -43,6 +51,7 @@ export const getAdminNavigation = (t: T_I18nContext["t"]) => [
     description: t("admin.navigation.analytics.description"),
   },
   {
+    module: "settings",
     href: "/admin/settings",
     label: t("admin.navigation.settings.label"),
     title: t("admin.navigation.settings.title"),

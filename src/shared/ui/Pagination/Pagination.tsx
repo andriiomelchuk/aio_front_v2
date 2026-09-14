@@ -8,6 +8,8 @@ export const Pagination = ({
   pageSize,
   totalItems,
   pageSizeOptions = [5, 10, 20],
+  pageSizeLabel,
+  ariaLabel,
   onPageChange,
   onPageSizeChange,
 }: T_PaginationProps) => {
@@ -21,10 +23,12 @@ export const Pagination = ({
   return (
     <nav
       className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between"
-      aria-label="Pagination"
+      aria-label={ariaLabel ?? "Pagination"}
     >
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted">{t("pagination.rowsPerPage")}</span>
+        <span className="text-sm text-muted">
+          {pageSizeLabel ?? t("pagination.rowsPerPage")}
+        </span>
 
         <Select
           className="h-10 w-[90px]"

@@ -1,14 +1,13 @@
 "use client";
 
-import { mockOrders, type T_Order } from "@/entities/order";
+import { type T_Order } from "@/entities/order";
 import { useI18n } from "@/shared/i18n";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { paginate } from "@/lib";
 import { AdminCard, AdminPage, AdminTable } from "@/widgets/AdminWidgets";
 import { Pagination } from "@/shared/ui";
 import { OrdersToolbar } from "../OrdersToolbar/OrdersToolbar";
 import { useOrdersTableControls } from "../../model/useOrdersTableControls";
-import { OrdersModals } from "../OrdersModals";
 import {
   getOrderColumns,
   mapOrderRows,
@@ -16,15 +15,16 @@ import {
   orderSort,
 } from "../../model";
 import { OrdersBulkActions } from "../OrdersBulkActions";
+import { getOrders, updateOrder } from "@/shared/api/orders";
+import { useAdminAccess } from "@/features/auth";
 
 export function OrdersManagement() {
   const { t } = useI18n();
+  const { canManage } = useAdminAccess();
 
   const tableControls = useOrdersTableControls();
 
 //   const [isAddOrderOpen, setIsAddOrderOpen] = useState(false);
-
-  const [selectedOrder, setSelectedOrder] = useState<T_Order | null>(null);
 
   const [selectedOrderId, setSelectedOrderId] = useState<T_Order["id"] | null>(
     null,
@@ -34,23 +34,13 @@ export function OrdersManagement() {
     Array<string | number>
   >([]);
 
-  const [orders, setOrders] = useState<T_Order[]>(mockOrders);
+  const [orders, setOrders] = useState<T_Order[]>([]);
 
   const [bulkAction, setBulkAction] = useState("");
 
-  const handleUpdateOrder = (updatedOrder: T_Order) => {
-    setOrders((prevOrder) =>
-      prevOrder.map((order) =>
-        order.id === updatedOrder.id ? updatedOrder : order,
-      ),
-    );
-
-    setSelectedOrder(null);
-  };
-
-  const handleCloseEditOrder = () => {
-    setSelectedOrder(null);
-  };
+  useEffect(() => {
+    getOrders().then(setOrders);
+  }, []);
 
   const activeOrders = orders.filter(
     (order) => order.status === "new" || order.status === "processing",
@@ -69,11 +59,11 @@ export function OrdersManagement() {
     tableControls.pageSize,
   );
 
-  const orderRows = mapOrderRows(paginatedOrders, t, setSelectedOrder);
+  const orderRows = mapOrderRows(paginatedOrders, t);
 
   const orderColumns = getOrderColumns(t);
 
-  const handleConfirmBulkAction = () => {
+  const handleConfirmBulkAction = async () => {
     if (!bulkAction) {
       return;
     }
@@ -81,13 +71,12 @@ export function OrdersManagement() {
     const selectedIds = new Set(selectedOrderIds.map(String));
     const nextStatus = bulkAction as T_Order["status"];
 
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        selectedIds.has(String(order.id))
-          ? { ...order, status: nextStatus }
-          : order,
-      ),
-    );
+    const nextOrders = await Promise.all(orders.map((order) =>
+      selectedIds.has(String(order.id))
+        ? updateOrder({ ...order, status: nextStatus })
+        : order,
+    ));
+    setOrders(nextOrders);
 
     setSelectedOrderIds([]);
     setBulkAction("");
@@ -140,16 +129,16 @@ export function OrdersManagement() {
               selectedRowKey={selectedOrderId}
               onRowClick={(order) => setSelectedOrderId(order.id)}
               emptyText={t("admin.orders.noOrderFound")}
-              selectedRowKeys={selectedOrderIds}
-              onSelectedRowKeysChange={setSelectedOrderIds}
+              selectedRowKeys={canManage ? selectedOrderIds : undefined}
+              onSelectedRowKeysChange={canManage ? setSelectedOrderIds : undefined}
             ></AdminTable>
 
-            <OrdersBulkActions
+            {canManage && <OrdersBulkActions
               selectedCount={selectedOrderIds.length}
               selectedAction={bulkAction}
               onActionChange={setBulkAction}
               onConfirm={handleConfirmBulkAction}
-            />
+            />}
             <Pagination
               page={tableControls.page}
               pageSize={tableControls.pageSize}
@@ -159,13 +148,6 @@ export function OrdersManagement() {
             />
           </div>
         </AdminCard>
-        <OrdersModals
-        //   isAddOrderOpen={isAddOrderOpen}
-        //   onCloseAddOrder={() => setIsAddOrderOpen(false)}
-          onCloseEditOrder={handleCloseEditOrder}
-          onUpdateOrder={handleUpdateOrder}
-          selectedOrder={selectedOrder}
-        />
       </div>
     </AdminPage>
   );

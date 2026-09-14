@@ -16,9 +16,11 @@ import { CategoriesToolbar } from "../CategoriesToolbar/CategoriesToolbar";
 import { getCategories } from "@/shared/api/categories";
 import { CategoriesModals } from "../CategoriesModals";
 import { CategoriesBulkActions } from "../CategoriesBulkActions";
+import { useAdminAccess } from "@/features/auth";
 
 export function CategoriesManagement() {
   const { t } = useI18n();
+  const { canManage } = useAdminAccess();
   const tableControls = useCategoriesTableControls();
 
   const [categories, setCategories] = useState<T_Categories[]>([]);
@@ -68,6 +70,7 @@ export function CategoriesManagement() {
     paginatedCategories,
     t,
     setSelectedCategory,
+    canManage,
   );
 
   const handleUpdateCategory = (updatedCategory: T_Categories) => {
@@ -121,6 +124,7 @@ export function CategoriesManagement() {
         <CategoriesToolbar
           tableControls={tableControls}
           onAddCategoryClick={() => setIsAddCategoryOpen(true)}
+          canManage={canManage}
         />
       }
     >
@@ -137,17 +141,17 @@ export function CategoriesManagement() {
           getRowKey={(category) => category.id}
           selectedRowKey={selectedCategoryId}
           onRowClick={(category) => setSelectedCategoryId(category.id)}
-          selectedRowKeys={selectedCategoriesIds}
-          onSelectedRowKeysChange={setSelectedCategoriesIds}
+          selectedRowKeys={canManage ? selectedCategoriesIds : undefined}
+          onSelectedRowKeysChange={canManage ? setSelectedCategoriesIds : undefined}
           emptyText={t("admin.categories.notFound")}
         />
 
-        <CategoriesBulkActions
+        {canManage && <CategoriesBulkActions
           selectedCount={selectedCategoriesIds.length}
           selectedAction={bulkAction}
           onActionChange={setBulkAction}
           onConfirm={handleConfirmBulkAction}
-        />
+        />}
 
         <Pagination
           page={tableControls.page}
@@ -157,7 +161,7 @@ export function CategoriesManagement() {
           onPageSizeChange={tableControls.setPageSize}
         />
       </AdminCard>
-      <CategoriesModals
+      {canManage && <CategoriesModals
         selectedCategory={selectedCategory}
         isAddCategoryOpen={isAddCategoryOpen}
         onCloseAddCategory={() => setIsAddCategoryOpen(false)}
@@ -167,7 +171,7 @@ export function CategoriesManagement() {
           setIsAddCategoryOpen(false);
         }}
         onUpdateCategory={handleUpdateCategory}
-      />
+      />}
     </AdminPage>
   );
 }

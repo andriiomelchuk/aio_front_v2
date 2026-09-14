@@ -16,9 +16,11 @@ import {
   sortProducts,
   useProductsTableControls,
 } from "../../model";
+import { useAdminAccess } from "@/features/auth";
 
 export function ProductsManagement() {
   const { t } = useI18n();
+  const { canManage } = useAdminAccess();
 
   const tableControls = useProductsTableControls();
 
@@ -98,12 +100,12 @@ export function ProductsManagement() {
     setBulkAction("");
   };
 
-  const productsRows = mapProductsRows(paginatedProducts, t);
+  const productsRows = mapProductsRows(paginatedProducts, t, canManage);
 
   return (
     <AdminPage
       actions={
-        <ProductsToolbar tableControls={tableControls} />
+        <ProductsToolbar tableControls={tableControls} canManage={canManage} />
       }
     >
       <AdminCard
@@ -119,17 +121,17 @@ export function ProductsManagement() {
           getRowKey={(product) => product.id}
           selectedRowKey={selectedProductId}
           onRowClick={(product) => setSelectedProductId(product.id)}
-          selectedRowKeys={selectedProductIds}
-          onSelectedRowKeysChange={setSelectedProductIds}
+          selectedRowKeys={canManage ? selectedProductIds : undefined}
+          onSelectedRowKeysChange={canManage ? setSelectedProductIds : undefined}
           emptyText={t("admin.products.noProductFound")}
         />
 
-        <ProductsBulkActions
+        {canManage && <ProductsBulkActions
           selectedCount={selectedProductIds.length}
           selectedAction={bulkAction}
           onActionChange={setBulkAction}
           onConfirm={handleConfirmBulkAction}
-        />
+        />}
 
         <Pagination
           page={tableControls.page}

@@ -1,10 +1,11 @@
 export const adminModules = {
     dashboard: true,
     users: true,
+    customers: true,
     orders: true,
     products: true,
     categories: true,
-    analytics: false,
+    analytics: true,
     settings: true,
 } as const;
 

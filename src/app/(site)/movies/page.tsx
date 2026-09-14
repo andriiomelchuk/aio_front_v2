@@ -1,6 +1,12 @@
 import { Movies } from "@/components/Movies";
 import { getMovies } from "@/lib/api";
 import { Suspense } from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Movie Explorer",
+  description: "Search for movies, series, and people.",
+};
 
 type T_SearchParams = {
   searchParams: Promise<{

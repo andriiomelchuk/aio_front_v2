@@ -4,6 +4,12 @@ import { Popular as PopularRepos } from "@/components/PopularRepos";
 import { getPopular } from "@/lib/github";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Popular Repositories",
+  description: "Discover popular GitHub repositories by programming language.",
+};
 
 type SearchParams = {
   searchParams: Promise< {

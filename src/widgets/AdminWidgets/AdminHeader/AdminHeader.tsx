@@ -1,8 +1,10 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { getAdminNavigation } from "../model/adminNavigation";
 import { LanguageSwitcher } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
+import { useAdminAccess, useAuth } from "@/features/auth";
+import { Button } from "@/shared/ui";
 
 type AdminHeaderProps = {
   onMenuClick: () => void;
@@ -12,6 +14,9 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
 
   const { t } = useI18n();
   const pathName = usePathname();
+  const router = useRouter();
+  const { role } = useAdminAccess();
+  const { logout } = useAuth();
 
   const adminNavigation = getAdminNavigation(t);
 
@@ -35,7 +40,23 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
         </div>
 
         <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-end">
+          {role && (
+            <span className="hidden rounded-md border border-border px-3 py-2 text-xs font-semibold uppercase text-muted sm:inline-flex">
+              {t(`admin.auth.role.${role}`)}
+            </span>
+          )}
           <LanguageSwitcher variant="flag" mode="buttons"/>
+          <Button
+            type="button"
+            variant="secondary"
+            className="h-10 px-3 text-sm"
+            onClick={() => {
+              logout();
+              router.replace("/admin/login");
+            }}
+          >
+            {t("admin.auth.logout")}
+          </Button>
           <button
             type="button"
             onClick={onMenuClick}

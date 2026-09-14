@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useI18n } from "@/shared/i18n";
 import { AdminBadge } from "@/widgets/AdminWidgets";
 import {
@@ -37,15 +38,18 @@ export const ProductPreview = ({ product }: T_ProductPreviewProps) => {
         </div>
 
         <div className="p-4">
-          <div className="overflow-hidden rounded-md border border-border bg-background">
+          <div className="relative aspect-square overflow-hidden rounded-md border border-border bg-background">
             {image ? (
-              <img
+              <Image
                 src={image}
                 alt={product?.title ?? t("admin.product.preview.emptyTitle")}
-                className="aspect-square w-full object-cover"
+                fill
+                unoptimized
+                sizes="(max-width: 1023px) 100vw, 320px"
+                className="object-cover"
               />
             ) : (
-              <div className="flex aspect-square w-full items-center justify-center bg-surface-muted px-4 text-center text-sm text-muted">
+              <div className="flex h-full w-full items-center justify-center bg-surface-muted px-4 text-center text-sm text-muted">
                 {t("admin.product.preview.noImage")}
               </div>
             )}

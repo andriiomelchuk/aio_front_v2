@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { T_ProductImage } from "@/entities/product/model/types";
 import { useI18n } from "@/shared/i18n";
 import { Button } from "@/shared/ui";
@@ -133,11 +134,14 @@ export const ProductGalleryManager = ({
               key={image.id}
               className="overflow-hidden rounded-md border border-border bg-background"
             >
-              <div className="aspect-square bg-surface-muted">
-                <img
+              <div className="relative aspect-square bg-surface-muted">
+                <Image
                   src={image.url}
                   alt={image.alt || t("admin.product.form.galleryImageAlt")}
-                  className="h-full w-full object-cover"
+                  fill
+                  unoptimized
+                  sizes="(max-width: 639px) 50vw, (max-width: 1279px) 25vw, 17vw"
+                  className="object-cover"
                 />
               </div>
 

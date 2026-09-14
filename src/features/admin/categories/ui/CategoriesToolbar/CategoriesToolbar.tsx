@@ -4,7 +4,7 @@ import { useI18n } from "@/shared/i18n";
 import { Button, Input, Select } from "@/shared/ui";
 import { T_CategoriesToolbarProps } from "./types";
 
-export const CategoriesToolbar = ({tableControls, onAddCategoryClick}: T_CategoriesToolbarProps) => {
+export const CategoriesToolbar = ({tableControls, onAddCategoryClick, canManage}: T_CategoriesToolbarProps) => {
 
     const { t } = useI18n();
 
@@ -56,13 +56,13 @@ export const CategoriesToolbar = ({tableControls, onAddCategoryClick}: T_Categor
           {t("admin.actions.clearFilters")}
         </Button>
       )}
-      <Button
+      {canManage && <Button
         variant="default"
         className="h-10 w-full sm:ml-auto sm:w-auto"
         onClick={onAddCategoryClick}
       >
         {t("admin.actions.addCategory")}
-      </Button>
+      </Button>}
     </>
   );
 };
