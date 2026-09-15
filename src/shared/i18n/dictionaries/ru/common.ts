@@ -20,4 +20,12 @@ export const commonRu = {
     "pagination.previous": "Назад",
     "pagination.next": "Дальше",
     "pagination.label": "Пагинация",
+
+    "imagePicker.urlPlaceholder": "Вставьте URL изображения",
+    "imagePicker.chooseFile": "Выбрать изображение",
+    "imagePicker.dropHint": "или перетащите файл JPEG, PNG, WebP или AVIF (до 10 МБ)",
+    "imagePicker.remove": "Удалить изображение",
+    "imagePicker.invalidType": "Выберите изображение JPEG, PNG, WebP или AVIF.",
+    "imagePicker.fileTooLarge": "Размер изображения не должен превышать 10 МБ.",
+    "imagePicker.saveFailed": "Не удалось сохранить изображение. Попробуйте другой файл.",
 } as const;

@@ -1,6 +1,11 @@
 
 
 export const siteUk = {
+    "contentPage.loading": "Завантаження сторінки...",
+    "contentPage.notFound": "Сторінку не знайдено",
+    "contentPage.notFoundDescription": "Ця сторінка не існує або ще не опублікована.",
+    "contentPage.backHome": "На головну",
+    "contentPage.empty": "На цій сторінці ще немає видимого вмісту.",
     "home.portfolioEyebrow": "Один проєкт, кілька цифрових продуктів",
     "home.portfolioDescription": "Колекція практичних вебзастосунків, що розвивається: повноцінна комерційна платформа, пошук фільмів, аналітика GitHub і битва розробників.",
     "home.exploreProjects": "Переглянути проєкти",

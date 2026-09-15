@@ -5,6 +5,7 @@ export const adminModules = {
     orders: true,
     products: true,
     categories: true,
+    pages: true,
     analytics: true,
     settings: true,
 } as const;

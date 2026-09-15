@@ -1,4 +1,9 @@
 export const siteEn = {
+    "contentPage.loading": "Loading page...",
+    "contentPage.notFound": "Page not found",
+    "contentPage.notFoundDescription": "This page does not exist or has not been published yet.",
+    "contentPage.backHome": "Back to home",
+    "contentPage.empty": "This page does not have any visible content yet.",
     "home.title": "Main page",
     "home.portfolioEyebrow": "One project, multiple digital experiences",
     "home.portfolioDescription": "A growing collection of practical web applications: a complete commerce platform, movie discovery, GitHub analytics, and a developer battle.",

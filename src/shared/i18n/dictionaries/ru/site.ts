@@ -1,5 +1,10 @@
 
 export const siteRu = {
+    "contentPage.loading": "Загрузка страницы...",
+    "contentPage.notFound": "Страница не найдена",
+    "contentPage.notFoundDescription": "Эта страница не существует или ещё не опубликована.",
+    "contentPage.backHome": "На главную",
+    "contentPage.empty": "На этой странице пока нет видимого содержимого.",
     "home.portfolioEyebrow": "Один проект, несколько цифровых продуктов",
     "home.portfolioDescription": "Развивающаяся коллекция практических веб-приложений: полноценная коммерческая платформа, поиск фильмов, аналитика GitHub и битва разработчиков.",
     "home.exploreProjects": "Посмотреть проекты",

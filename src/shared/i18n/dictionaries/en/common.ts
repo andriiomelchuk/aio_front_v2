@@ -20,4 +20,12 @@ export const commonEn = {
     "pagination.previous": "Previous",
     "pagination.next": "Next",
     "pagination.label": "Pagination",
+
+    "imagePicker.urlPlaceholder": "Paste an image URL",
+    "imagePicker.chooseFile": "Choose image",
+    "imagePicker.dropHint": "or drag and drop a JPEG, PNG, WebP or AVIF file (up to 10 MB)",
+    "imagePicker.remove": "Remove image",
+    "imagePicker.invalidType": "Choose a JPEG, PNG, WebP or AVIF image.",
+    "imagePicker.fileTooLarge": "The image must be no larger than 10 MB.",
+    "imagePicker.saveFailed": "Could not save the image. Try another file.",
 } as const;
