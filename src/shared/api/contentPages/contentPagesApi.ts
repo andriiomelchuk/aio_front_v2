@@ -57,6 +57,7 @@ const normalizeBlock = (value: unknown, defaultLocale: T_ContentPageLocale): T_P
   if (value.type === "products") return { ...base, type: "products", data: { title: localizedValue(data.title, defaultLocale), productIds: Array.isArray(data.productIds) ? data.productIds.filter((id): id is string => typeof id === "string") : [] } };
   if (value.type === "categories") return { ...base, type: "categories", data: { title: localizedValue(data.title, defaultLocale), categorySlugs: Array.isArray(data.categorySlugs) ? data.categorySlugs.filter((slug): slug is string => typeof slug === "string") : [] } };
   if (value.type === "faq") return { ...base, type: "faq", data: { title: localizedValue(data.title, defaultLocale), items: Array.isArray(data.items) ? data.items.filter(isRecord).map((item, index) => ({ id: typeof item.id === "string" ? item.id : `${value.id}-${index}`, question: localizedValue(item.question, defaultLocale), answer: localizedValue(item.answer, defaultLocale) })) : [] } };
+  if (value.type === "menu") return { ...base, type: "menu", data: { title: localizedValue(data.title, defaultLocale), menuId: typeof data.menuId === "string" ? data.menuId : "", orientation: data.orientation === "horizontal" ? "horizontal" : "vertical", variant: data.variant === "compact" || data.variant === "sidebar" ? data.variant : "default" } };
   if (value.type === "cta") return { ...base, type: "cta", data: { title: localizedValue(data.title, defaultLocale), description: localizedValue(data.description, defaultLocale), buttonLabel: localizedValue(data.buttonLabel, defaultLocale), buttonHref: typeof data.buttonHref === "string" ? data.buttonHref : undefined } };
   return undefined;
 };
@@ -142,6 +143,8 @@ const normalizeContentPage = (value: unknown): T_ContentPage | undefined => {
             }
           });
           }
+        } else if (block.type === "menu") {
+          assign(block.data.title, translatedData.title);
         } else {
           assign(block.data.title, translatedData.title);
           assign(block.data.description, translatedData.description);

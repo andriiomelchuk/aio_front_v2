@@ -8,6 +8,7 @@ import {
   FaqContentBlock,
   GalleryContentBlock,
   ProductsContentBlock,
+  MenuContentBlock,
 } from "./blocks";
 
 export const ContentPageBlocks = ({
@@ -35,6 +36,7 @@ export const ContentPageBlocks = ({
     if (block.type === "products") return <ProductsContentBlock key={block.id} block={block} preview={preview} locale={locale} defaultLocale={defaultLocale} />;
     if (block.type === "categories") return <CategoriesContentBlock key={block.id} block={block} preview={preview} locale={locale} defaultLocale={defaultLocale} />;
     if (block.type === "faq") return <FaqContentBlock key={block.id} block={block} preview={preview} locale={locale} defaultLocale={defaultLocale} />;
+    if (block.type === "menu") return <MenuContentBlock key={block.id} block={block} preview={preview} locale={locale} defaultLocale={defaultLocale} />;
 
     return <CtaContentBlock key={block.id} block={block} preview={preview} locale={locale} defaultLocale={defaultLocale} />;
   });

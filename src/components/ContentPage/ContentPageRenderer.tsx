@@ -6,6 +6,7 @@ import { getLocalizedText, type T_ContentPage } from "@/entities/contentPage";
 import { getContentPageBySlug } from "@/shared/api/contentPages";
 import { useI18n } from "@/shared/i18n";
 import { ContentPageBlocks } from "./ContentPageBlocks";
+import { AssignedMenuLayout } from "@/components/Menu";
 
 export const ContentPageRenderer = ({ slug }: { slug: string }) => {
   const { t, locale } = useI18n();
@@ -59,13 +60,13 @@ export const ContentPageRenderer = ({ slug }: { slug: string }) => {
   );
 
   return (
-    <main>
+    <main><AssignedMenuLayout target={{ type: "contentPage", entityId: page.id }}>
       {visibleBlocks.length === 0 ? (
         <section className="mx-auto min-h-80 max-w-7xl px-4 py-12 text-center">
           <h1 className="text-3xl font-semibold text-foreground">{pageTitle}</h1>
           <p className="mt-3 text-muted">{t("contentPage.empty")}</p>
         </section>
       ) : <ContentPageBlocks blocks={visibleBlocks} locale={locale} defaultLocale={page.defaultLocale} />}
-    </main>
+    </AssignedMenuLayout></main>
   );
 };

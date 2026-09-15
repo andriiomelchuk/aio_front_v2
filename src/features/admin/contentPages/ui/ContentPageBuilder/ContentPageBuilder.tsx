@@ -26,6 +26,7 @@ const isBlockComplete = (block: T_PageBlock, locale: T_ContentPageLocale) => {
     if (block.type === "products") return block.data.productIds.length > 0;
     if (block.type === "categories") return block.data.categorySlugs.length > 0;
     if (block.type === "faq") return block.data.items.length > 0 && block.data.items.every((item) => item.question[locale].trim() && item.answer[locale].trim());
+    if (block.type === "menu") return Boolean(block.data.menuId);
     return Boolean(block.data.title[locale].trim());
 };
 

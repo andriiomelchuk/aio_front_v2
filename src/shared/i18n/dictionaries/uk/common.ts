@@ -28,4 +28,6 @@ export const commonUk = {
     "imagePicker.invalidType": "Виберіть зображення JPEG, PNG, WebP або AVIF.",
     "imagePicker.fileTooLarge": "Розмір зображення не повинен перевищувати 10 МБ.",
     "imagePicker.saveFailed": "Не вдалося зберегти зображення. Спробуйте інший файл.",
+    "navigation.additionalLeft": "Додаткова навігація",
+    "navigation.additionalRight": "Пов'язані посилання",
 }as const;
