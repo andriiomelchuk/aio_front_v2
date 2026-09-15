@@ -1,6 +1,11 @@
 
 
 export const siteDe = {
+    "contentPage.loading": "Seite wird geladen...",
+    "contentPage.notFound": "Seite nicht gefunden",
+    "contentPage.notFoundDescription": "Diese Seite existiert nicht oder wurde noch nicht veröffentlicht.",
+    "contentPage.backHome": "Zur Startseite",
+    "contentPage.empty": "Diese Seite enthält noch keine sichtbaren Inhalte.",
     "home.portfolioEyebrow": "Ein Projekt, mehrere digitale Erlebnisse",
     "home.portfolioDescription": "Eine wachsende Sammlung praktischer Webanwendungen: eine vollständige Commerce-Plattform, Filmsuche, GitHub-Analysen und ein Entwicklervergleich.",
     "home.exploreProjects": "Projekte entdecken",

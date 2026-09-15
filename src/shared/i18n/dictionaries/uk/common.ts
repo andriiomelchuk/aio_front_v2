@@ -20,4 +20,12 @@ export const commonUk = {
     "pagination.previous": "Назад",
     "pagination.next": "Далі",
     "pagination.label": "Пагінація",
+
+    "imagePicker.urlPlaceholder": "Вставте URL зображення",
+    "imagePicker.chooseFile": "Вибрати зображення",
+    "imagePicker.dropHint": "або перетягніть файл JPEG, PNG, WebP чи AVIF (до 10 МБ)",
+    "imagePicker.remove": "Видалити зображення",
+    "imagePicker.invalidType": "Виберіть зображення JPEG, PNG, WebP або AVIF.",
+    "imagePicker.fileTooLarge": "Розмір зображення не повинен перевищувати 10 МБ.",
+    "imagePicker.saveFailed": "Не вдалося зберегти зображення. Спробуйте інший файл.",
 }as const;

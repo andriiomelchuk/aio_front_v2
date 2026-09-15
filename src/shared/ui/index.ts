@@ -10,3 +10,5 @@ export * from "./LanguageSwitcher";
 export { Modal } from "./Modal";
 export type { T_ModalProps } from "./Modal";
 export * from "./Toast";
+export * from "./ImagePicker";
+export * from "./ManagedImage";
