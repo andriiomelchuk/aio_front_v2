@@ -36,5 +36,9 @@ export const createPageBlock = (type: T_PageBlockType): T_PageBlock => {
     return { ...base, type, data: { title: createLocalizedText(), items: [] } };
   }
 
+  if (type === "menu") {
+    return { ...base, type, data: { title: createLocalizedText(), menuId: "", orientation: "vertical", variant: "default" } };
+  }
+
   return { ...base, type, data: { title: createLocalizedText(), description: createLocalizedText(), buttonLabel: createLocalizedText() } };
 };

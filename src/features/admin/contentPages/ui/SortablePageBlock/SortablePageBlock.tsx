@@ -7,6 +7,7 @@ import { ContentReferenceSelector } from "../ContentReferenceSelector";
 import { FaqItemsManager } from "../FaqItemsManager";
 import { GalleryItemsManager } from "../GalleryItemsManager";
 import { LocalizedField } from "../LocalizedField";
+import { MenuBlockEditor } from "../MenuBlockEditor";
 
 type T_Props = {
   block: T_PageBlock;
@@ -124,6 +125,8 @@ export const SortablePageBlock = ({ block, activeLocale, showValidationErrors, h
             <FaqItemsManager activeLocale={activeLocale} showValidationErrors={showValidationErrors} items={block.data.items} onChange={(items) => onChange({ ...block, data: { ...block.data, items } })} />
           </>
         )}
+
+        {block.type === "menu" && <MenuBlockEditor block={block} activeLocale={activeLocale} onChange={onChange} />}
 
         {block.type === "cta" && (
           <>

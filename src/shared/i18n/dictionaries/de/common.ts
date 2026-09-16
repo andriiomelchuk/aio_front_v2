@@ -28,4 +28,6 @@ export const commonDe = {
     "imagePicker.invalidType": "Wählen Sie ein JPEG-, PNG-, WebP- oder AVIF-Bild aus.",
     "imagePicker.fileTooLarge": "Das Bild darf höchstens 10 MB groß sein.",
     "imagePicker.saveFailed": "Das Bild konnte nicht gespeichert werden. Versuchen Sie eine andere Datei.",
+    "navigation.additionalLeft": "Zusätzliche Navigation",
+    "navigation.additionalRight": "Verwandte Links",
 } as const;

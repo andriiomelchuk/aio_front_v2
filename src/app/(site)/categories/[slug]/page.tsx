@@ -3,6 +3,7 @@ import { getCategories } from "@/shared/api/categories";
 import { getProducts } from "@/shared/api/products";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { AssignedMenuLayout } from "@/components/Menu";
 
 type T_CategoryPageProps = {
   params: Promise<{
@@ -26,12 +27,12 @@ export default async function CategoryPage({ params }: T_CategoryPageProps) {
   }
 
   return (
-    <Suspense fallback={null}>
+    <AssignedMenuLayout target={{ type: "category", entityId: category.id }}><Suspense fallback={null}>
       <CategoryProducts
         category={category}
         products={products}
         categories={categories}
       />
-    </Suspense>
+    </Suspense></AssignedMenuLayout>
   );
 }

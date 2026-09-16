@@ -1,6 +1,7 @@
 import { ProductDetail } from "@/components/Products";
 import { getProducts } from "@/shared/api/products";
 import { notFound } from "next/navigation";
+import { AssignedMenuLayout } from "@/components/Menu";
 
 type T_ProductPageProps = {
   params: Promise<{
@@ -17,5 +18,5 @@ export default async function ProductPage({ params }: T_ProductPageProps) {
     notFound();
   }
 
-  return <ProductDetail product={product} />;
+  return <AssignedMenuLayout target={{ type: "product", entityId: product.id }}><ProductDetail product={product} /></AssignedMenuLayout>;
 }

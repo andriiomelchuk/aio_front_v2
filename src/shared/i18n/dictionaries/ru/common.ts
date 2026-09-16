@@ -28,4 +28,6 @@ export const commonRu = {
     "imagePicker.invalidType": "Выберите изображение JPEG, PNG, WebP или AVIF.",
     "imagePicker.fileTooLarge": "Размер изображения не должен превышать 10 МБ.",
     "imagePicker.saveFailed": "Не удалось сохранить изображение. Попробуйте другой файл.",
+    "navigation.additionalLeft": "Дополнительная навигация",
+    "navigation.additionalRight": "Связанные ссылки",
 } as const;

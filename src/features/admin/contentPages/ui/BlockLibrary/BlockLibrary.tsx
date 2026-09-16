@@ -16,6 +16,7 @@ export const BlockLibrary = ({
     "products",
     "categories",
     "faq",
+    "menu",
     "cta",
   ];
 

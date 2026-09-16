@@ -1,5 +1,6 @@
 export * from "./HeroContentBlock";
 export * from "./ImageContentBlock";
+export * from "./MenuContentBlock";
 export * from "./TextContentBlock";
 export * from "./CategoriesContentBlock";
 export * from "./CtaContentBlock";

@@ -66,6 +66,11 @@ export type T_CtaBlock = T_PageBlockBase<
   { title: T_LocalizedText; description: T_LocalizedText; buttonLabel: T_LocalizedText; buttonHref?: string }
 >;
 
+export type T_MenuBlock = T_PageBlockBase<
+  "menu",
+  { title: T_LocalizedText; menuId: string; orientation: "horizontal" | "vertical"; variant: "default" | "compact" | "sidebar" }
+>;
+
 export type T_PageBlock =
   | T_HeroBlock
   | T_TextBlock
@@ -74,6 +79,7 @@ export type T_PageBlock =
   | T_ProductsBlock
   | T_CategoriesBlock
   | T_FaqBlock
+  | T_MenuBlock
   | T_CtaBlock;
 
 export type T_PageBlockType = T_PageBlock["type"];

@@ -10,6 +10,7 @@ import { Button, LanguageSwitcher, useToast } from "@/shared/ui";
 import { Navigation } from "@/shared/ui/Navigation";
 import { siteNavigation } from "./model/SiteNavigation";
 import { HeaderActions } from "./HeaderActions";
+import { AssignedMenu } from "@/components/Menu";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -63,7 +64,7 @@ export const Header = () => {
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Navigation items={siteNavigation}/>
+          <AssignedMenu target={{ type: "global" }} region="header" orientation="horizontal" fallback={<Navigation items={siteNavigation}/>} loadingFallback={<div className="invisible"><Navigation items={siteNavigation}/></div>} />
           <HeaderActions />
           {authControls}
           <LanguageSwitcher variant="compact" mode="select" />
@@ -90,7 +91,7 @@ export const Header = () => {
       {isMenuOpen && (
         <div className="absolute left-0 right-0 top-full z-40 border-b border-border bg-surface px-4 py-4 shadow-lg lg:hidden">
           <div className="flex flex-col gap-4">
-            <Navigation items={siteNavigation} direction="column" onNavigate={closeMenu} />
+            <AssignedMenu target={{ type: "global" }} region="header" orientation="vertical" onNavigate={closeMenu} fallback={<Navigation items={siteNavigation} direction="column" onNavigate={closeMenu} />} />
 
             {authControls}
 

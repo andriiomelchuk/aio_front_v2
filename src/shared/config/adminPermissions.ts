@@ -15,6 +15,7 @@ const rolePermissions: Record<
     products: ["view", "manage"],
     categories: ["view", "manage"],
     pages: ["view", "manage"],
+    menus: ["view", "manage"],
     analytics: ["view", "manage"],
     settings: ["view", "manage"],
   },
@@ -26,6 +27,7 @@ const rolePermissions: Record<
     products: ["view", "manage"],
     categories: ["view", "manage"],
     pages: ["view", "manage"],
+    menus: ["view", "manage"],
     analytics: ["view", "manage"],
     settings: ["view", "manage"],
   },
@@ -36,6 +38,7 @@ const rolePermissions: Record<
     products: ["view", "manage"],
     categories: ["view", "manage"],
     pages: ["view", "manage"],
+    menus: ["view", "manage"],
     analytics: ["view", "manage"],
   },
   manager: {
@@ -45,6 +48,7 @@ const rolePermissions: Record<
     products: ["view", "manage"],
     categories: ["view", "manage"],
     pages: ["view", "manage"],
+    menus: ["view", "manage"],
   },
   viewer: {
     dashboard: ["view"],
@@ -53,6 +57,7 @@ const rolePermissions: Record<
     products: ["view"],
     categories: ["view"],
     pages: ["view"],
+    menus: ["view"],
   },
 };
 
