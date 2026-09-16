@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createMenuLocalizedText } from "@/entities/menu";
-import { createMenu, deleteMenu, getMenuById, getMenus, saveMenuAssignment, updateMenu } from "./menusApi";
+import { createMenu, deleteMenu, getMenuAssignments, getMenuById, getMenus, saveMenuAssignment, updateMenu } from "./menusApi";
 import type { MenusApiError } from "./types";
 
 const createStorage = (initial: Record<string, string> = {}): Storage => {
@@ -32,17 +32,68 @@ const stubWindow = (storage: Storage) =>
 afterEach(() => vi.unstubAllGlobals());
 
 describe("menus storage normalization", () => {
-  it("removes invalid menus and menu items", async () => {
+  it("backs up invalid records before keeping recoverable menus", async () => {
     const menu = { ...validMenu, items: [
       { id: "valid", label: createMenuLocalizedText("en", "Valid"), href: "/", openInNewTab: false, isVisible: true, children: [] },
       { id: "invalid", href: "/broken" },
     ] };
-    stubWindow(createStorage({ "aio-menus": JSON.stringify([menu, { id: "broken" }]) }));
+    const storage = createStorage({ "aio-menus": JSON.stringify([menu, { id: "broken" }]) });
+    const originalValue = storage.getItem("aio-menus");
+    stubWindow(storage);
 
     const menus = await getMenus();
 
     expect(menus).toHaveLength(1);
     expect(menus[0].items).toHaveLength(1);
+    expect(storage.getItem("aio-menus-migration-backup-v0")).toBe(originalValue);
+    expect(storage.getItem("aio-menu-storage-version")).toBe("1");
+  });
+
+  it("migrates legacy menu fields without losing the menu", async () => {
+    const storage = createStorage({
+      "aio-menus": JSON.stringify([{
+        id: "legacy-menu",
+        name: "Legacy main",
+        key: "Legacy Main",
+        status: "published",
+        items: [{
+          id: "legacy-item",
+          label: "Home",
+          href: "/",
+        }],
+      }]),
+    });
+    stubWindow(storage);
+
+    const [menu] = await getMenus();
+
+    expect(menu).toMatchObject({
+      id: "legacy-menu",
+      name: "Legacy main",
+      key: "legacy-main",
+      status: "published",
+      defaultLocale: "uk",
+    });
+    expect(menu.createdAt).toBeTruthy();
+    expect(menu.updatedAt).toBeTruthy();
+    expect(menu.items[0]).toEqual({
+      id: "legacy-item",
+      label: { uk: "Home", en: "", de: "", ru: "" },
+      href: "/",
+      openInNewTab: false,
+      isVisible: true,
+      children: [],
+    });
+    expect(storage.getItem("aio-menus-migration-backup-v0")).not.toBeNull();
+  });
+
+  it("preserves malformed JSON in place and creates a backup", async () => {
+    const storage = createStorage({ "aio-menus": "{broken-json" });
+    stubWindow(storage);
+
+    await expect(getMenus()).resolves.toEqual([]);
+    expect(storage.getItem("aio-menus")).toBe("{broken-json");
+    expect(storage.getItem("aio-menus-migration-backup-v0")).toBe("{broken-json");
   });
 });
 
@@ -70,6 +121,30 @@ describe("menus CRUD", () => {
 });
 
 describe("menu assignment constraints", () => {
+  it("migrates legacy assignments with safe defaults", async () => {
+    const storage = createStorage({
+      "aio-menu-assignments": JSON.stringify([{
+        menuId: "menu-1",
+        targetType: "category",
+        entityId: "beauty",
+        region: "content-before",
+      }]),
+    });
+    stubWindow(storage);
+
+    const [assignment] = await getMenuAssignments();
+
+    expect(assignment).toMatchObject({
+      menuId: "menu-1",
+      target: { type: "category", entityId: "beauty" },
+      region: "content-before",
+      order: 0,
+      isVisible: true,
+    });
+    expect(assignment.id).toBeTruthy();
+    expect(storage.getItem("aio-menu-assignments-migration-backup-v0")).not.toBeNull();
+  });
+
   it("rejects duplicate assignments", async () => {
     const assignment = { id: "assignment-1", menuId: "menu-1", target: { type: "category" as const, entityId: "beauty" }, region: "content-before" as const, order: 0, isVisible: true };
     stubWindow(createStorage({ "aio-menu-assignments": JSON.stringify([assignment]) }));

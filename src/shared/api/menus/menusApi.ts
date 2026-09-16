@@ -5,11 +5,16 @@ import type {
   T_SaveMenuAssignmentDto,
   T_UpdateMenuDto,
 } from "@/entities/menu";
-import { locales } from "@/shared/i18n";
+import {
+  MENU_STORAGE_SCHEMA_VERSION,
+  migrateMenuAssignments,
+  migrateMenus,
+} from "./menuStorageMigrations";
 import { MenusApiError } from "./types";
 
 const MENUS_STORAGE_KEY = "aio-menus";
 const MENU_ASSIGNMENTS_STORAGE_KEY = "aio-menu-assignments";
+const MENU_STORAGE_VERSION_KEY = "aio-menu-storage-version";
 const MENU_KEY_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const getStorage = () => typeof window === "undefined" ? undefined : window.localStorage;
@@ -17,75 +22,54 @@ const createId = () => typeof crypto !== "undefined" && "randomUUID" in crypto
   ? crypto.randomUUID()
   : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null;
+const preserveMigrationBackup = (storage: Storage, key: string, rawValue: string) => {
+  const backupKey = `${key}-migration-backup-v0`;
+  if (storage.getItem(backupKey) !== null) return;
 
-const normalizeLocalizedText = (value: unknown) => {
-  if (!isRecord(value)) return undefined;
-  if (!locales.every((locale) => typeof value[locale] === "string")) return undefined;
-  return { uk: value.uk as string, en: value.en as string, de: value.de as string, ru: value.ru as string };
+  try {
+    storage.setItem(backupKey, rawValue);
+  } catch {
+    // Reading remains available even if storage quota prevents a backup.
+  }
 };
 
-const normalizeMenuItem = (value: unknown, depth = 0): T_Menu["items"][number] | undefined => {
-  if (!isRecord(value) || depth > 2) return undefined;
-  const label = normalizeLocalizedText(value.label);
-  if (!label || typeof value.id !== "string" || typeof value.href !== "string" || typeof value.openInNewTab !== "boolean" || typeof value.isVisible !== "boolean" || !Array.isArray(value.children)) return undefined;
-  return {
-    id: value.id,
-    label,
-    href: value.href,
-    openInNewTab: value.openInNewTab,
-    isVisible: value.isVisible,
-    children: depth === 2 ? [] : value.children.map((item) => normalizeMenuItem(item, depth + 1)).filter((item): item is T_Menu["items"][number] => Boolean(item)),
-  };
-};
-
-const normalizeMenu = (value: unknown): T_Menu | undefined => {
-  if (!isRecord(value) || typeof value.id !== "string" || typeof value.name !== "string" || typeof value.key !== "string" || (value.status !== "draft" && value.status !== "published") || !locales.includes(value.defaultLocale as (typeof locales)[number]) || !Array.isArray(value.items) || typeof value.createdAt !== "string" || typeof value.updatedAt !== "string") return undefined;
-  return {
-    id: value.id,
-    name: value.name,
-    key: value.key,
-    status: value.status,
-    defaultLocale: value.defaultLocale as T_Menu["defaultLocale"],
-    items: value.items.map((item) => normalizeMenuItem(item)).filter((item): item is T_Menu["items"][number] => Boolean(item)),
-    createdAt: value.createdAt,
-    updatedAt: value.updatedAt,
-  };
-};
-
-const normalizeAssignment = (value: unknown): T_MenuAssignment | undefined => {
-  if (!isRecord(value) || !isRecord(value.target) || typeof value.id !== "string" || typeof value.menuId !== "string" || typeof value.order !== "number" || typeof value.isVisible !== "boolean") return undefined;
-  const regions: T_MenuAssignment["region"][] = ["header", "footer", "sidebar-left", "sidebar-right", "content-before", "content-after"];
-  if (!regions.includes(value.region as T_MenuAssignment["region"])) return undefined;
-  const targetType = value.target.type;
-  if (targetType !== "global" && targetType !== "contentPage" && targetType !== "category" && targetType !== "product") return undefined;
-  if (targetType !== "global" && typeof value.target.entityId !== "string") return undefined;
-  return {
-    id: value.id,
-    menuId: value.menuId,
-    target: targetType === "global" ? { type: "global" } : { type: targetType, entityId: value.target.entityId as string },
-    region: value.region as T_MenuAssignment["region"],
-    order: value.order,
-    isVisible: value.isVisible,
-  };
-};
-
-const readArray = <T>(key: string, normalize: (value: unknown) => T | undefined): T[] => {
+const readMigratedArray = <T>(
+  key: string,
+  migrate: (value: unknown[], context: { createId: () => string; now: string }) => T[],
+): T[] => {
   const storage = getStorage();
   if (!storage) return [];
+  const rawValue = storage.getItem(key);
+  if (rawValue === null) return [];
+
   try {
-    const value: unknown = JSON.parse(storage.getItem(key) ?? "[]");
+    const value: unknown = JSON.parse(rawValue);
     if (!Array.isArray(value)) {
-      storage.removeItem(key);
+      preserveMigrationBackup(storage, key, rawValue);
       return [];
     }
-    const normalized = value.map(normalize).filter((item): item is T => Boolean(item));
-    const normalizedValue = JSON.stringify(normalized);
-    if (normalizedValue !== JSON.stringify(value)) storage.setItem(key, normalizedValue);
-    return normalized;
+
+    const migrated = migrate(value, {
+      createId,
+      now: new Date().toISOString(),
+    });
+    const migratedValue = JSON.stringify(migrated);
+    const storedVersion = Number(storage.getItem(MENU_STORAGE_VERSION_KEY) ?? 0);
+
+    if (storedVersion <= MENU_STORAGE_SCHEMA_VERSION && migratedValue !== rawValue) {
+      preserveMigrationBackup(storage, key, rawValue);
+      storage.setItem(key, migratedValue);
+    }
+    if (storedVersion <= MENU_STORAGE_SCHEMA_VERSION) {
+      storage.setItem(
+        MENU_STORAGE_VERSION_KEY,
+        String(MENU_STORAGE_SCHEMA_VERSION),
+      );
+    }
+
+    return migrated;
   } catch {
-    storage.removeItem(key);
+    preserveMigrationBackup(storage, key, rawValue);
     return [];
   }
 };
@@ -121,8 +105,12 @@ const targetsMatch = (
       "entityId" in second &&
       first.entityId === second.entityId));
 
-const readMenus = () => readArray<T_Menu>(MENUS_STORAGE_KEY, normalizeMenu);
-const readAssignments = () => readArray<T_MenuAssignment>(MENU_ASSIGNMENTS_STORAGE_KEY, normalizeAssignment);
+const readMenus = () => readMigratedArray<T_Menu>(MENUS_STORAGE_KEY, migrateMenus);
+const readAssignments = () =>
+  readMigratedArray<T_MenuAssignment>(
+    MENU_ASSIGNMENTS_STORAGE_KEY,
+    migrateMenuAssignments,
+  );
 
 export const getMenus = async (): Promise<T_Menu[]> => readMenus();
 
