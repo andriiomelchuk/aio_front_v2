@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Popular Repositories",
   description: "Discover popular GitHub repositories by programming language.",
+  alternates: { canonical: "/popular" },
 };
 
 type SearchParams = {

@@ -294,6 +294,8 @@ export const adminRu = {
     "admin.category.form.slugPlaceholder": "Введите slug категории",
     "admin.category.form.statusLabel": "Статус",
     "admin.category.form.statusPlaceholder": "Выберите статус",
+    "admin.category.error.duplicateSlug": "Категория с таким slug уже существует.",
+    "admin.category.error.saveFailed": "Не удалось сохранить категорию.",
 
     // Content pages
     "admin.contentPages.pageTitle": "Контентные страницы",
@@ -463,6 +465,8 @@ export const adminRu = {
     "admin.product.form.editDescription": "Обновление информации о товаре",
     "admin.product.form.expandAllSections": "Развернуть все",
     "admin.product.form.collapseAllSections": "Свернуть все",
+    "admin.product.error.duplicateSlug": "Товар с таким slug уже существует.",
+    "admin.product.error.saveFailed": "Не удалось сохранить товар.",
 
     "admin.product.form.sections.main": "Основная информация",
     "admin.product.form.sections.description": "Описание",

@@ -2,7 +2,7 @@ import { SyntheticEvent, useState } from "react";
 import type { T_AddCategoryFormProps, T_CategoryData } from "./types";
 import { Button, Input, Select } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
-import { createCategory } from "@/shared/api/categories";
+import { CategoriesApiError, createCategory } from "@/shared/api/categories";
 
 export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) => {
   const { t } = useI18n();
@@ -11,6 +11,7 @@ export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) 
     slug: "",
     status: "inactive",
   });
+  const [error, setError] = useState("");
 
   const updateCategory = (field: keyof T_CategoryData, value: string) => {
     setCategory((prevCategory) => ({
@@ -22,17 +23,27 @@ export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const createdCategory = await createCategory({
-      name: category.name,
-      slug: category.slug,
-      status: category.status,
-    });
-    console.log("Create category:", category);
-    onCreate(createdCategory);
+    setError("");
+
+    try {
+      const createdCategory = await createCategory({
+        name: category.name,
+        slug: category.slug,
+        status: category.status,
+      });
+      onCreate(createdCategory);
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof CategoriesApiError && caughtError.code === "DUPLICATE_SLUG"
+          ? t("admin.category.error.duplicateSlug")
+          : t("admin.category.error.saveFailed"),
+      );
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {error && <p className="rounded-md border border-danger bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label={t("admin.category.form.nameLabel")}

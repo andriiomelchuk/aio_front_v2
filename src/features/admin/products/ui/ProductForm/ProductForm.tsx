@@ -69,6 +69,7 @@ export const ProductForm = ({
   const { t } = useI18n();
   const isEditMode = mode === "edit";
   const [errors, setErrors] = useState<T_ProductFormErrors>({});
+  const [submitError, setSubmitError] = useState("");
   const [openSections, setOpenSections] = useState(() =>
     createSectionState(true),
   );
@@ -102,8 +103,9 @@ export const ProductForm = ({
           ...productValues,
         });
       }}
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault();
+        setSubmitError("");
 
         const productValues = getProductFormValues(event.currentTarget);
         const validationErrors = validateProductFormValues(productValues, t);
@@ -114,16 +116,24 @@ export const ProductForm = ({
           return;
         }
 
-        if (isEditMode && product) {
-          onUpdate?.({
-            id: product.id,
-            ...productValues,
-          });
+        try {
+          if (isEditMode && product) {
+            await onUpdate?.({
+              id: product.id,
+              ...productValues,
+            });
 
-          return;
+            return;
+          }
+
+          await onCreate?.(productValues);
+        } catch (caughtError) {
+          setSubmitError(
+            caughtError instanceof Error
+              ? caughtError.message
+              : t("admin.product.error.saveFailed"),
+          );
         }
-
-        onCreate?.(productValues);
       }}
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -177,10 +187,11 @@ export const ProductForm = ({
         </Button>
       </div>
 
-      {errorMessages.length > 0 && (
+      {(errorMessages.length > 0 || submitError) && (
         <div className="rounded-md border border-danger bg-danger/10 px-4 py-3 text-sm text-danger">
           <p className="font-semibold">{t("admin.validation.formErrorTitle")}</p>
           <ul className="mt-2 list-disc space-y-1 pl-4">
+            {submitError && <li>{submitError}</li>}
             {errorMessages.map((error, index) => (
               <li key={`${error}-${index}`}>{error}</li>
             ))}
