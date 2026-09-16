@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import type { T_Product } from "@/entities/product/model/types";
 import { ProductForm } from "../ProductForm";
-import { getProductById, updateProduct } from "@/shared/api/products";
+import { getProductById, ProductsApiError, updateProduct } from "@/shared/api/products";
 import { useI18n } from "@/shared/i18n";
 
 export const EditProductPageContent = () => {
@@ -41,8 +41,16 @@ export const EditProductPageContent = () => {
       product={product}
       onCancel={() => router.push("/admin/products")}
       onUpdate={async (updatedProduct) => {
-        await updateProduct(updatedProduct);
-        router.push("/admin/products");
+        try {
+          await updateProduct(updatedProduct);
+          router.push("/admin/products");
+        } catch (caughtError) {
+          if (caughtError instanceof ProductsApiError && caughtError.code === "DUPLICATE_SLUG") {
+            throw new Error(t("admin.product.error.duplicateSlug"));
+          }
+
+          throw new Error(t("admin.product.error.saveFailed"));
+        }
       }}
     />
   );

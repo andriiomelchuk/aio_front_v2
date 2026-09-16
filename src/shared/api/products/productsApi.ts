@@ -3,7 +3,34 @@ import type {
   T_Product,
   T_UpdateProductDto,
 } from "@/entities/product/model/types";
-import type { T_JsonPlaceholderProductsResponse } from "./types";
+import {
+  ProductsApiError,
+  type T_JsonPlaceholderProductsResponse,
+} from "./types";
+
+const normalizeSlug = (slug: string) => slug.trim().toLowerCase();
+
+const assertUniqueSlug = (
+  products: T_Product[],
+  slug: string,
+  ignoredProductId?: string,
+) => {
+  const normalizedSlug = normalizeSlug(slug);
+  const duplicate = products.some(
+    (product) =>
+      product.id !== ignoredProductId &&
+      normalizeSlug(product.slug) === normalizedSlug,
+  );
+
+  if (duplicate) {
+    throw new ProductsApiError(
+      "DUPLICATE_SLUG",
+      `Product with slug "${normalizedSlug}" already exists`,
+    );
+  }
+
+  return normalizedSlug;
+};
 
 const PRODUCTS_STORAGE_KEY = "admin-products-overrides";
 const DELETED_PRODUCTS_STORAGE_KEY = "admin-products-deleted";
@@ -100,11 +127,15 @@ export const createProduct = async (
 ): Promise<T_Product> => {
   console.log("Create product request:", product);
 
+  const products = await getProducts();
+  const slug = assertUniqueSlug(products, product.slug);
+
   const newProduct: T_Product = {
     id: createProductId(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     ...product,
+    slug,
   };
 
   const overrides = getStoredProductOverrides();
@@ -128,12 +159,17 @@ export const updateProduct = async (
   const currentProduct = products.find((prod) => prod.id === product.id);
 
   if (!currentProduct) {
-    throw new Error("Product not found");
+    throw new ProductsApiError("NOT_FOUND", "Product not found");
   }
+
+  const slug = product.slug === undefined
+    ? currentProduct.slug
+    : assertUniqueSlug(products, product.slug, product.id);
 
   const updatedProduct = {
     ...currentProduct,
     ...product,
+    slug,
     updatedAt: new Date().toISOString(),
   };
 
@@ -278,7 +314,7 @@ export const getProductById = async (id: string): Promise<T_Product> => {
   const product = products.find((prod) => prod.id === id);
 
   if (!product) {
-    throw new Error("Product not found");
+    throw new ProductsApiError("NOT_FOUND", "Product not found");
   }
 
   return product;

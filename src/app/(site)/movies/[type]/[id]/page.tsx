@@ -2,12 +2,21 @@ import { MediaDetails } from "@/components/Movies/MediaDetails";
 import { PersonDetails } from "@/components/Movies/PersonDetails";
 import type { T_MovieSearchType } from "@/components/Movies/types";
 import { getMediaDetails, getPersonDetails } from "@/lib/api";
+import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{
     id: string;
     type: T_MovieSearchType;
   }>;
+};
+
+export const generateMetadata = async ({ params }: PageProps): Promise<Metadata> => {
+  const { id, type } = await params;
+
+  return {
+    alternates: { canonical: `/movies/${type.toLowerCase()}/${id}` },
+  };
 };
 
 export default async function MovieDetailsPage({ params }: PageProps) {

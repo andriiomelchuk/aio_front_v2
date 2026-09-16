@@ -6,7 +6,7 @@ import { useI18n } from "@/shared/i18n";
 import { Button, Input, Select } from "@/shared/ui";
 
 import type { T_EditCategoryData, T_EditCategoryFormProps } from "./types";
-import { updateCategory } from "@/shared/api/categories";
+import { CategoriesApiError, updateCategory } from "@/shared/api/categories";
 
 export const EditCategoryForm = ({
   category,
@@ -21,6 +21,7 @@ export const EditCategoryForm = ({
     slug: category.slug,
     status: category.status,
   });
+  const [error, setError] = useState("");
 
   const updateField = (field: keyof T_EditCategoryData, value: string) => {
     setFormData((prevFormData) => ({
@@ -32,17 +33,28 @@ export const EditCategoryForm = ({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const updatedCategory = await updateCategory({
-      ...category,
-      ...formData,
-      id: formData.slug
-    });
+    setError("");
 
-    onUpdate(updatedCategory);
+    try {
+      const updatedCategory = await updateCategory({
+        ...category,
+        ...formData,
+        id: category.id,
+      });
+
+      onUpdate(updatedCategory);
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof CategoriesApiError && caughtError.code === "DUPLICATE_SLUG"
+          ? t("admin.category.error.duplicateSlug")
+          : t("admin.category.error.saveFailed"),
+      );
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {error && <p className="rounded-md border border-danger bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label={t("admin.category.form.nameLabel")}

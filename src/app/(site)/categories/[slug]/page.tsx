@@ -4,11 +4,20 @@ import { getProducts } from "@/shared/api/products";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AssignedMenuLayout } from "@/components/Menu";
+import type { Metadata } from "next";
 
 type T_CategoryPageProps = {
   params: Promise<{
     slug: string;
   }>;
+};
+
+export const generateMetadata = async ({ params }: T_CategoryPageProps): Promise<Metadata> => {
+  const { slug } = await params;
+
+  return {
+    alternates: { canonical: `/categories/${slug.toLowerCase()}` },
+  };
 };
 
 export default async function CategoryPage({ params }: T_CategoryPageProps) {

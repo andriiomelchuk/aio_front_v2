@@ -8,8 +8,8 @@ export type T_ProductForm = {
   mode: "create" | "edit";
   product?: T_Product;
   onCancel?: () => void;
-  onCreate?: (product: T_CreateProductDto) => void;
-  onUpdate?: (product: T_UpdateProductDto) => void;
+  onCreate?: (product: T_CreateProductDto) => void | Promise<void>;
+  onUpdate?: (product: T_UpdateProductDto) => void | Promise<void>;
 };
 
 export type T_ProductFormErrors = Partial<

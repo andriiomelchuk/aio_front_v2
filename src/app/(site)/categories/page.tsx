@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Categories",
   description: "Explore the AIO product catalog by category.",
+  alternates: { canonical: "/categories" },
 };
 
 export default async function CategoriesPage() {

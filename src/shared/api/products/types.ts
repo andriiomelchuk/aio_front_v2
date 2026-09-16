@@ -50,3 +50,15 @@ export type T_JsonPlaceholderProductsResponse = {
   skip: number;
   limit: number;
 };
+
+export type T_ProductsApiErrorCode = "NOT_FOUND" | "DUPLICATE_SLUG";
+
+export class ProductsApiError extends Error {
+  constructor(
+    public readonly code: T_ProductsApiErrorCode,
+    message: string,
+  ) {
+    super(message);
+    this.name = "ProductsApiError";
+  }
+}

@@ -306,6 +306,8 @@ export const adminEn = {
     "admin.category.form.slugPlaceholder": "Enter category slug",
     "admin.category.form.statusLabel": "Status",
     "admin.category.form.statusPlaceholder": "Select status",
+    "admin.category.error.duplicateSlug": "A category with this slug already exists.",
+    "admin.category.error.saveFailed": "Could not save the category.",
 
     // Content pages
     "admin.contentPages.pageTitle": "Content pages",
@@ -478,6 +480,8 @@ export const adminEn = {
     "admin.product.form.editDescription": "Update product information",
     "admin.product.form.expandAllSections": "Expand all",
     "admin.product.form.collapseAllSections": "Collapse all",
+    "admin.product.error.duplicateSlug": "A product with this slug already exists.",
+    "admin.product.error.saveFailed": "Could not save the product.",
 
     "admin.product.form.sections.main": "Main information",
     "admin.product.form.sections.description": "Description",

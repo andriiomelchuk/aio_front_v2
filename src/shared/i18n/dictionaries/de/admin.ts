@@ -293,6 +293,8 @@ export const adminDe = {
     "admin.category.form.slugPlaceholder": "Kategorie-Slug eingeben",
     "admin.category.form.statusLabel": "Status",
     "admin.category.form.statusPlaceholder": "Status auswählen",
+    "admin.category.error.duplicateSlug": "Eine Kategorie mit diesem Slug existiert bereits.",
+    "admin.category.error.saveFailed": "Die Kategorie konnte nicht gespeichert werden.",
 
     // Content pages
     "admin.contentPages.pageTitle": "Inhaltsseiten",
@@ -462,6 +464,8 @@ export const adminDe = {
     "admin.product.form.editDescription": "Produktinformationen aktualisieren",
     "admin.product.form.expandAllSections": "Alle öffnen",
     "admin.product.form.collapseAllSections": "Alle schließen",
+    "admin.product.error.duplicateSlug": "Ein Produkt mit diesem Slug existiert bereits.",
+    "admin.product.error.saveFailed": "Das Produkt konnte nicht gespeichert werden.",
 
     "admin.product.form.sections.main": "Grundinformationen",
     "admin.product.form.sections.description": "Beschreibung",

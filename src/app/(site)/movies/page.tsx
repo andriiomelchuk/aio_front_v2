@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Movie Explorer",
   description: "Search for movies, series, and people.",
+  alternates: { canonical: "/movies" },
 };
 
 type T_SearchParams = {
