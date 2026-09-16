@@ -16,6 +16,7 @@ const rolePermissions: Record<
     categories: ["view", "manage"],
     pages: ["view", "manage"],
     menus: ["view", "manage"],
+    translations: ["view", "manage"],
     analytics: ["view", "manage"],
     settings: ["view", "manage"],
   },
@@ -28,6 +29,7 @@ const rolePermissions: Record<
     categories: ["view", "manage"],
     pages: ["view", "manage"],
     menus: ["view", "manage"],
+    translations: ["view", "manage"],
     analytics: ["view", "manage"],
     settings: ["view", "manage"],
   },
@@ -39,6 +41,7 @@ const rolePermissions: Record<
     categories: ["view", "manage"],
     pages: ["view", "manage"],
     menus: ["view", "manage"],
+    translations: ["view", "manage"],
     analytics: ["view", "manage"],
   },
   manager: {
