@@ -7,6 +7,7 @@ export const adminModules = {
     categories: true,
     pages: true,
     menus: true,
+    translations: true,
     analytics: true,
     settings: true,
 } as const;

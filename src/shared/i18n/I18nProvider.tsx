@@ -8,6 +8,11 @@ import {
   useSyncExternalStore,
 } from "react";
 import { dictionaries } from "./dictionaries";
+import {
+  getPublishedTranslationOverrides,
+  getTranslationStorageSnapshot,
+  TRANSLATIONS_CHANGE_EVENT,
+} from "@/shared/api/translations";
 import { locales, type T_I18nContext, type T_Locale } from "./types";
 
 const DEFAULT_LOCALE: T_Locale = "uk";
@@ -52,11 +57,25 @@ const subscribeToLocale = (callback: () => void) => {
   };
 };
 
+const subscribeToTranslations = (callback: () => void) => {
+  window.addEventListener("storage", callback);
+  window.addEventListener(TRANSLATIONS_CHANGE_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(TRANSLATIONS_CHANGE_EVENT, callback);
+  };
+};
+
 export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
   const locale = useSyncExternalStore(
     subscribeToLocale,
     getStoredLocale,
     () => DEFAULT_LOCALE,
+  );
+  const translationSnapshot = useSyncExternalStore(
+    subscribeToTranslations,
+    getTranslationStorageSnapshot,
+    () => "",
   );
 
   useEffect(() => {
@@ -69,7 +88,10 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const value = useMemo<T_I18nContext>(() => {
-    const dictionary = dictionaries[locale];
+    const dictionary = {
+      ...dictionaries[locale],
+      ...(translationSnapshot ? getPublishedTranslationOverrides(locale) : {}),
+    };
 
     return {
       locale,
@@ -80,7 +102,7 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
         return formatMessage(message, params);
       },
     };
-  }, [locale]);
+  }, [locale, translationSnapshot]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 };
