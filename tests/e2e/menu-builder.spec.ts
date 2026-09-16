@@ -98,3 +98,38 @@ test("nested menu remains usable without horizontal overflow", async ({ page }, 
     await page.screenshot({ path: testInfo.outputPath(`menu-${viewport.name}.png`), fullPage: true });
   }
 });
+
+test("legacy menu storage migrates and remains visible", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Storage migration is covered once on desktop");
+  await page.addInitScript(() => {
+    localStorage.setItem("aio-locale", "uk");
+    localStorage.setItem("aio-menus", JSON.stringify([{
+      id: "legacy-menu",
+      name: "Legacy menu",
+      key: "Legacy Menu",
+      status: "published",
+      items: [{
+        id: "legacy-products",
+        label: "Legacy shop",
+        href: "/products",
+      }],
+    }]));
+    localStorage.setItem("aio-menu-assignments", JSON.stringify([{
+      menuId: "legacy-menu",
+      targetType: "global",
+      region: "header",
+    }]));
+  });
+
+  await page.goto("/");
+
+  await expect(page.getByRole("link", { name: "Legacy shop" })).toBeVisible();
+  const migrationState = await page.evaluate(() => ({
+    version: localStorage.getItem("aio-menu-storage-version"),
+    menuBackup: localStorage.getItem("aio-menus-migration-backup-v0"),
+    assignmentBackup: localStorage.getItem("aio-menu-assignments-migration-backup-v0"),
+  }));
+  expect(migrationState.version).toBe("1");
+  expect(migrationState.menuBackup).not.toBeNull();
+  expect(migrationState.assignmentBackup).not.toBeNull();
+});
