@@ -5,6 +5,7 @@ import { useI18n } from "@/shared/i18n";
 import { CartIcon } from "@/components/Products/icons";
 import { useCart } from "../../model/useCart";
 import type { T_AddToCartButtonProps } from "../../model/types";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 export const AddToCartButton = ({
   product,
@@ -13,7 +14,9 @@ export const AddToCartButton = ({
   const { t } = useI18n();
   const { addToCart, getCartItemQuantity } = useCart();
   const { showToast } = useToast();
+  const settings = useSiteSettings();
   const isCartLimitReached =
+    !settings.commerce.allowBackorders &&
     getCartItemQuantity(product.id) >= product.stockQuantity;
 
   const handleAddToCart = () => {

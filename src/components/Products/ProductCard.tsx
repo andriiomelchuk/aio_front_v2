@@ -6,11 +6,17 @@ import type { T_ProductCardProps } from "./types";
 import { AddToCartButton } from "@/features/cart";
 import { AddToWishlistButton } from "@/features/wishlist/ui/AddToWishlistButton";
 import { CompareToggleButton } from "@/features/comparison/ui/CompareToggleButton";
+import { usePriceFormatter } from "@/shared/siteSettings";
+import { useSiteSettings } from "@/shared/siteSettings";
+import { canPurchaseProduct, getProductStockStatus } from "@/features/catalog";
 
 export const ProductCard = ({ product }: T_ProductCardProps) => {
   const { t } = useI18n();
+  const formatPrice = usePriceFormatter();
+  const settings = useSiteSettings();
 
-  const isAvailable = product.stockStatus !== "out_of_stock";
+  const stockStatus = getProductStockStatus(product.stockQuantity, settings.commerce.lowStockThreshold);
+  const isAvailable = canPurchaseProduct(product, settings.commerce.allowBackorders);
   const mainImage =
     product.images.find((image) => image.isMain)?.url ?? product.thumbnail;
 
@@ -24,7 +30,7 @@ export const ProductCard = ({ product }: T_ProductCardProps) => {
     in_stock: t("products.stock.inStock"),
     low_stock: t("products.stock.lowStock"),
     out_of_stock: t("products.stock.outOfStock"),
-  }[product.stockStatus];
+  }[stockStatus];
 
   return (
     <article className="overflow-hidden rounded-lg border border-border bg-surface transition-colors hover:border-accent">
@@ -57,14 +63,14 @@ export const ProductCard = ({ product }: T_ProductCardProps) => {
           <div className="mt-3 flex items-end justify-between gap-3">
             <div>
               <div className="text-lg font-bold text-foreground">
-                {finalPrice.toFixed(2)} {product.currency}
+                {formatPrice(finalPrice, product.currency)}
               </div>
 
               {hasDiscount && (
                 <div className="mt-1 flex items-center gap-2 text-sm">
                   {product.oldPrice && (
                     <span className="text-muted line-through">
-                      {product.oldPrice.toFixed(2)} {product.currency}
+                      {formatPrice(product.oldPrice, product.currency)}
                     </span>
                   )}
 

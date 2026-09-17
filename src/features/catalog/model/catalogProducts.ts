@@ -7,6 +7,7 @@ const getFinalPrice = (product: T_Product) =>
 export const catalogProducts = (
   products: T_Product[],
   params: T_CatalogParams,
+  options: { showOutOfStockProducts?: boolean } = {},
 ) => {
   const normalizedSearch = params.search.trim().toLocaleLowerCase();
   const minPrice = params.minPrice === "" ? null : Number(params.minPrice);
@@ -21,6 +22,7 @@ export const catalogProducts = (
 
     return (
       product.status === "active" &&
+      (options.showOutOfStockProducts !== false || product.stockStatus !== "out_of_stock") &&
       (!normalizedSearch || searchableValue.includes(normalizedSearch)) &&
       (!params.category ||
         product.categoryId.toLocaleLowerCase() ===

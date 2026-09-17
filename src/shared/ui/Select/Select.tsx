@@ -1,5 +1,6 @@
 import { Field } from "../Field";
 import type { T_SelectProps } from "./types";
+import { useId } from "react";
 
 export const Select = ({
   label,
@@ -9,7 +10,8 @@ export const Select = ({
   id,
   ...props
 }: T_SelectProps) => {
-  const selectId = id ?? props.name;
+  const generatedId = useId();
+  const selectId = id ?? props.name ?? generatedId;
 
   return (
     <Field error={error} label={label}  htmlFor={selectId}>

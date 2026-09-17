@@ -7,6 +7,7 @@ import {
   ProductsApiError,
   type T_JsonPlaceholderProductsResponse,
 } from "./types";
+import { readSiteSettings } from "@/shared/api/siteSettings";
 
 const normalizeSlug = (slug: string) => slug.trim().toLowerCase();
 
@@ -39,6 +40,18 @@ type T_ProductOverrides = Record<string, T_Product>;
 export type T_BulkUpdateProductsDto = {
   ids: Array<string | number>;
   changes: Partial<Omit<T_Product, "id" | "createdAt">>;
+};
+
+const applyStockThreshold = (products: T_Product[]) => {
+  const threshold = readSiteSettings().commerce.lowStockThreshold;
+  return products.map((product) => ({
+    ...product,
+    stockStatus: product.stockQuantity <= 0
+      ? "out_of_stock" as const
+      : product.stockQuantity <= threshold
+        ? "low_stock" as const
+        : "in_stock" as const,
+  }));
 };
 
 const getStoredProductOverrides = (): T_ProductOverrides => {
@@ -295,17 +308,17 @@ export const getProducts = async (): Promise<T_Product[]> => {
     }));
   } catch (error) {
     if (Object.keys(overrides).length > 0) {
-      return mergeProductsWithOverrides([], overrides, deletedProductIds);
+      return applyStockThreshold(mergeProductsWithOverrides([], overrides, deletedProductIds));
     }
 
     throw error;
   }
 
   if (typeof window === "undefined") {
-    return allProducts;
+    return applyStockThreshold(allProducts);
   }
 
-  return mergeProductsWithOverrides(allProducts, overrides, deletedProductIds);
+  return applyStockThreshold(mergeProductsWithOverrides(allProducts, overrides, deletedProductIds));
 };
 
 export const getProductById = async (id: string): Promise<T_Product> => {

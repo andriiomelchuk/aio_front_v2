@@ -6,24 +6,21 @@ import {
   productsStockBadgeVariant,
 } from "../../model";
 import type { T_ProductPreviewProps } from "./types";
-
-const formatPrice = (
-  price: number | undefined,
-  currency: string | undefined,
-) => {
-  if (typeof price !== "number") {
-    return "";
-  }
-
-  return `${price.toFixed(2)} ${currency ?? ""}`.trim();
-};
+import { usePriceFormatter } from "@/shared/siteSettings";
 
 export const ProductPreview = ({ product }: T_ProductPreviewProps) => {
   const { t } = useI18n();
+  const formatPrice = usePriceFormatter();
   const title = product?.title || t("admin.product.preview.emptyTitle");
   const image = product?.thumbnail || product?.images?.[0]?.url;
-  const currentPrice = formatPrice(product?.price, product?.currency);
-  const oldPrice = formatPrice(product?.oldPrice, product?.currency);
+  const currentPrice =
+    typeof product?.price === "number"
+      ? formatPrice(product.price, product.currency)
+      : "";
+  const oldPrice =
+    typeof product?.oldPrice === "number"
+      ? formatPrice(product.oldPrice, product.currency)
+      : "";
 
   return (
     <aside className="lg:sticky lg:top-6">

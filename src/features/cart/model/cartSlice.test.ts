@@ -61,10 +61,17 @@ describe("cartSlice", () => {
   it("does not increase quantity above stock and removes at the lower boundary", () => {
     const product = createProduct(1);
     const initialState = reducer(undefined, addCartItem({ product, quantity: 1 }));
-    const limitedState = reducer(initialState, increaseCartItemQuantity(product.id));
+    const limitedState = reducer(initialState, increaseCartItemQuantity({ productId: product.id }));
     const emptyState = reducer(limitedState, decreaseCartItemQuantity(product.id));
 
     expect(limitedState.products[0].quantity).toBe(1);
     expect(emptyState.products).toHaveLength(0);
+  });
+
+  it("allows quantities above stock when backorders are enabled", () => {
+    const product = createProduct(0);
+    const state = reducer(undefined, addCartItem({ product, quantity: 3, allowBackorders: true }));
+
+    expect(state.products[0].quantity).toBe(3);
   });
 });

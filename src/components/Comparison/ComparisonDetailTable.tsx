@@ -1,5 +1,6 @@
 import { useI18n } from "@/shared/i18n";
 import { T_ComparisonTableProps } from "./types";
+import { usePriceFormatter } from "@/shared/siteSettings";
 
 const stockLabelKeys = {
   in_stock: "products.stock.inStock",
@@ -12,6 +13,7 @@ export const ComparisonDetailTable = ({
   priceCalc,
 }: T_ComparisonTableProps) => {
   const { t } = useI18n();
+  const formatPrice = usePriceFormatter();
 
   const comparisonRows = [
     {
@@ -87,7 +89,7 @@ export const ComparisonDetailTable = ({
               return (
                 <td key={product.id} className="px-4 py-3">
                   <span className="font-bold text-foreground">
-                    {finalPrice.toFixed(2)} {product.currency}
+                    {formatPrice(finalPrice, product.currency)}
                   </span>
                 </td>
               );

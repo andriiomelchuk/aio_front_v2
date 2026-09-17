@@ -1,10 +1,14 @@
 import type { T_CartItem } from "@/features/cart";
 import { useCart } from "@/features/cart/model/useCart";
 import { useI18n } from "@/shared/i18n";
+import { usePriceFormatter } from "@/shared/siteSettings";
 import { Button } from "@/shared/ui";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 export const CartItem = ({ item }: { item: T_CartItem }) => {
   const { t } = useI18n();
+  const formatPrice = usePriceFormatter();
+  const settings = useSiteSettings();
   const { increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
 
   const finalPrice = item.product.discountPercentage
@@ -48,7 +52,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
         </span>
         <div>
           <div className="font-semibold text-foreground">
-            {basePrice.toFixed(2)} {item.product.currency}
+            {formatPrice(basePrice, item.product.currency)}
           </div>
 
           {hasDiscount && (
@@ -81,7 +85,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
               variant="ghost"
               className="h-10 w-10 text-foreground transition hover:bg-surface-muted"
               onClick={() => increaseQuantity(item.product)}
-              disabled={item.quantity >= item.product.stockQuantity}
+              disabled={!settings.commerce.allowBackorders && item.quantity >= item.product.stockQuantity}
             >
               +
             </Button>
@@ -99,7 +103,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
           {t("cart.table.total")}
         </span>
         <span className="font-bold text-foreground">
-          {(finalPrice * item.quantity).toFixed(2)} {item.product.currency}
+          {formatPrice(finalPrice * item.quantity, item.product.currency)}
         </span>
       </div>
 

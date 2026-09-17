@@ -7,6 +7,8 @@ import { Pagination } from "@/shared/ui";
 import { CatalogFilters } from "./CatalogFilters";
 import { ProductCard } from "./ProductCard";
 import type { T_ProductCatalogProps } from "./types";
+import { useSiteSettings } from "@/shared/siteSettings";
+import { withCalculatedStockStatus } from "@/features/catalog";
 
 export const ProductCatalog = ({
   products,
@@ -15,9 +17,15 @@ export const ProductCatalog = ({
   categoryTitle,
 }: T_ProductCatalogProps) => {
   const { t } = useI18n();
+  const settings = useSiteSettings();
   const { params, updateParams, resetParams } =
     useCatalogControls(fixedCategory);
-  const filteredProducts = catalogProducts(products, params);
+  const productsWithStockStatus = products.map((product) =>
+    withCalculatedStockStatus(product, settings.commerce.lowStockThreshold),
+  );
+  const filteredProducts = catalogProducts(productsWithStockStatus, params, {
+    showOutOfStockProducts: settings.commerce.showOutOfStockProducts,
+  });
   const totalPages = Math.max(
     1,
     Math.ceil(filteredProducts.length / params.pageSize),

@@ -8,6 +8,7 @@ import { ComparisonInitializer } from "@/features/comparison/ui/ComparisonInitia
 import { WishlistInitializer } from "@/features/wishlist";
 import { ToastProvider } from "@/shared/ui";
 import { AuthInitializer } from "@/features/auth";
+import { SiteMetadataSync, SiteSettingsProvider } from "@/shared/siteSettings";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,15 +44,18 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <StoreProvider>
-          <I18nProvider>
-            <ToastProvider>
-              <CartInitializer />
-              <ComparisonInitializer />
-              <WishlistInitializer />
-              <AuthInitializer />
-              {children}
-            </ToastProvider>
-          </I18nProvider>
+          <SiteSettingsProvider>
+            <SiteMetadataSync />
+            <I18nProvider>
+              <ToastProvider>
+                <CartInitializer />
+                <ComparisonInitializer />
+                <WishlistInitializer />
+                <AuthInitializer />
+                {children}
+              </ToastProvider>
+            </I18nProvider>
+          </SiteSettingsProvider>
         </StoreProvider>
       </body>
     </html>

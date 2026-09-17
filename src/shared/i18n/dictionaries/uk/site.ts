@@ -427,4 +427,6 @@ export const siteUk = {
     "notifications.comparison.added": "Товар додано до порівняння",
     "notifications.comparison.removed": "Товар видалено з порівняння",
     "notifications.comparison.removeAction": "Видалити з порівняння",
+    "site.maintenanceMode": "Сайт зараз перебуває в режимі обслуговування.",
+    "site.maintenanceTitle": "Ми скоро повернемося",
 }as const;

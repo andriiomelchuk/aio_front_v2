@@ -15,6 +15,7 @@ import type { T_Product } from "@/entities/product/model/types";
 import { getProducts } from "@/shared/api/products";
 import { useI18n } from "@/shared/i18n";
 import { ProductCard } from "@/components/Products/ProductCard";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 const projectLinks = [
   { id: "store", href: "/products", icon: ShoppingBag, accent: "bg-emerald-400 text-zinc-950" },
@@ -25,17 +26,21 @@ const projectLinks = [
 
 export const HomePage = () => {
   const { t } = useI18n();
+  const settings = useSiteSettings();
   const [products, setProducts] = useState<T_Product[]>([]);
 
   useEffect(() => {
     getProducts()
       .then((nextProducts) => {
         setProducts(
-          nextProducts.filter(({ status }) => status === "active").slice(0, 4),
+          nextProducts.filter((product) =>
+            product.status === "active" &&
+            (settings.commerce.showOutOfStockProducts || product.stockQuantity > 0),
+          ).slice(0, 4),
         );
       })
       .catch(() => setProducts([]));
-  }, []);
+  }, [settings.commerce.showOutOfStockProducts]);
 
   return (
     <div className="space-y-16 pb-10 sm:space-y-24">

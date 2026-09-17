@@ -16,6 +16,7 @@ import { useI18n } from "@/shared/i18n";
 import { useAppSelector } from "@/shared/store/hooks";
 import { Button } from "@/shared/ui";
 import { useAuth } from "@/features/auth";
+import { useSiteSettings } from "@/shared/siteSettings";
 import { CheckoutContactSection } from "./CheckoutContactSection";
 import { CheckoutDeliverySection } from "./CheckoutDeliverySection";
 import { CheckoutPaymentSection } from "./CheckoutPaymentSection";
@@ -27,6 +28,7 @@ export const CheckoutManagement = () => {
   const items = useAppSelector((state) => state.cart.products);
   const { clearCart } = useCart();
   const { session } = useAuth();
+  const settings = useSiteSettings();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const checkoutSchema = useMemo(() => createCheckoutSchema(t), [t]);
   const {
@@ -60,6 +62,9 @@ export const CheckoutManagement = () => {
     setSubmitError(null);
 
     try {
+      if (!settings.commerce.allowBackorders && items.some((item) => item.quantity > item.product.stockQuantity)) {
+        throw new Error("Cart quantity exceeds available stock");
+      }
       const order = await createOrder(
         createOrderDto(values, items, session?.customerId),
       );

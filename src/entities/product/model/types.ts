@@ -5,7 +5,7 @@ export type T_ProductStockStatus =
   | "low_stock"
   | "out_of_stock";
 
-export type T_ProductCurrency = "USD" | "EUR" | "UAH";
+export type T_ProductCurrency = "USD" | "EUR" | "UAH" | "GBP";
 
 export type T_ProductAttribute = {
   name: string;

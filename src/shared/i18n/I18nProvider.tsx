@@ -14,6 +14,7 @@ import {
   TRANSLATIONS_CHANGE_EVENT,
 } from "@/shared/api/translations";
 import { locales, type T_I18nContext, type T_Locale } from "./types";
+import { readSiteSettings } from "@/shared/api/siteSettings";
 
 const DEFAULT_LOCALE: T_Locale = "uk";
 const STORAGE_KEY = "aio-locale";
@@ -44,7 +45,8 @@ const getStoredLocale = (): T_Locale => {
 
   const savedLocale = window.localStorage.getItem(STORAGE_KEY);
 
-  return isLocale(savedLocale) ? savedLocale : DEFAULT_LOCALE;
+  const defaultLocale = readSiteSettings().localization.defaultLocale;
+  return isLocale(savedLocale) ? savedLocale : isLocale(defaultLocale) ? defaultLocale : DEFAULT_LOCALE;
 };
 
 const subscribeToLocale = (callback: () => void) => {

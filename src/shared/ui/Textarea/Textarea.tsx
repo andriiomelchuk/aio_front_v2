@@ -1,5 +1,6 @@
 import { Field } from "../Field";
 import type { T_TextareaProps } from "./types";
+import { useId } from "react";
 
 export const Textarea = ({
   label,
@@ -8,7 +9,8 @@ export const Textarea = ({
   id,
   ...props
 }: T_TextareaProps) => {
-  const textareaId = id ?? props.name;
+  const generatedId = useId();
+  const textareaId = id ?? props.name ?? generatedId;
 
   return (
     <Field label={label} error={error} htmlFor={textareaId}>

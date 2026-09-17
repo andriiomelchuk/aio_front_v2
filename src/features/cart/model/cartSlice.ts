@@ -9,13 +9,14 @@ const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        addCartItem: (state, action: PayloadAction<T_CartItem>) => {
-            const cartItem = action.payload;
+        addCartItem: (state, action: PayloadAction<T_CartItem & { allowBackorders?: boolean }>) => {
+            const { allowBackorders = false, ...cartItem } = action.payload;
+            const maxQuantity = allowBackorders ? Number.MAX_SAFE_INTEGER : cartItem.product.stockQuantity;
             const existingItem = state.products.find((item) => item.product.id === cartItem.product.id);
             if (existingItem) {
                 existingItem.quantity = Math.min(
                     existingItem.quantity + cartItem.quantity,
-                    existingItem.product.stockQuantity,
+                    maxQuantity,
                 );
 
                 return;
@@ -23,21 +24,21 @@ const cartSlice = createSlice({
 
             state.products.push({
                 ...cartItem,
-                quantity: Math.min(cartItem.quantity, cartItem.product.stockQuantity),
+                quantity: Math.min(cartItem.quantity, maxQuantity),
             });
         },
         removeCartItem: (state, action: PayloadAction<string>) => {
             const productId = action.payload;
             state.products = state.products.filter((item) => item.product.id !== productId);
         },
-        increaseCartItemQuantity: (state, action: PayloadAction<string>) => {
-            const productId = action.payload;
+        increaseCartItemQuantity: (state, action: PayloadAction<{ productId: string, allowBackorders?: boolean }>) => {
+            const { productId, allowBackorders } = action.payload;
 
             const cartItem = state.products.find((item) => item.product.id === productId);
             if (!cartItem) return;
             cartItem.quantity = Math.min(
                 cartItem.quantity + 1,
-                cartItem.product.stockQuantity,
+                allowBackorders ? Number.MAX_SAFE_INTEGER : cartItem.product.stockQuantity,
             );
         },
         decreaseCartItemQuantity: (state, action: PayloadAction<string>) => {
@@ -51,13 +52,13 @@ const cartSlice = createSlice({
 
              state.products = state.products.filter((item) => item.product.id !== productId)
         },
-        setCartItemQuantity: (state, action: PayloadAction<{ productId: string, quantity: number }>) => {
-            const { productId, quantity } = action.payload;
+        setCartItemQuantity: (state, action: PayloadAction<{ productId: string, quantity: number, allowBackorders?: boolean }>) => {
+            const { productId, quantity, allowBackorders } = action.payload;
             const cartItem = state.products.find((item) => item.product.id === productId);
             if (!cartItem) return;
 
             if (quantity > 0) {
-                cartItem.quantity = Math.min(quantity, cartItem.product.stockQuantity);
+                cartItem.quantity = Math.min(quantity, allowBackorders ? Number.MAX_SAFE_INTEGER : cartItem.product.stockQuantity);
                 return;
             }
 

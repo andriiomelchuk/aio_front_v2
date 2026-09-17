@@ -1,4 +1,5 @@
 import type { T_SwitchProps } from "./types";
+import { useId } from "react";
 
 export const Switch = ({
   label,
@@ -8,7 +9,8 @@ export const Switch = ({
   id,
   ...props
 }: T_SwitchProps) => {
-  const switchId = id ?? props.name;
+  const generatedId = useId();
+  const switchId = id ?? props.name ?? generatedId;
 
   return (
     <div>
