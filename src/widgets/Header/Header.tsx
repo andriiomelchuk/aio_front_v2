@@ -6,17 +6,19 @@ import { LogOut, UserRound } from "lucide-react";
 
 import { useAuth } from "@/features/auth";
 import { useI18n } from "@/shared/i18n";
-import { Button, LanguageSwitcher, useToast } from "@/shared/ui";
+import { Button, LanguageSwitcher, ManagedImage, useToast } from "@/shared/ui";
 import { Navigation } from "@/shared/ui/Navigation";
 import { siteNavigation } from "./model/SiteNavigation";
 import { HeaderActions } from "./HeaderActions";
 import { AssignedMenu } from "@/components/Menu";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useI18n();
   const { session, isInitialized, logout } = useAuth();
   const { showToast } = useToast();
+  const settings = useSiteSettings();
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -59,8 +61,11 @@ export const Header = () => {
   return (
     <header className="relative z-40 h-[var(--header-height)] border-b border-border bg-surface">
       <div className="mx-auto flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="min-w-0 text-sm font-semibold text-foreground">
-          AIO Front
+        <div className="flex min-w-0 items-center gap-2 text-sm font-semibold text-foreground">
+          {settings.general.logoUrl && (
+            <ManagedImage src={settings.general.logoUrl} alt="" width={32} height={32} className="h-8 w-8 rounded-md object-cover" />
+          )}
+          {settings.general.siteName}
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">

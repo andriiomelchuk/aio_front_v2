@@ -1,6 +1,7 @@
 import { calculateCartTotals } from "@/features/cart";
 import { getCheckoutDeliveryFee } from "@/features/checkout";
 import { useI18n } from "@/shared/i18n";
+import { usePriceFormatter, useSiteSettings } from "@/shared/siteSettings";
 import type { T_CheckoutSummaryProps } from "./types";
 
 export const CheckoutSummary = ({
@@ -8,8 +9,10 @@ export const CheckoutSummary = ({
   deliveryMethod,
 }: T_CheckoutSummaryProps) => {
   const { t } = useI18n();
+  const settings = useSiteSettings();
+  const formatPrice = usePriceFormatter();
   const { subtotal, discount, itemsTotal } = calculateCartTotals(items);
-  const currency = items[0]?.product.currency ?? "USD";
+  const currency = items[0]?.product.currency ?? settings.localization.currency;
   const deliveryFee = getCheckoutDeliveryFee(deliveryMethod);
   const total = itemsTotal + deliveryFee;
 
@@ -34,12 +37,12 @@ export const CheckoutSummary = ({
               </p>
             </div>
             <span className="shrink-0 font-semibold text-foreground">
-              {(
+              {formatPrice(
                 item.product.price *
                 (1 - (item.product.discountPercentage ?? 0) / 100) *
-                item.quantity
-              ).toFixed(2)}{" "}
-              {item.product.currency}
+                  item.quantity,
+                item.product.currency,
+              )}
             </span>
           </div>
         ))}
@@ -49,20 +52,20 @@ export const CheckoutSummary = ({
         <div className="flex justify-between gap-4">
           <span className="text-muted">{t("cart.summary.subtotal")}</span>
           <span className="font-semibold text-foreground">
-            {subtotal.toFixed(2)} {currency}
+            {formatPrice(subtotal, currency)}
           </span>
         </div>
         <div className="flex justify-between gap-4">
           <span className="text-muted">{t("cart.summary.discount")}</span>
           <span className="font-semibold text-accent">
-            -{discount.toFixed(2)} {currency}
+            -{formatPrice(discount, currency)}
           </span>
         </div>
         <div className="flex justify-between gap-4">
           <span className="text-muted">{t("cart.summary.shipping")}</span>
           <span className="font-semibold text-foreground">
             {deliveryFee > 0
-              ? `${deliveryFee.toFixed(2)} ${currency}`
+              ? formatPrice(deliveryFee, currency)
               : t("checkout.summary.free")}
           </span>
         </div>
@@ -73,7 +76,7 @@ export const CheckoutSummary = ({
           {t("cart.summary.total")}
         </span>
         <span className="text-xl font-bold text-foreground">
-          {total.toFixed(2)} {currency}
+          {formatPrice(total, currency)}
         </span>
       </div>
     </aside>

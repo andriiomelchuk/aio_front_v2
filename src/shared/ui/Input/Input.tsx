@@ -1,5 +1,6 @@
 import { Field } from "../Field";
 import type { T_InputProps } from "./types";
+import { useId } from "react";
 
 export const Input = ({
   className = "",
@@ -10,12 +11,13 @@ export const Input = ({
   type = "text",
   ...props
 }: T_InputProps) => {
+  const generatedId = useId();
   const variantClass =
     variant === "ghost"
       ? "bg-transparent px-0 py-0"
       : "rounded-md border border-border bg-surface-muted px-3 py-2 focus:border-accent";
 
-  const inputId = id ?? props.name;
+  const inputId = id ?? props.name ?? generatedId;
 
   return (
      <Field label={label} error={error} htmlFor={inputId}>

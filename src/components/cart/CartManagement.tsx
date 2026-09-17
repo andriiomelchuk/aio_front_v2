@@ -4,13 +4,17 @@ import Link from "next/link";
 import { calculateCartTotals } from "@/features/cart";
 import { useI18n } from "@/shared/i18n";
 import { useAppSelector } from "@/shared/store/hooks";
+import { usePriceFormatter, useSiteSettings } from "@/shared/siteSettings";
 import { CartItem } from "./CartItem";
 
 export const CartManagement = () => {
   const { t } = useI18n();
+  const settings = useSiteSettings();
+  const formatPrice = usePriceFormatter();
   const products = useAppSelector((state) => state.cart.products);
 
-  const currency = products[0]?.product.currency ?? "USD";
+  const currency =
+    products[0]?.product.currency ?? settings.localization.currency;
 
   const { subtotal, discount, itemsTotal } = calculateCartTotals(products);
 
@@ -51,14 +55,14 @@ export const CartManagement = () => {
             <div className="flex justify-between gap-4">
               <span className="text-muted">{t("cart.summary.subtotal")}</span>
               <span className="font-semibold text-foreground">
-                {subtotal.toFixed(2)} {currency}
+                {formatPrice(subtotal, currency)}
               </span>
             </div>
 
             <div className="flex justify-between gap-4">
               <span className="text-muted">{t("cart.summary.discount")}</span>
               <span className="font-semibold text-accent">
-                {discount.toFixed(2)} {currency}
+                {formatPrice(discount, currency)}
               </span>
             </div>
 
@@ -76,7 +80,7 @@ export const CartManagement = () => {
                 {t("cart.summary.total")}
               </span>
               <span className="text-xl font-bold text-foreground">
-                {itemsTotal.toFixed(2)} {currency}
+                {formatPrice(itemsTotal, currency)}
               </span>
             </div>
           </div>

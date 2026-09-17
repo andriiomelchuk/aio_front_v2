@@ -5,22 +5,35 @@ import type {
 } from "@/entities/order";
 import { mockOrders } from "@/entities/order";
 import type { T_GetOrdersParams } from "./types";
+import { readSiteSettings } from "@/shared/api/siteSettings";
 
 const ORDERS_STORAGE_KEY = "orders";
+
+const createOrderNumber = (orders: T_Order[]) => {
+  const prefix = readSiteSettings().commerce.orderPrefix.trim().toUpperCase();
+  const escapedPrefix = prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`^${escapedPrefix}-(\\d+)$`);
+  const nextSequence = orders.reduce((largest, order) => {
+    const match = String(order.id).match(pattern);
+    return match ? Math.max(largest, Number(match[1])) : largest;
+  }, 0) + 1;
+
+  return `${prefix}-${String(nextSequence).padStart(6, "0")}`;
+};
 
 export const createOrder = async (
   order: T_CreateOrderDto,
 ): Promise<T_Order> => {
   const timestamp = new Date().toISOString();
+  const storedOrders = loadStoredOrders();
   const createdOrder: T_Order = {
     ...order,
-    id: crypto.randomUUID(),
+    id: createOrderNumber(storedOrders),
     status: "new",
     createdAt: timestamp,
     updatedAt: timestamp,
   };
 
-  const storedOrders = loadStoredOrders();
   localStorage.setItem(
     ORDERS_STORAGE_KEY,
     JSON.stringify([...storedOrders, createdOrder]),

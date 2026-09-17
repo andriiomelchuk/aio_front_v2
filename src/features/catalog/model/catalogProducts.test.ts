@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { T_Product } from "@/entities/product/model/types";
 import { catalogProducts } from "./catalogProducts";
 import type { T_CatalogParams } from "./types";
+import { getProductStockStatus } from "./productAvailability";
 
 const createProduct = (
   id: string,
@@ -66,5 +67,17 @@ describe("catalogProducts", () => {
     const products = [createProduct("1", { status: "draft" })];
 
     expect(catalogProducts(products, params)).toEqual([]);
+  });
+
+  it("hides out-of-stock products when the site setting is disabled", () => {
+    const products = [createProduct("1", { stockStatus: "out_of_stock", stockQuantity: 0 })];
+
+    expect(catalogProducts(products, params, { showOutOfStockProducts: false })).toEqual([]);
+  });
+
+  it("calculates low stock from the configured threshold", () => {
+    expect(getProductStockStatus(0, 5)).toBe("out_of_stock");
+    expect(getProductStockStatus(5, 5)).toBe("low_stock");
+    expect(getProductStockStatus(6, 5)).toBe("in_stock");
   });
 });

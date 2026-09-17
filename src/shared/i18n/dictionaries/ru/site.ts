@@ -426,4 +426,6 @@ export const siteRu = {
     "notifications.comparison.added": "Товар добавлен к сравнению",
     "notifications.comparison.removed": "Товар удалён из сравнения",
     "notifications.comparison.removeAction": "Удалить из сравнения",
+    "site.maintenanceMode": "Сайт сейчас находится в режиме обслуживания.",
+    "site.maintenanceTitle": "Мы скоро вернемся",
 } as const;

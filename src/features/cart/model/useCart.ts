@@ -3,17 +3,19 @@ import { useAppDispatch, useAppSelector } from "@/shared/store/hooks";
 import { addCartItem, decreaseCartItemQuantity, increaseCartItemQuantity, removeAllCartItems, removeCartItem, restoreCart, setCartItemQuantity } from "./cartSlice";
 import { loadCartFromStorage } from "./cartStorage";
 import { useCallback } from "react";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 
 export const useCart = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.cart.products);
+  const settings = useSiteSettings();
 
   const getCartItemQuantity = (productId: string) =>
     products.find((item) => item.product.id === productId)?.quantity ?? 0;
 
   const addToCart = (product: T_Product, quantity = 1) => {
-    dispatch(addCartItem({ product, quantity }));
+    dispatch(addCartItem({ product, quantity, allowBackorders: settings.commerce.allowBackorders }));
 
   };
 
@@ -22,7 +24,7 @@ export const useCart = () => {
   };
 
   const increaseQuantity = (product: T_Product) => {
-    dispatch(increaseCartItemQuantity(product.id));
+    dispatch(increaseCartItemQuantity({ productId: product.id, allowBackorders: settings.commerce.allowBackorders }));
   };
 
   const decreaseQuantity = (product: T_Product) => {
@@ -30,7 +32,7 @@ export const useCart = () => {
   };
 
   const setQuantity = (product: T_Product, quantity: number) => {
-    dispatch(setCartItemQuantity({ productId: product.id, quantity }));
+    dispatch(setCartItemQuantity({ productId: product.id, quantity, allowBackorders: settings.commerce.allowBackorders }));
   };
 
   const clearCart = () => {

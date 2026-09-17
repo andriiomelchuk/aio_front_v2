@@ -8,10 +8,14 @@ import type { T_ProductDetailProps } from "./types";
 import { AddToCartControl } from "@/features/cart/ui/AddToCartControls";
 import { AddToWishlistButton } from "@/features/wishlist/ui/AddToWishlistButton";
 import { CompareToggleButton } from "@/features/comparison/ui/CompareToggleButton";
+import { usePriceFormatter, useSiteSettings } from "@/shared/siteSettings";
+import { canPurchaseProduct, getProductStockStatus } from "@/features/catalog";
 
 
 export const ProductDetail = ({ product }: T_ProductDetailProps) => {
   const { t } = useI18n();
+  const formatPrice = usePriceFormatter();
+  const settings = useSiteSettings();
 
   const images = useMemo(() => {
     const galleryImages = product.images.length
@@ -42,7 +46,8 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
     images[0]?.url ?? product.thumbnail,
   );
 
-  const isAvailable = product.stockStatus !== "out_of_stock";
+  const stockStatus = getProductStockStatus(product.stockQuantity, settings.commerce.lowStockThreshold);
+  const isAvailable = canPurchaseProduct(product, settings.commerce.allowBackorders);
   const hasDiscount = Boolean(product.discountPercentage || product.oldPrice);
   const oldPrice =
     product.oldPrice ??
@@ -55,7 +60,7 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
     in_stock: t("products.stock.inStock"),
     low_stock: t("products.stock.lowStock"),
     out_of_stock: t("products.stock.outOfStock"),
-  }[product.stockStatus];
+  }[stockStatus];
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -136,12 +141,12 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
 
           <div className="mt-6 flex flex-wrap items-end gap-3">
             <span className="text-3xl font-bold text-foreground">
-              {finalPrice.toFixed(2)} {product.currency}
+              {formatPrice(finalPrice, product.currency)}
             </span>
 
             {hasDiscount && oldPrice && (
               <span className="pb-1 text-base text-muted line-through">
-                {oldPrice.toFixed(2)} {product.currency}
+                {formatPrice(oldPrice, product.currency)}
               </span>
             )}
 

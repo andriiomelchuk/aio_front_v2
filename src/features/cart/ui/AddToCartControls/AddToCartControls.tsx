@@ -5,21 +5,22 @@ import { Button, useToast } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
 import { useCart } from "../../model/useCart";
 import type { T_AddToCartControlProps } from "./types";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 export const AddToCartControl = ({
   product,
   disabled = false,
-  maxQuantity = product.stockQuantity,
+  maxQuantity,
 }: T_AddToCartControlProps) => {
   const { t } = useI18n();
   const { addToCart, getCartItemQuantity } = useCart();
   const { showToast } = useToast();
   const [quantity, setQuantity] = useState(1);
+  const settings = useSiteSettings();
   const quantityInCart = getCartItemQuantity(product.id);
-  const availableQuantity = Math.max(
-    0,
-    Math.min(maxQuantity, product.stockQuantity - quantityInCart),
-  );
+  const availableQuantity = settings.commerce.allowBackorders
+    ? Math.max(0, (maxQuantity ?? 99) - quantityInCart)
+    : Math.max(0, Math.min(maxQuantity ?? product.stockQuantity, product.stockQuantity - quantityInCart));
 
   const decreaseQuantity = () => {
     setQuantity((current) => Math.max(1, current - 1));

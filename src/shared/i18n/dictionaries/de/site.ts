@@ -427,4 +427,6 @@ export const siteDe = {
     "notifications.comparison.added": "Produkt zum Vergleich hinzugefügt",
     "notifications.comparison.removed": "Produkt aus dem Vergleich entfernt",
     "notifications.comparison.removeAction": "Aus dem Vergleich entfernen",
+    "site.maintenanceMode": "Die Website befindet sich derzeit im Wartungsmodus.",
+    "site.maintenanceTitle": "Wir sind bald wieder da",
 } as const;

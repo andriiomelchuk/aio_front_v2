@@ -2,11 +2,13 @@ import { useI18n } from "@/shared/i18n";
 import { Input, Select } from "@/shared/ui";
 import { ProductFormSection } from "../ProductFormSection";
 import type { T_ProductSectionProps } from "./types";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 const currencyOptions = [
   { value: "USD", label: "USD" },
   { value: "EUR", label: "EUR" },
   { value: "UAH", label: "UAH" },
+  { value: "GBP", label: "GBP" },
 ];
 
 export const ProductPricingSection = ({
@@ -15,6 +17,7 @@ export const ProductPricingSection = ({
   sectionControl,
 }: T_ProductSectionProps) => {
   const { t } = useI18n();
+  const settings = useSiteSettings();
 
   return (
     <ProductFormSection
@@ -62,7 +65,7 @@ export const ProductPricingSection = ({
         <Select
           label={t("admin.product.form.currencyLabel")}
           name="currency"
-          defaultValue={product?.currency ?? "USD"}
+          defaultValue={product?.currency ?? settings.localization.currency}
           options={currencyOptions}
         />
       </div>

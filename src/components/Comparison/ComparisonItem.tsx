@@ -4,6 +4,9 @@ import { AddToCartButton } from "@/features/cart";
 import { useCompare } from "@/features/comparison/model/useCompare";
 import { useI18n } from "@/shared/i18n";
 import { Button } from "@/shared/ui";
+import { usePriceFormatter } from "@/shared/siteSettings";
+import { useSiteSettings } from "@/shared/siteSettings";
+import { canPurchaseProduct } from "@/features/catalog";
 import { T_ComparisonItemProps } from "./types";
 
 
@@ -12,6 +15,8 @@ import { T_ComparisonItemProps } from "./types";
 export const ComparisonItem = ({product, priceCalc}: T_ComparisonItemProps) => {
 
   const { t } = useI18n();
+  const formatPrice = usePriceFormatter();
+  const settings = useSiteSettings();
   const { toggleProductInCompare } = useCompare();
   const mainImage =
     product.images.find((image) => image.isMain)?.url ?? product.thumbnail;
@@ -19,7 +24,7 @@ export const ComparisonItem = ({product, priceCalc}: T_ComparisonItemProps) => {
     product.price,
     product.discountPercentage,
   );
-  const isAvailable = product.stockStatus !== "out_of_stock";
+  const isAvailable = canPurchaseProduct(product, settings.commerce.allowBackorders);
 
   return (
     <article
@@ -55,11 +60,11 @@ export const ComparisonItem = ({product, priceCalc}: T_ComparisonItemProps) => {
 
           <div className="mt-3">
             <div className="text-lg font-bold text-foreground">
-              {finalPrice.toFixed(2)} {product.currency}
+              {formatPrice(finalPrice, product.currency)}
             </div>
             {product.oldPrice && (
               <div className="mt-1 text-sm text-muted line-through">
-                {product.oldPrice.toFixed(2)} {product.currency}
+                {formatPrice(product.oldPrice, product.currency)}
               </div>
             )}
           </div>

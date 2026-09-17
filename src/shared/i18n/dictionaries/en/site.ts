@@ -426,4 +426,6 @@ export const siteEn = {
     "notifications.comparison.added": "Product added to comparison",
     "notifications.comparison.removed": "Product removed from comparison",
     "notifications.comparison.removeAction": "Remove from comparison",
+    "site.maintenanceMode": "The site is currently in maintenance mode.",
+    "site.maintenanceTitle": "We will be back shortly",
 } as const;
