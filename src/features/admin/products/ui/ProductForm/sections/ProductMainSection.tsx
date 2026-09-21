@@ -68,16 +68,6 @@ export const ProductMainSection = ({
         )}
 
         <Input
-          label={t("admin.product.form.titleLabel")}
-          name="title"
-          type="text"
-          defaultValue={product?.title ?? ""}
-          placeholder={t("admin.product.form.titlePlaceholder")}
-          className="h-10 w-full"
-          error={errors?.title}
-        />
-
-        <Input
           label={t("admin.product.form.slugLabel")}
           name="slug"
           type="text"

@@ -1,12 +1,12 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { AddToCartButton } from "@/features/cart";
+import { canPurchaseProduct, useLocalizedProduct } from "@/features/catalog";
 import { useCompare } from "@/features/comparison/model/useCompare";
 import { useI18n } from "@/shared/i18n";
 import { Button } from "@/shared/ui";
 import { usePriceFormatter } from "@/shared/siteSettings";
 import { useSiteSettings } from "@/shared/siteSettings";
-import { canPurchaseProduct } from "@/features/catalog";
 import { T_ComparisonItemProps } from "./types";
 
 
@@ -18,6 +18,7 @@ export const ComparisonItem = ({product, priceCalc}: T_ComparisonItemProps) => {
   const formatPrice = usePriceFormatter();
   const settings = useSiteSettings();
   const { toggleProductInCompare } = useCompare();
+  const localizedProduct = useLocalizedProduct(product);
   const mainImage =
     product.images.find((image) => image.isMain)?.url ?? product.thumbnail;
   const finalPrice = priceCalc(
@@ -37,7 +38,7 @@ export const ComparisonItem = ({product, priceCalc}: T_ComparisonItemProps) => {
             <Image
               src={mainImage}
               alt={t("products.imageAlt", {
-                title: product.title,
+                title: localizedProduct.title,
               })}
               fill
               sizes="(max-width: 639px) 100vw, 320px"
@@ -52,7 +53,7 @@ export const ComparisonItem = ({product, priceCalc}: T_ComparisonItemProps) => {
 
         <div className="p-4">
           <h2 className="line-clamp-2 h-12 text-base font-semibold leading-6 text-foreground">
-            {product.title}
+            {localizedProduct.title}
           </h2>
           <p className="mt-1 truncate text-sm text-muted">
             {product.brand || t("comparison.emptyValue")}

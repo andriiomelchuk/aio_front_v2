@@ -1,7 +1,4 @@
-import { ProductDetail } from "@/components/Products";
-import { getProducts } from "@/shared/api/products";
-import { notFound } from "next/navigation";
-import { AssignedMenuLayout } from "@/components/Menu";
+import { ProductDetailLoader } from "@/components/Products";
 import type { Metadata } from "next";
 
 type T_ProductPageProps = {
@@ -20,13 +17,5 @@ export const generateMetadata = async ({ params }: T_ProductPageProps): Promise<
 
 export default async function ProductPage({ params }: T_ProductPageProps) {
   const { slug } = await params;
-  const products = await getProducts();
-  const normalizedSlug = slug.toLowerCase();
-  const product = products.find((item) => item.slug.toLowerCase() === normalizedSlug);
-
-  if (!product) {
-    notFound();
-  }
-
-  return <AssignedMenuLayout target={{ type: "product", entityId: product.id }}><ProductDetail product={product} /></AssignedMenuLayout>;
+  return <ProductDetailLoader slug={slug} />;
 }

@@ -5,6 +5,7 @@ import type { T_ProductSectionProps } from "./types";
 
 export const ProductDescriptionSection = ({
   product,
+  errors,
   sectionControl,
 }: T_ProductSectionProps) => {
   const { t } = useI18n();
@@ -28,6 +29,7 @@ export const ProductDescriptionSection = ({
           defaultValue={product?.description ?? ""}
           placeholder={t("admin.product.form.descriptionPlaceholder")}
           className="min-h-40"
+          error={errors?.description}
         />
       </div>
     </ProductFormSection>

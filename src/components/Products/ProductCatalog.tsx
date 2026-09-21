@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { catalogProducts, useCatalogControls } from "@/features/catalog";
+import {
+  catalogProducts,
+  useCatalogControls,
+  useLocalizedProducts,
+} from "@/features/catalog";
 import { useI18n } from "@/shared/i18n";
 import { Pagination } from "@/shared/ui";
 import { CatalogFilters } from "./CatalogFilters";
@@ -20,7 +24,8 @@ export const ProductCatalog = ({
   const settings = useSiteSettings();
   const { params, updateParams, resetParams } =
     useCatalogControls(fixedCategory);
-  const productsWithStockStatus = products.map((product) =>
+  const localizedProducts = useLocalizedProducts(products);
+  const productsWithStockStatus = localizedProducts.map((product) =>
     withCalculatedStockStatus(product, settings.commerce.lowStockThreshold),
   );
   const filteredProducts = catalogProducts(productsWithStockStatus, params, {

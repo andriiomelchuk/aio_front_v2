@@ -1,6 +1,7 @@
 import { useI18n } from "@/shared/i18n";
 import { T_ComparisonTableProps } from "./types";
 import { usePriceFormatter } from "@/shared/siteSettings";
+import { useLocalizedProducts } from "@/features/catalog";
 
 const stockLabelKeys = {
   in_stock: "products.stock.inStock",
@@ -14,6 +15,7 @@ export const ComparisonDetailTable = ({
 }: T_ComparisonTableProps) => {
   const { t } = useI18n();
   const formatPrice = usePriceFormatter();
+  const localizedProducts = useLocalizedProducts(products);
 
   const comparisonRows = [
     {
@@ -68,7 +70,7 @@ export const ComparisonDetailTable = ({
             <th className="w-44 px-4 py-3 font-semibold">
               {t("comparison.table.feature")}
             </th>
-            {products.map((product) => (
+            {localizedProducts.map((product) => (
               <th key={product.id} className="min-w-48 px-4 py-3 font-semibold">
                 {product.title}
               </th>
@@ -80,7 +82,7 @@ export const ComparisonDetailTable = ({
             <td className="px-4 py-3 font-semibold text-muted">
               {t("comparison.table.price")}
             </td>
-            {products.map((product) => {
+            {localizedProducts.map((product) => {
               const finalPrice = priceCalc(
                 product.price,
                 product.discountPercentage,
@@ -101,7 +103,7 @@ export const ComparisonDetailTable = ({
               <td className="px-4 py-3 font-semibold text-muted">
                 {row.label}
               </td>
-              {products.map((product) => (
+              {localizedProducts.map((product) => (
                 <td key={product.id} className="px-4 py-3 text-foreground">
                   {row.getValue(product)}
                 </td>
@@ -113,7 +115,7 @@ export const ComparisonDetailTable = ({
             <td className="px-4 py-3 font-semibold text-muted">
               {t("comparison.table.attributes")}
             </td>
-            {products.map((product) => (
+            {localizedProducts.map((product) => (
               <td key={product.id} className="px-4 py-3">
                 {product.attributes.length > 0 ? (
                   <div className="space-y-1">

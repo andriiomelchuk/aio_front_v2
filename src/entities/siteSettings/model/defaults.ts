@@ -8,6 +8,7 @@ export const defaultSiteSettings: T_SiteSettings = {
   },
   localization: {
     defaultLocale: "uk",
+    enabledLocales: ["uk", "en", "de", "ru"],
     currency: "USD",
     timezone: "Europe/Berlin",
   },

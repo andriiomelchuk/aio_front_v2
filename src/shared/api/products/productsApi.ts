@@ -9,6 +9,7 @@ import {
 } from "./types";
 import { readSiteSettings } from "@/shared/api/siteSettings";
 import { getProductInventory } from "@/shared/api/warehouse";
+import { normalizeProductTranslations } from "@/entities/product";
 
 const normalizeSlug = (slug: string) => slug.trim().toLowerCase();
 
@@ -36,11 +37,19 @@ const assertUniqueSlug = (
 
 const PRODUCTS_STORAGE_KEY = "admin-products-overrides";
 const DELETED_PRODUCTS_STORAGE_KEY = "admin-products-deleted";
+const PRODUCTS_VERSION_KEY = "admin-products-version";
+const PRODUCTS_BACKUP_KEY_PREFIX = "admin-products-migration-backup-v";
+const PRODUCTS_SCHEMA_VERSION = "3";
 
 type T_ProductOverrides = Record<string, T_Product>;
 export type T_BulkUpdateProductsDto = {
   ids: Array<string | number>;
   changes: Partial<Omit<T_Product, "id" | "createdAt">>;
+};
+export type T_ProductsTransferDocument = {
+  schemaVersion: 2;
+  exportedAt: string;
+  products: T_Product[];
 };
 
 const applyStockThreshold = (products: T_Product[]) => {
@@ -65,9 +74,27 @@ const getStoredProductOverrides = (): T_ProductOverrides => {
   }
 
   try {
-    return JSON.parse(
-      localStorage.getItem(PRODUCTS_STORAGE_KEY) ?? "{}"
-    ) as T_ProductOverrides;
+    const raw = localStorage.getItem(PRODUCTS_STORAGE_KEY) ?? "{}";
+    const parsed = JSON.parse(raw) as T_ProductOverrides;
+    const defaultLocale = readSiteSettings().localization.defaultLocale;
+    const normalized = Object.fromEntries(Object.entries(parsed).map(([id, product]) => [id, {
+      ...product,
+      defaultLocale: product.defaultLocale ?? defaultLocale,
+      translations: normalizeProductTranslations(product.translations),
+      attributes: (product.attributes ?? []).map((attribute, index) => ({ ...attribute, id: attribute.id ?? `${id}-attribute-${index}` })),
+      variants: product.variants?.map((variant) => ({
+        ...variant,
+        attributes: variant.attributes.map((attribute, index) => ({ ...attribute, id: attribute.id ?? `${variant.id}-attribute-${index}` })),
+      })),
+    }])) as T_ProductOverrides;
+    const storedVersion = localStorage.getItem(PRODUCTS_VERSION_KEY) ?? "0";
+    if (storedVersion !== PRODUCTS_SCHEMA_VERSION) {
+      const backupKey = `${PRODUCTS_BACKUP_KEY_PREFIX}${storedVersion}`;
+      if (!localStorage.getItem(backupKey)) localStorage.setItem(backupKey, raw);
+      localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(normalized));
+      localStorage.setItem(PRODUCTS_VERSION_KEY, PRODUCTS_SCHEMA_VERSION);
+    }
+    return normalized;
   } catch {
     return {};
   }
@@ -290,9 +317,9 @@ export const getProducts = async (): Promise<T_Product[]> => {
       })),
 
       attributes: [
-        { name: "Rating", value: String(product.rating) },
-        { name: "Warranty", value: product.warrantyInformation },
-        { name: "Shipping", value: product.shippingInformation },
+        { id: `${product.id}-attribute-rating`, name: "Rating", value: String(product.rating) },
+        { id: `${product.id}-attribute-warranty`, name: "Warranty", value: product.warrantyInformation },
+        { id: `${product.id}-attribute-shipping`, name: "Shipping", value: product.shippingInformation },
       ],
 
       seo: {
@@ -310,6 +337,8 @@ export const getProducts = async (): Promise<T_Product[]> => {
 
       createdAt: product.meta.createdAt,
       updatedAt: product.meta.updatedAt,
+      defaultLocale: readSiteSettings().localization.defaultLocale,
+      translations: {},
     }));
   } catch (error) {
     if (Object.keys(overrides).length > 0) {
@@ -336,4 +365,42 @@ export const getProductById = async (id: string): Promise<T_Product> => {
   }
 
   return product;
+};
+
+export const exportProducts = async (): Promise<T_ProductsTransferDocument> => ({
+  schemaVersion: 2,
+  exportedAt: new Date().toISOString(),
+  products: await getProducts(),
+});
+
+export const importProducts = async (
+  document: T_ProductsTransferDocument,
+): Promise<T_Product[]> => {
+  const defaultLocale = readSiteSettings().localization.defaultLocale;
+  const products = document.products.map((product) => ({
+    ...product,
+    slug: normalizeSlug(product.slug),
+    defaultLocale: product.defaultLocale ?? defaultLocale,
+    translations: normalizeProductTranslations(product.translations),
+  }));
+  const ids = new Set<string>();
+  const slugs = new Set<string>();
+
+  for (const product of products) {
+    if (ids.has(product.id) || slugs.has(product.slug)) {
+      throw new ProductsApiError(
+        "DUPLICATE_SLUG",
+        `Duplicate product ID or slug in import: ${product.slug}`,
+      );
+    }
+    ids.add(product.id);
+    slugs.add(product.slug);
+  }
+
+  saveStoredProductOverrides(
+    Object.fromEntries(products.map((product) => [product.id, product])),
+  );
+  saveDeletedProductIds([]);
+
+  return products;
 };

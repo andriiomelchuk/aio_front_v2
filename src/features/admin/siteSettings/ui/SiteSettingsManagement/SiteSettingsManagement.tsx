@@ -44,6 +44,21 @@ export const SiteSettingsManagement = () => {
     };
     return run(() => updateSiteSettings(input, session?.displayName), t("admin.settings.success.saved"));
   };
+  const changeDefaultLocale = (defaultLocale: T_SiteLocale) => {
+    if (defaultLocale !== settings.localization.defaultLocale && !window.confirm(t("admin.settings.localization.changeDefaultWarning"))) return;
+    patchSection("localization", {
+      defaultLocale,
+      enabledLocales: [...new Set([...settings.localization.enabledLocales, defaultLocale])],
+    });
+  };
+  const toggleLocale = (locale: T_SiteLocale, enabled: boolean) => {
+    if (locale === settings.localization.defaultLocale && !enabled) return;
+    patchSection("localization", {
+      enabledLocales: enabled
+        ? [...new Set([...settings.localization.enabledLocales, locale])]
+        : settings.localization.enabledLocales.filter((item) => item !== locale),
+    });
+  };
   const reset = () => {
     if (window.confirm(t("admin.settings.resetConfirmation"))) void run(() => resetSiteSettings(session?.displayName), t("admin.settings.success.reset"));
   };
@@ -76,9 +91,15 @@ export const SiteSettingsManagement = () => {
           <ImagePicker label={t("admin.settings.fields.logo")} value={settings.general.logoUrl} alt={settings.general.siteName} onChange={(logoUrl) => patchSection("general", { logoUrl })} />
         </div></AdminCard>
         <AdminCard title={t("admin.settings.localization.title")} description={t("admin.settings.localization.description")}><div className="grid gap-4 sm:grid-cols-2">
-          <Select label={t("admin.settings.fields.defaultLocale")} value={settings.localization.defaultLocale} disabled={!canManage} onChange={(event) => patchSection("localization", { defaultLocale: event.target.value as T_SiteLocale })} options={locales.map((locale) => ({ value: locale, label: t(`language.${locale}`) }))} />
+          <Select label={t("admin.settings.fields.defaultLocale")} value={settings.localization.defaultLocale} disabled={!canManage} onChange={(event) => changeDefaultLocale(event.target.value as T_SiteLocale)} options={locales.map((locale) => ({ value: locale, label: t(`language.${locale}`) }))} />
           <Select label={t("admin.settings.fields.currency")} value={settings.localization.currency} disabled={!canManage} onChange={(event) => patchSection("localization", { currency: event.target.value as T_SiteCurrency })} options={currencies.map((currency) => ({ value: currency, label: currency }))} />
           <Select label={t("admin.settings.fields.timezone")} value={settings.localization.timezone} disabled={!canManage} onChange={(event) => patchSection("localization", { timezone: event.target.value })} options={timezones.map((timezone) => ({ value: timezone, label: timezone }))} className="sm:col-span-2" />
+          <div className="space-y-2 sm:col-span-2">
+            <p className="text-sm font-medium text-foreground">{t("admin.settings.localization.enabledLanguages")}</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {locales.map((locale) => <Switch key={locale} label={t(`language.${locale}`)} checked={settings.localization.enabledLocales.includes(locale)} disabled={!canManage || locale === settings.localization.defaultLocale} onChange={(event) => toggleLocale(locale, event.target.checked)} />)}
+            </div>
+          </div>
         </div></AdminCard>
         <AdminCard title={t("admin.settings.contact.title")} description={t("admin.settings.contact.description")}><div className="grid gap-4 sm:grid-cols-2">
           <Input type="email" label={t("admin.settings.fields.email")} value={settings.contact.email} disabled={!canManage} onChange={(event) => patchSection("contact", { email: event.target.value })} />

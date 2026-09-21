@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { T_CreateProductDto } from "@/entities/product/model/types";
-import { createProduct, updateProduct } from "./productsApi";
+import {
+  createProduct,
+  exportProducts,
+  getProducts,
+  importProducts,
+  updateProduct,
+} from "./productsApi";
 import type { ProductsApiError } from "./types";
 
 const createStorage = (initial: Record<string, string> = {}): Storage => {
@@ -46,5 +52,100 @@ describe("product slug uniqueness", () => {
     await expect(
       updateProduct({ id: "product-1", slug: "RED-LIPSTICK" }),
     ).resolves.toMatchObject({ id: "product-1", slug: "red-lipstick" });
+  });
+});
+
+describe("product translations storage migration", () => {
+  it("preserves legacy products and creates a backup before migration", async () => {
+    const legacyProduct = {
+      id: "legacy-1",
+      title: "Legacy product",
+      slug: "legacy-product",
+      sku: "LEGACY-1",
+      description: "Original description",
+      price: 10,
+      currency: "USD",
+      stockQuantity: 2,
+      stockStatus: "in_stock",
+      categoryId: "test",
+      status: "active",
+      thumbnail: "",
+      images: [],
+      attributes: [],
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    };
+    const raw = JSON.stringify({ "legacy-1": legacyProduct });
+    const storage = createStorage({ "admin-products-overrides": raw });
+    stubBrowser(storage);
+
+    const products = await getProducts();
+
+    expect(products).toContainEqual(
+      expect.objectContaining({
+        ...legacyProduct,
+        stockStatus: "low_stock",
+        defaultLocale: "uk",
+        translations: {},
+      }),
+    );
+    expect(
+      JSON.parse(storage.getItem("admin-products-overrides") ?? "{}"),
+    ).toMatchObject({
+      "legacy-1": {
+        ...legacyProduct,
+        defaultLocale: "uk",
+        translations: {},
+      },
+    });
+    expect(storage.getItem("admin-products-migration-backup-v0")).toBe(raw);
+    expect(storage.getItem("admin-products-version")).toBe("3");
+  });
+});
+
+describe("product translations transfer contract", () => {
+  it("preserves translations through import and export", async () => {
+    const storage = createStorage();
+    stubBrowser(storage);
+    const product = {
+      id: "translated-1",
+      title: "Назва",
+      slug: "translated-product",
+      sku: "TR-1",
+      description: "Опис",
+      price: 10,
+      currency: "USD" as const,
+      stockQuantity: 10,
+      stockStatus: "in_stock" as const,
+      categoryId: "test",
+      status: "active" as const,
+      thumbnail: "",
+      images: [],
+      attributes: [],
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+      defaultLocale: "uk" as const,
+      translations: {
+        en: {
+          title: "Title",
+          shortDescription: "",
+          description: "Description",
+          seo: { title: "", description: "", keywords: [] },
+          attributes: [],
+          variants: {},
+          imageAlts: {},
+        },
+      },
+    };
+
+    await importProducts({
+      schemaVersion: 2,
+      exportedAt: "2026-01-01T00:00:00.000Z",
+      products: [product],
+    });
+    const exported = await exportProducts();
+
+    expect(exported.schemaVersion).toBe(2);
+    expect(exported.products[0]?.translations?.en?.title).toBe("Title");
   });
 });

@@ -1,4 +1,6 @@
+import Image from "next/image";
 import type { T_CartItem } from "@/features/cart";
+import { useLocalizedProduct } from "@/features/catalog";
 import { useCart } from "@/features/cart/model/useCart";
 import { useI18n } from "@/shared/i18n";
 import { usePriceFormatter } from "@/shared/siteSettings";
@@ -10,6 +12,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
   const formatPrice = usePriceFormatter();
   const settings = useSiteSettings();
   const { increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
+  const product = useLocalizedProduct(item.product);
 
   const finalPrice = item.product.discountPercentage
     ? item.product.price -
@@ -30,7 +33,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-md bg-surface-muted sm:h-28 sm:w-28 md:h-20 md:w-20">
           <Image
             src={mainImage}
-            alt={item.product.title}
+            alt={product.title}
             fill
             sizes="112px"
             className="object-cover"
@@ -39,7 +42,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
 
         <div className="min-w-0">
           <h2 className="line-clamp-2 text-base font-semibold text-foreground">
-            {item.product.title}
+            {product.title}
           </h2>
           <p className="mt-1 text-sm text-muted">{item.product.brand}</p>
           <p className="mt-2 text-xs text-muted">SKU: {item.product.sku}</p>
@@ -119,4 +122,3 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
     </article>
   );
 };
-import Image from "next/image";

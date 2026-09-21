@@ -16,6 +16,7 @@ export type T_SiteSettings = {
   };
   localization: {
     defaultLocale: T_SiteLocale;
+    enabledLocales: T_SiteLocale[];
     currency: T_SiteCurrency;
     timezone: string;
   };

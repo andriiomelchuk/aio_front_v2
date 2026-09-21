@@ -41,7 +41,8 @@ describe("site settings storage", () => {
     expect(settings.general.siteName).toBe("Legacy AIO");
     expect(settings.operations.maintenanceMode).toBe(true);
     expect(settings.localization.defaultLocale).toBe("uk");
-    expect(storage.getItem("aio-site-settings-version")).toBe("2");
+    expect(settings.localization.enabledLocales).toEqual(["uk", "en", "de", "ru"]);
+    expect(storage.getItem("aio-site-settings-version")).toBe("3");
     expect(storage.getItem("aio-site-settings-migration-backup-v0")).not.toBeNull();
   });
 

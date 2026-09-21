@@ -8,4 +8,5 @@ export * from "./ProductShippingSection";
 export * from "./ProductStockSection";
 export * from "./ProductSystemSection";
 export * from "./ProductVariantsSection";
+export * from "./ProductTranslationsSection";
 export * from "./ProductWarehouseSection";

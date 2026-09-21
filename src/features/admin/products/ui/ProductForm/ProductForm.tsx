@@ -7,15 +7,14 @@ import { ProductPreview } from "../ProductPreview";
 import type { T_Product } from "@/entities/product/model/types";
 import {
   ProductAttributesSection,
-  ProductDescriptionSection,
   ProductMainSection,
   ProductMediaSection,
   ProductPricingSection,
-  ProductSeoSection,
   ProductShippingSection,
   ProductStockSection,
   ProductSystemSection,
   ProductVariantsSection,
+  ProductTranslationsSection,
   ProductWarehouseSection,
 } from "./sections";
 import type { T_InitialStockPlacement, T_ProductForm, T_ProductFormErrors } from "./types";
@@ -27,27 +26,25 @@ import {
 
 type T_ProductFormSectionKey =
   | "main"
-  | "description"
+  | "translations"
   | "pricing"
   | "stock"
   | "warehouse"
   | "media"
   | "attributes"
   | "variants"
-  | "seo"
   | "shipping"
   | "system";
 
 const productFormSectionKeys: T_ProductFormSectionKey[] = [
   "main",
-  "description",
   "pricing",
   "stock",
   "warehouse",
   "media",
   "attributes",
   "variants",
-  "seo",
+  "translations",
   "shipping",
   "system",
 ];
@@ -211,10 +208,6 @@ export const ProductForm = ({
             errors={errors}
             sectionControl={getSectionControl("main")}
           />
-          <ProductDescriptionSection
-            product={product}
-            sectionControl={getSectionControl("description")}
-          />
           <ProductPricingSection
             product={product}
             errors={errors}
@@ -245,9 +238,13 @@ export const ProductForm = ({
             product={product}
             sectionControl={getSectionControl("variants")}
           />
-          <ProductSeoSection
-            product={product}
-            sectionControl={getSectionControl("seo")}
+          <ProductTranslationsSection
+            product={previewProduct ?? product}
+            attributes={previewProduct?.attributes ?? []}
+            variants={previewProduct?.variants ?? []}
+            images={previewProduct?.images ?? []}
+            errors={errors}
+            sectionControl={getSectionControl("translations")}
           />
           <ProductShippingSection
             product={product}

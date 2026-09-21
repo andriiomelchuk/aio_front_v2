@@ -20,6 +20,10 @@ export const validateProductFormValues = (
     errors.title = t("admin.validation.required");
   }
 
+  if (isEmpty(product.description)) {
+    errors.description = t("admin.validation.required");
+  }
+
   if (isEmpty(product.slug)) {
     errors.slug = t("admin.validation.required");
   }
