@@ -78,4 +78,11 @@ export const getAdminNavigation = (t: T_I18nContext["t"]) => [
     title: t("admin.navigation.settings.title"),
     description: t("admin.navigation.settings.description"),
   },
+  {
+    module: "developerSettings",
+    href: "/admin/developer-settings",
+    label: t("admin.navigation.developerSettings.label"),
+    title: t("admin.navigation.developerSettings.title"),
+    description: t("admin.navigation.developerSettings.description"),
+  },
 ] as const;

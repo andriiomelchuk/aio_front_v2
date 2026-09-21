@@ -22,7 +22,7 @@ export const Switch = ({
           className,
         ].join(" ")}
       >
-        <span>
+        <span className="pointer-events-none">
           <span className="block text-sm font-medium text-foreground">
             {label}
           </span>
@@ -44,7 +44,7 @@ export const Switch = ({
         <span
           aria-hidden="true"
           className={[
-            "relative h-6 w-11 shrink-0 rounded-full bg-surface-strong transition",
+            "pointer-events-none relative h-6 w-11 shrink-0 rounded-full bg-surface-strong transition",
             "after:absolute after:left-1 after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-background after:transition",
             "peer-checked:bg-accent peer-checked:after:translate-x-5",
             "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent",

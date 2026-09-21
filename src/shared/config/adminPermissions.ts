@@ -19,6 +19,7 @@ const rolePermissions: Record<
     translations: ["view", "manage"],
     analytics: ["view", "manage"],
     settings: ["view", "manage"],
+    developerSettings: ["view", "manage"],
   },
   owner: {
     dashboard: ["view", "manage"],
@@ -75,12 +76,11 @@ export const hasAdminPermission = (
   role: T_StaffRole,
   module: T_AdminModule,
   permission: T_AdminPermission = "view",
-) =>
-  (role === "developer" || adminModules[module]) &&
-  Boolean(rolePermissions[role][module]?.includes(permission));
+) => Boolean(rolePermissions[role][module]?.includes(permission));
 
 export const getAdminModuleFromPath = (pathName: string): T_AdminModule => {
   const segment = pathName.split("/").filter(Boolean)[1];
+  if (segment === "developer-settings") return "developerSettings";
   return segment && segment in adminModules
     ? (segment as T_AdminModule)
     : "dashboard";

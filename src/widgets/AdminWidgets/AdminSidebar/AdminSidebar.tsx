@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getAdminNavigation } from "../model/adminNavigation";
 import { useI18n } from "@/shared/i18n";
-import { isAdminModuleEnabled } from "@/shared/config/adminModules";
 import { hasAdminPermission } from "@/shared/config/adminPermissions";
 import { useAdminAccess } from "@/features/auth";
+import { useDeveloperSettings } from "@/shared/developerSettings";
 
 type AdminSidebarProps = {
   isOpen: boolean;
@@ -17,11 +17,12 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
   const { t } = useI18n();
   const pathName = usePathname();
   const { role } = useAdminAccess();
+  const developerSettings = useDeveloperSettings();
 
   const adminNavigation = getAdminNavigation(t).filter((link) => {
     return Boolean(
       role &&
-      (role === "developer" || isAdminModuleEnabled(link.module)) &&
+      (role === "developer" || developerSettings.modules[link.module]) &&
       hasAdminPermission(role, link.module),
     );
   });
