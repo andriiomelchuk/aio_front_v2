@@ -5,6 +5,7 @@ import { AdminHeader } from "../AdminHeader";
 import { AdminSidebar } from "../AdminSidebar";
 import { useAdminAccess } from "@/features/auth";
 import { useI18n } from "@/shared/i18n";
+import { DeveloperDiagnostics } from "../DeveloperDiagnostics";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
@@ -22,6 +23,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="min-w-0">
         <AdminHeader onMenuClick={openSidebar}/>
         <AdminContent>
+          <DeveloperDiagnostics />
           {role === "viewer" && (
             <p className="mb-4 border border-warning bg-warning/10 px-4 py-3 text-sm text-foreground" role="status">
               {t("admin.auth.readOnlyNotice")}

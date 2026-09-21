@@ -1,6 +1,7 @@
 export * from "./AdminBadge"
 export * from "./AdminCard"
 export * from "./AdminContent"
+export * from "./DeveloperDiagnostics"
 // export * from "./AdminFooter"
 export * from "./AdminHeader"
 export * from "./AdminLayout"

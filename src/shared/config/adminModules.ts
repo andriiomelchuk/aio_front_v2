@@ -10,10 +10,7 @@ export const adminModules = {
     translations: true,
     analytics: true,
     settings: true,
+    developerSettings: true,
 } as const;
 
 export type T_AdminModule = keyof typeof adminModules;
-
-export const isAdminModuleEnabled = (module: T_AdminModule) => {
-    return adminModules[module];
-}
