@@ -8,6 +8,7 @@ import {
   type T_JsonPlaceholderProductsResponse,
 } from "./types";
 import { readSiteSettings } from "@/shared/api/siteSettings";
+import { getProductInventory } from "@/shared/api/warehouse";
 
 const normalizeSlug = (slug: string) => slug.trim().toLowerCase();
 
@@ -44,14 +45,18 @@ export type T_BulkUpdateProductsDto = {
 
 const applyStockThreshold = (products: T_Product[]) => {
   const threshold = readSiteSettings().commerce.lowStockThreshold;
-  return products.map((product) => ({
-    ...product,
-    stockStatus: product.stockQuantity <= 0
+  return products.map((product) => {
+    const inventory = getProductInventory(product.id);
+    const stockQuantity = inventory.isManaged ? inventory.available : product.stockQuantity;
+    return ({
+    ...product, stockQuantity,
+    stockStatus: stockQuantity <= 0
       ? "out_of_stock" as const
-      : product.stockQuantity <= threshold
+      : stockQuantity <= threshold
         ? "low_stock" as const
         : "in_stock" as const,
-  }));
+  });
+  });
 };
 
 const getStoredProductOverrides = (): T_ProductOverrides => {
