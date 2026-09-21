@@ -6,6 +6,7 @@ import type {
 import { mockOrders } from "@/entities/order";
 import type { T_GetOrdersParams } from "./types";
 import { readSiteSettings } from "@/shared/api/siteSettings";
+import { finalizeOrderStock, reserveOrderStock } from "@/shared/api/warehouse";
 
 const ORDERS_STORAGE_KEY = "orders";
 
@@ -33,6 +34,8 @@ export const createOrder = async (
     createdAt: timestamp,
     updatedAt: timestamp,
   };
+
+  reserveOrderStock(String(createdOrder.id), createdOrder.items ?? [], "Checkout");
 
   localStorage.setItem(
     ORDERS_STORAGE_KEY,
@@ -72,6 +75,11 @@ export const updateOrder = async (order: T_UpdateOrderDto) => {
     updatedAt: new Date().toISOString(),
   };
   const orders = loadStoredOrders();
+  const previousOrder = orders.find((item) => String(item.id) === String(order.id));
+  if (previousOrder?.status !== order.status) {
+    if (order.status === "completed") finalizeOrderStock(String(order.id), "sale", order.internalNote || "Admin");
+    if (order.status === "cancelled") finalizeOrderStock(String(order.id), "release", order.internalNote || "Admin");
+  }
   const exists = orders.some((item) => String(item.id) === String(order.id));
   const nextOrders = exists
     ? orders.map((item) => String(item.id) === String(order.id) ? updatedOrder : item)

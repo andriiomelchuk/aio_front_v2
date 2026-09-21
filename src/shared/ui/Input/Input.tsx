@@ -23,7 +23,7 @@ export const Input = ({
      <Field label={label} error={error} htmlFor={inputId}>
       <input
         id={inputId}
-        className={`text-sm text-foreground outline-none transition placeholder:text-muted ${variantClass} ${className}`}
+        className={`w-full text-sm text-foreground outline-none transition placeholder:text-muted ${label ? "mt-1" : ""} ${variantClass} ${className}`}
         type={type}
         {...props}
       />

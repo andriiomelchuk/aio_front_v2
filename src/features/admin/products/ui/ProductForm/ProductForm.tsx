@@ -16,8 +16,9 @@ import {
   ProductStockSection,
   ProductSystemSection,
   ProductVariantsSection,
+  ProductWarehouseSection,
 } from "./sections";
-import type { T_ProductForm, T_ProductFormErrors } from "./types";
+import type { T_InitialStockPlacement, T_ProductForm, T_ProductFormErrors } from "./types";
 import { getProductFormValues } from "./model/getProductFormValues";
 import {
   hasProductFormErrors,
@@ -29,6 +30,7 @@ type T_ProductFormSectionKey =
   | "description"
   | "pricing"
   | "stock"
+  | "warehouse"
   | "media"
   | "attributes"
   | "variants"
@@ -41,6 +43,7 @@ const productFormSectionKeys: T_ProductFormSectionKey[] = [
   "description",
   "pricing",
   "stock",
+  "warehouse",
   "media",
   "attributes",
   "variants",
@@ -70,6 +73,7 @@ export const ProductForm = ({
   const isEditMode = mode === "edit";
   const [errors, setErrors] = useState<T_ProductFormErrors>({});
   const [submitError, setSubmitError] = useState("");
+  const [initialPlacement, setInitialPlacement] = useState<T_InitialStockPlacement>();
   const [openSections, setOpenSections] = useState(() =>
     createSectionState(true),
   );
@@ -126,7 +130,7 @@ export const ProductForm = ({
             return;
           }
 
-          await onCreate?.(productValues);
+          await onCreate?.(productValues, initialPlacement);
         } catch (caughtError) {
           setSubmitError(
             caughtError instanceof Error
@@ -220,6 +224,14 @@ export const ProductForm = ({
             product={product}
             errors={errors}
             sectionControl={getSectionControl("stock")}
+          />
+          <ProductWarehouseSection
+            mode={mode}
+            product={product}
+            variants={previewProduct?.variants}
+            initialPlacement={initialPlacement}
+            onInitialPlacementChange={setInitialPlacement}
+            sectionControl={getSectionControl("warehouse")}
           />
           <ProductMediaSection
             product={product}

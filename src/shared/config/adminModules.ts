@@ -4,6 +4,7 @@ export const adminModules = {
     customers: true,
     orders: true,
     products: true,
+    warehouse: true,
     categories: true,
     pages: true,
     menus: true,
