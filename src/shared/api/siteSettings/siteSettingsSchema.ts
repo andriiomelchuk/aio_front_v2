@@ -19,8 +19,12 @@ export const siteSettingsInputSchema = z.strictObject({
   }),
   localization: z.strictObject({
     defaultLocale: z.enum(["uk", "en", "de", "ru"]),
+    enabledLocales: z.array(z.enum(["uk", "en", "de", "ru"])).min(1),
     currency: z.enum(["UAH", "USD", "EUR", "GBP"]),
     timezone,
+  }).refine((value) => value.enabledLocales.includes(value.defaultLocale), {
+    message: "Default locale must be enabled",
+    path: ["enabledLocales"],
   }),
   contact: z.strictObject({
     email: optionalEmail,

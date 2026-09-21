@@ -10,8 +10,8 @@ import { siteSettingsImportSchema, siteSettingsInputSchema } from "./siteSetting
 
 const STORAGE_KEY = "aio-site-settings";
 const VERSION_KEY = "aio-site-settings-version";
-const BACKUP_KEY = "aio-site-settings-migration-backup-v0";
-const SCHEMA_VERSION = 2;
+const BACKUP_KEY_PREFIX = "aio-site-settings-migration-backup-v";
+const SCHEMA_VERSION = 3;
 export const SITE_SETTINGS_CHANGE_EVENT = "aio-site-settings-change";
 
 const locales: T_SiteLocale[] = ["uk", "en", "de", "ru"];
@@ -57,6 +57,13 @@ export const migrateSiteSettings = (value: unknown): T_SiteSettings => {
   const currency = currencies.includes(localization.currency as T_SiteCurrency)
     ? localization.currency as T_SiteCurrency
     : defaultSiteSettings.localization.currency;
+  const storedEnabledLocales = Array.isArray(localization.enabledLocales)
+    ? localization.enabledLocales
+    : null;
+  const enabledLocales = storedEnabledLocales
+    ? locales.filter((item) => storedEnabledLocales.includes(item))
+    : defaultSiteSettings.localization.enabledLocales;
+  if (!enabledLocales.includes(locale)) enabledLocales.unshift(locale);
 
   return {
     general: {
@@ -66,6 +73,7 @@ export const migrateSiteSettings = (value: unknown): T_SiteSettings => {
     },
     localization: {
       defaultLocale: locale,
+      enabledLocales,
       currency,
       timezone: text(localization.timezone, defaultSiteSettings.localization.timezone),
     },
@@ -100,8 +108,10 @@ export const migrateSiteSettings = (value: unknown): T_SiteSettings => {
 
 const getStorage = () => typeof window === "undefined" ? undefined : window.localStorage;
 const backup = (storage: Storage, raw: string) => {
-  if (storage.getItem(BACKUP_KEY) === null) {
-    try { storage.setItem(BACKUP_KEY, raw); } catch { /* Keep reads available. */ }
+  const version = storage.getItem(VERSION_KEY) ?? "0";
+  const backupKey = `${BACKUP_KEY_PREFIX}${version}`;
+  if (storage.getItem(backupKey) === null) {
+    try { storage.setItem(backupKey, raw); } catch { /* Keep reads available. */ }
   }
 };
 

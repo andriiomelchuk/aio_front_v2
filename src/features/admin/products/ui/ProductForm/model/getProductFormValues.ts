@@ -7,6 +7,8 @@ import type {
   T_ProductStockStatus,
   T_ProductVariant,
 } from "@/entities/product/model/types";
+import { normalizeProductTranslations } from "@/entities/product";
+import type { T_Locale } from "@/shared/i18n";
 
 const getStringValue = (formData: FormData, key: string) => {
   return String(formData.get(key) ?? "").trim();
@@ -47,6 +49,7 @@ const getAttributesValue = (formData: FormData): T_ProductAttribute[] => {
     if (Array.isArray(attributes)) {
       return attributes
         .map((attribute) => ({
+          id: attribute.id ? String(attribute.id) : undefined,
           name: String(attribute.name ?? "").trim(),
           value: String(attribute.value ?? "").trim(),
         }))
@@ -81,6 +84,7 @@ const getVariantsValue = (formData: FormData): T_ProductVariant[] | undefined =>
           attributes: Array.isArray(variant.attributes)
             ? variant.attributes
                 .map((attribute) => ({
+                  id: attribute.id ? String(attribute.id) : undefined,
                   name: String(attribute.name ?? "").trim(),
                   value: String(attribute.value ?? "").trim(),
                 }))
@@ -98,13 +102,44 @@ const getVariantsValue = (formData: FormData): T_ProductVariant[] | undefined =>
   return undefined;
 };
 
+const getTranslationsValue = (formData: FormData) => {
+  try {
+    return normalizeProductTranslations(JSON.parse(getStringValue(formData, "translations") || "{}"));
+  } catch {
+    return {};
+  }
+};
+
 export const getProductFormValues = (
   form: HTMLFormElement
 ): T_CreateProductDto => {
   const formData = new FormData(form);
+  const defaultLocale = getStringValue(formData, "defaultLocale") as T_Locale;
+  const translations = getTranslationsValue(formData);
+  const sourceTranslation = translations[defaultLocale];
+  const attributes = getAttributesValue(formData);
+  const variants = getVariantsValue(formData);
+  const images = getImagesValue(formData);
+  const sourceAttributes = attributes.map((attribute, index) => ({
+    ...attribute,
+    name: (sourceTranslation?.attributes.find((item) => item.sourceId === attribute.id) ?? sourceTranslation?.attributes[index])?.name.trim() || attribute.name,
+    value: (sourceTranslation?.attributes.find((item) => item.sourceId === attribute.id) ?? sourceTranslation?.attributes[index])?.value.trim() || attribute.value,
+  }));
+  const sourceVariants = variants?.map((variant) => {
+    const translation = sourceTranslation?.variants[variant.id];
+    return {
+      ...variant,
+      title: translation?.title.trim() || variant.title,
+      attributes: variant.attributes.map((attribute, index) => ({
+        ...attribute,
+        name: (translation?.attributes.find((item) => item.sourceId === attribute.id) ?? translation?.attributes[index])?.name.trim() || attribute.name,
+        value: (translation?.attributes.find((item) => item.sourceId === attribute.id) ?? translation?.attributes[index])?.value.trim() || attribute.value,
+      })),
+    };
+  });
 
   return {
-    title: getStringValue(formData, "title"),
+    title: sourceTranslation?.title.trim() || getStringValue(formData, "title"),
     slug: getStringValue(formData, "slug"),
     sku: getStringValue(formData, "sku"),
     brand: getStringValue(formData, "brand"),
@@ -112,8 +147,8 @@ export const getProductFormValues = (
 
     status: getStringValue(formData, "status") as T_ProductStatus,
 
-    shortDescription: getStringValue(formData, "shortDescription"),
-    description: getStringValue(formData, "description"),
+    shortDescription: sourceTranslation?.shortDescription.trim() || getStringValue(formData, "shortDescription"),
+    description: sourceTranslation?.description.trim() || getStringValue(formData, "description"),
 
     price: getNumberValue(formData, "price") ?? 0,
     oldPrice: getNumberValue(formData, "oldPrice"),
@@ -129,17 +164,22 @@ export const getProductFormValues = (
 
     thumbnail: getStringValue(formData, "thumbnail"),
 
-    images: getImagesValue(formData),
-    attributes: getAttributesValue(formData),
-    variants: getVariantsValue(formData),
+    images: images.map((image) => ({
+      ...image,
+      alt: sourceTranslation?.imageAlts[image.id]?.trim() || image.alt,
+    })),
+    attributes: sourceAttributes,
+    variants: sourceVariants,
 
     seo: {
-      title: getStringValue(formData, "seoTitle"),
-      description: getStringValue(formData, "seoDescription"),
-      keywords: getStringValue(formData, "seoKeywords")
-        .split(",")
-        .map((keyword) => keyword.trim())
-        .filter(Boolean),
+      title: sourceTranslation?.seo.title.trim() || getStringValue(formData, "seoTitle"),
+      description: sourceTranslation?.seo.description.trim() || getStringValue(formData, "seoDescription"),
+      keywords: sourceTranslation?.seo.keywords.length
+        ? sourceTranslation.seo.keywords
+        : getStringValue(formData, "seoKeywords")
+            .split(",")
+            .map((keyword) => keyword.trim())
+            .filter(Boolean),
     },
 
     shipping: {
@@ -148,5 +188,7 @@ export const getProductFormValues = (
       height: getNumberValue(formData, "height"),
       depth: getNumberValue(formData, "depth"),
     },
+    defaultLocale,
+    translations,
   };
 };

@@ -25,12 +25,13 @@ export const ProductAttributesManager = ({
   const [attributeItems, setAttributeItems] = useState<T_ProductAttributeItem[]>(
     attributes.map((attribute) => ({
       ...attribute,
-      id: createAttributeId(),
+      id: attribute.id ?? createAttributeId(),
     })),
   );
 
   const preparedAttributes = attributeItems
-    .map(({ name, value }) => ({
+    .map(({ id, name, value }) => ({
+      id,
       name: name.trim(),
       value: value.trim(),
     }))

@@ -41,7 +41,10 @@ export const ProductVariantsManager = ({
     variants.map((variant) => ({
       ...variant,
       id: variant.id || createVariantId(),
-      attributes: variant.attributes ?? [],
+      attributes: (variant.attributes ?? []).map((attribute) => ({
+        ...attribute,
+        id: attribute.id ?? createVariantId(),
+      })),
     })),
   );
 
@@ -122,7 +125,7 @@ export const ProductVariantsManager = ({
         variant.id === variantId
           ? {
               ...variant,
-              attributes: [...variant.attributes, { name: "", value: "" }],
+              attributes: [...variant.attributes, { id: createVariantId(), name: "", value: "" }],
             }
           : variant,
       ),

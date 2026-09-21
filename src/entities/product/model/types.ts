@@ -1,3 +1,5 @@
+import type { T_Locale } from "@/shared/i18n/types";
+
 export type T_ProductStatus = "draft" | "active" | "archived";
 
 export type T_ProductStockStatus =
@@ -8,6 +10,7 @@ export type T_ProductStockStatus =
 export type T_ProductCurrency = "USD" | "EUR" | "UAH" | "GBP";
 
 export type T_ProductAttribute = {
+  id?: string;
   name: string;
   value: string;
 };
@@ -28,6 +31,21 @@ export type T_ProductSeo = {
   title?: string;
   description?: string;
   keywords?: string[];
+};
+
+export type T_ProductAttributeTranslation = { sourceId?: string; name: string; value: string };
+export type T_ProductVariantTranslation = {
+  title: string;
+  attributes: T_ProductAttributeTranslation[];
+};
+export type T_ProductTranslation = {
+  title: string;
+  shortDescription: string;
+  description: string;
+  seo: { title: string; description: string; keywords: string[] };
+  attributes: T_ProductAttributeTranslation[];
+  variants: Record<string, T_ProductVariantTranslation>;
+  imageAlts: Record<string, string>;
 };
 
 export type T_ProductShipping = {
@@ -78,6 +96,8 @@ export type T_Product = {
   createdAt: string;
   updatedAt: string;
   updatedBy?: string;
+  defaultLocale?: T_Locale;
+  translations?: Partial<Record<T_Locale, T_ProductTranslation>>;
 };
 
 export type T_CreateProductDto = Omit<

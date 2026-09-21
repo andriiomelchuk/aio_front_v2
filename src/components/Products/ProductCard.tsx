@@ -8,12 +8,13 @@ import { AddToWishlistButton } from "@/features/wishlist/ui/AddToWishlistButton"
 import { CompareToggleButton } from "@/features/comparison/ui/CompareToggleButton";
 import { usePriceFormatter } from "@/shared/siteSettings";
 import { useSiteSettings } from "@/shared/siteSettings";
-import { canPurchaseProduct, getProductStockStatus } from "@/features/catalog";
+import { canPurchaseProduct, getProductStockStatus, useLocalizedProduct } from "@/features/catalog";
 
 export const ProductCard = ({ product }: T_ProductCardProps) => {
   const { t } = useI18n();
   const formatPrice = usePriceFormatter();
   const settings = useSiteSettings();
+  const localizedProduct = useLocalizedProduct(product);
 
   const stockStatus = getProductStockStatus(product.stockQuantity, settings.commerce.lowStockThreshold);
   const isAvailable = canPurchaseProduct(product, settings.commerce.allowBackorders);
@@ -39,7 +40,7 @@ export const ProductCard = ({ product }: T_ProductCardProps) => {
           {mainImage ? (
             <Image
               src={mainImage}
-              alt={t("products.imageAlt", { title: product.title })}
+              alt={t("products.imageAlt", { title: localizedProduct.title })}
               fill
               sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"
               className="object-cover"
@@ -53,7 +54,7 @@ export const ProductCard = ({ product }: T_ProductCardProps) => {
 
         <div className="p-4">
           <h2 className="line-clamp-2 h-12 text-base font-semibold leading-6 text-foreground">
-            {product.title}
+            {localizedProduct.title}
           </h2>
 
           {product.brand && (

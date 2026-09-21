@@ -9,13 +9,14 @@ import { AddToCartControl } from "@/features/cart/ui/AddToCartControls";
 import { AddToWishlistButton } from "@/features/wishlist/ui/AddToWishlistButton";
 import { CompareToggleButton } from "@/features/comparison/ui/CompareToggleButton";
 import { usePriceFormatter, useSiteSettings } from "@/shared/siteSettings";
-import { canPurchaseProduct, getProductStockStatus } from "@/features/catalog";
+import { canPurchaseProduct, getProductStockStatus, useLocalizedProduct } from "@/features/catalog";
 
 
 export const ProductDetail = ({ product }: T_ProductDetailProps) => {
   const { t } = useI18n();
   const formatPrice = usePriceFormatter();
   const settings = useSiteSettings();
+  const localizedProduct = useLocalizedProduct(product);
 
   const images = useMemo(() => {
     const galleryImages = product.images.length
@@ -24,7 +25,7 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
           {
             id: product.id,
             url: product.thumbnail,
-            alt: product.title,
+            alt: localizedProduct.title,
             isMain: true,
           },
         ];
@@ -40,7 +41,7 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
 
       return (firstImage.sortOrder ?? 0) - (secondImage.sortOrder ?? 0);
     });
-  }, [product]);
+  }, [localizedProduct.title, product]);
 
   const [selectedImageUrl, setSelectedImageUrl] = useState(
     images[0]?.url ?? product.thumbnail,
@@ -77,7 +78,7 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
             {selectedImageUrl ? (
               <Image
                 src={selectedImageUrl}
-                alt={t("products.imageAlt", { title: product.title })}
+                alt={t("products.imageAlt", { title: localizedProduct.title })}
                 fill
                 priority
                 sizes="(max-width: 1023px) 100vw, 55vw"
@@ -106,11 +107,11 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
                         ? "border-accent"
                         : "border-border hover:border-accent",
                     ].join(" ")}
-                    aria-label={image.alt ?? product.title}
+                    aria-label={image.alt ?? localizedProduct.title}
                   >
                     <Image
                       src={image.url}
-                      alt={image.alt ?? product.title}
+                      alt={image.alt ?? localizedProduct.title}
                       width={160}
                       height={160}
                       className="aspect-square h-full w-full object-cover"
@@ -130,12 +131,12 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
           </div>
 
           <h1 className="mt-3 text-3xl font-bold leading-tight text-foreground sm:text-4xl">
-            {product.title}
+            {localizedProduct.title}
           </h1>
 
-          {product.shortDescription && (
+          {localizedProduct.shortDescription && (
             <p className="mt-3 text-base leading-7 text-muted">
-              {product.shortDescription}
+              {localizedProduct.shortDescription}
             </p>
           )}
 
@@ -184,16 +185,16 @@ export const ProductDetail = ({ product }: T_ProductDetailProps) => {
               <h2 className="text-xl font-semibold text-foreground">
                 {t("products.detail.description")}
               </h2>
-              <p className="mt-3 leading-7 text-muted">{product.description}</p>
+              <p className="mt-3 leading-7 text-muted">{localizedProduct.description}</p>
             </section>
 
-            {product.attributes.length > 0 && (
+            {localizedProduct.attributes.length > 0 && (
               <section>
                 <h2 className="text-xl font-semibold text-foreground">
                   {t("products.detail.attributes")}
                 </h2>
                 <dl className="mt-3 divide-y divide-border rounded-lg border border-border">
-                  {product.attributes.map((attribute) => (
+                  {localizedProduct.attributes.map((attribute) => (
                     <div
                       key={`${attribute.name}-${attribute.value}`}
                       className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-2"
