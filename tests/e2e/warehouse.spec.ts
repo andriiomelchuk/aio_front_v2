@@ -27,6 +27,29 @@ test("developer creates a warehouse and an additional storage location", async (
   await expect(page.getByText("Storage location created.")).toBeVisible();
   await expect(page.getByText(/Shelf A \(A-01\), Shelf B \(B-01\)/)).toBeVisible();
 
+  await page.getByLabel("Item name").fill("Hair dye");
+  await page.getByLabel("SKU", { exact: true }).fill("dye-black");
+  await page.getByLabel("Unit").selectOption("ml");
+  await page.getByLabel("Low-stock threshold").fill("100");
+  await page.getByRole("button", { name: "Create consumable" }).click();
+  await expect(page.getByText("Consumable created.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Hair dye" })).toBeVisible();
+
+  await page.getByLabel("Stock item").selectOption({ label: "Consumable: Hair dye (DYE-BLACK)" });
+  await page.getByLabel("Destination location").selectOption({ label: "Main warehouse / Shelf A (A-01)" });
+  await page.getByLabel("Quantity").fill("500");
+  await page.getByLabel("Reason").fill("Supplier delivery");
+  await page.getByRole("button", { name: "Record movement" }).click();
+  await expect(page.getByText("Inventory movement recorded.")).toBeVisible();
+
+  await page.getByLabel("Operation").selectOption("service_usage");
+  await page.getByLabel("Source location").selectOption({ label: "Main warehouse / Shelf A (A-01)" });
+  await page.getByLabel("Quantity").fill("62.5");
+  await page.getByLabel("Reason").fill("Hair coloring");
+  await page.getByLabel("Reference").fill("appointment-1");
+  await page.getByRole("button", { name: "Record movement" }).click();
+  await expect(page.getByRole("cell", { name: "Used for service" }).first()).toBeVisible();
+
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });

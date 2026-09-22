@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createWarehouse,
+  createInventoryItem,
   finalizeOrderStock,
   getProductInventory,
   getWarehouseState,
@@ -128,5 +129,47 @@ describe("warehouse inventory", () => {
     expect(getProductInventory("product-1")).toMatchObject({ physical: 7, reserved: 0, available: 4 });
     const balances = (await getWarehouseState()).balances;
     expect(balances.find(({ condition }) => condition === "damaged")?.physical).toBe(3);
+  });
+
+  it("tracks consumables and writes fractional quantities off for a service", async () => {
+    const warehouse = await createTestWarehouse();
+    const location = warehouse.locations[0];
+    const consumable = await createInventoryItem({
+      name: "Hair dye",
+      sku: "DYE-BLACK",
+      unit: "ml",
+      lowStockThreshold: 100,
+    });
+
+    await recordInventoryMovement({
+      type: "receipt", itemType: "consumable", productId: consumable.id,
+      quantity: 500, reason: "Supplier delivery", createdBy: "Manager",
+      toWarehouseId: warehouse.id, toLocationId: location.id,
+    });
+    await recordInventoryMovement({
+      type: "service_usage", itemType: "consumable", productId: consumable.id,
+      quantity: 62.5, reason: "Hair coloring", reference: "appointment-1", createdBy: "Specialist",
+      fromWarehouseId: warehouse.id, fromLocationId: location.id,
+    });
+
+    const state = await getWarehouseState();
+    expect(state.inventoryItems[0]).toMatchObject({ name: "Hair dye", unit: "ml" });
+    expect(state.balances[0].physical).toBe(437.5);
+    expect(state.movements[0]).toMatchObject({ type: "service_usage", itemType: "consumable", reference: "appointment-1" });
+  });
+
+  it("reserves the selected product variant instead of base stock", async () => {
+    const warehouse = await createTestWarehouse();
+    const location = warehouse.locations[0];
+    await recordInventoryMovement({
+      type: "receipt", productId: "product-1", variantId: "large", quantity: 4,
+      reason: "Variant delivery", createdBy: "Manager",
+      toWarehouseId: warehouse.id, toLocationId: location.id,
+    });
+
+    reserveOrderStock("order-variant", [{ productId: "product-1", variantId: "large", title: "Large", quantity: 2 } as T_OrderItem]);
+
+    expect(getProductInventory("product-1", "large")).toMatchObject({ physical: 4, reserved: 2, available: 2 });
+    expect(getProductInventory("product-1")).toMatchObject({ physical: 0, reserved: 0, available: 0 });
   });
 });

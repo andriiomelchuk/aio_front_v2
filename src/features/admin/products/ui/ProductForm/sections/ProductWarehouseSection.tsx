@@ -19,7 +19,7 @@ type T_ProductWarehouseSectionProps = Pick<T_ProductSectionProps, "sectionContro
   onInitialPlacementChange: (placement?: T_InitialStockPlacement) => void;
 };
 
-const emptyState: T_WarehouseState = { warehouses: [], balances: [], movements: [] };
+const emptyState: T_WarehouseState = { warehouses: [], inventoryItems: [], balances: [], movements: [] };
 const getLocationValue = (warehouseId: string, locationId: string) => `${warehouseId}|${locationId}`;
 
 export const ProductWarehouseSection = ({

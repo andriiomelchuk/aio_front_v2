@@ -41,6 +41,7 @@ export type T_OrderPayment = {
 
 export type T_OrderItem = {
   productId: string;
+  variantId?: string;
   title: string;
   sku: string;
   thumbnail: string;
