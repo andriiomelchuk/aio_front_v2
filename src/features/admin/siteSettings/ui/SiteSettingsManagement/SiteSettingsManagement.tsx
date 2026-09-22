@@ -8,7 +8,7 @@ import { importSiteSettings, resetSiteSettings, SiteSettingsApiError, updateSite
 import { useI18n } from "@/shared/i18n";
 import { useSiteSettings } from "@/shared/siteSettings";
 import { Button, ImagePicker, Input, Select, Switch, Textarea } from "@/shared/ui";
-import { AdminCard, AdminPage } from "@/widgets/AdminWidgets";
+import { AdminCard, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
 
 const locales: T_SiteLocale[] = ["uk", "en", "de", "ru"];
 const currencies: T_SiteCurrency[] = ["UAH", "USD", "EUR", "GBP"];
@@ -79,11 +79,12 @@ export const SiteSettingsManagement = () => {
     <Button variant="secondary" className="inline-flex h-10 items-center justify-center gap-2" onClick={exportJson}><Download size={18} />{t("admin.settings.actions.export")}</Button>
     <Button variant="secondary" className="inline-flex h-10 items-center justify-center gap-2" onClick={() => importRef.current?.click()}><Upload size={18} />{t("admin.settings.actions.import")}</Button>
     <Button variant="secondary" className="inline-flex h-10 items-center justify-center gap-2" disabled={isBusy} onClick={reset}><RotateCcw size={18} />{t("admin.settings.actions.reset")}</Button>
-    <Button className="h-10" disabled={isBusy} onClick={() => void save()}>{t("admin.actions.saveChanges")}</Button>
+    <Button className="h-10" disabled={isBusy} aria-busy={isBusy} onClick={() => void save()}>{isBusy ? t("admin.form.saving") : t("admin.actions.saveChanges")}</Button>
     <input ref={importRef} className="hidden" type="file" accept="application/json,.json" onChange={(event) => { const file = event.target.files?.[0]; if (file) void importJson(file); }} />
   </> : undefined}>
     <div className="space-y-4">
-      {(error || message) && <p role={error ? "alert" : "status"} className={`rounded-md border p-3 text-sm ${error ? "border-danger bg-danger/10 text-danger" : "border-accent bg-accent/10 text-foreground"}`}>{error || message}</p>}
+      <AdminFormAlert message={error} />
+      {message && <p role="status" className="rounded-md border border-accent bg-accent/10 p-3 text-sm text-foreground">{message}</p>}
       <div className="grid gap-4 xl:grid-cols-2">
         <AdminCard title={t("admin.settings.general.title")} description={t("admin.settings.general.description")}><div className="space-y-4">
           <Input type="text" label={t("admin.settings.fields.siteName")} value={settings.general.siteName} disabled={!canManage} onChange={(event) => patchSection("general", { siteName: event.target.value })} required />

@@ -6,6 +6,8 @@ export const adminDe = {
     "admin.actions.clearFilters": "Filter zurücksetzen",
     "admin.actions.searchOrder": "Bestellung suchen",
     "admin.actions.cancel": "Abbrechen",
+    "admin.form.saving": "Wird gespeichert...",
+    "admin.user.error.saveFailed": "Der Benutzer konnte nicht gespeichert werden.",
     "admin.actions.createUser": "Benutzer erstellen",
     "admin.actions.saveChanges": "Änderungen speichern",
     "admin.actions.createCategory": "Kategorie erstellen",

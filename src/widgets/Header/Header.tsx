@@ -59,14 +59,14 @@ export const Header = () => {
   );
 
   return (
-    <header className="relative z-40 h-[var(--header-height)] border-b border-border bg-surface">
-      <div className="mx-auto flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-2 text-sm font-semibold text-foreground">
+    <header className="sticky top-0 z-40 h-[var(--header-height)] border-b border-border bg-surface/95 backdrop-blur">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex min-w-0 items-center gap-2 rounded-sm text-sm font-semibold text-foreground transition hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
           {settings.general.logoUrl && (
             <ManagedImage src={settings.general.logoUrl} alt="" width={32} height={32} className="h-8 w-8 rounded-md object-cover" />
           )}
           {settings.general.siteName}
-        </div>
+        </Link>
 
         <div className="hidden items-center gap-3 lg:flex">
           <AssignedMenu target={{ type: "global" }} region="header" orientation="horizontal" fallback={<Navigation items={siteNavigation}/>} loadingFallback={<div className="invisible"><Navigation items={siteNavigation}/></div>} />

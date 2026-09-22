@@ -1,6 +1,7 @@
 
 
 export const commonDe = {
+    "common.closeModal": "Dialog schließen",
     "language.uk": "Українська",
     "language.en": "Englisch",
     "language.de": "Deutsch",

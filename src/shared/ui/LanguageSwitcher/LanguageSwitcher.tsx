@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useI18n, type T_Locale } from "@/shared/i18n";
@@ -156,7 +157,7 @@ export const LanguageSwitcher = ({
           {renderOptionContent(selectedLanguage)}
         </span>
 
-        <span className="shrink-0 text-xs text-muted">▼</span>
+        <ChevronDown aria-hidden="true" className="h-4 w-4 shrink-0 text-muted" />
       </button>
 
       {isOpen && (

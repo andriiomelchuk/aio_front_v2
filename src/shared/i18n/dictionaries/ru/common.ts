@@ -1,6 +1,7 @@
 
 
 export const commonRu = {
+    "common.closeModal": "Закрыть диалог",
     "language.uk": "Українська",
     "language.en": "English",
     "language.de": "Deutsch",

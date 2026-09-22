@@ -321,6 +321,9 @@ export const siteDe = {
     "wishlist.backToProducts": "Produkte ansehen",
     "wishlist.clear": "Wunschliste leeren",
     "wishlist.loading": "Wunschliste wird geladen...",
+    "wishlist.errorTitle": "Wunschliste nicht verfügbar",
+    "wishlist.errorDescription": "Deine gespeicherten Produkte konnten nicht geladen werden. Bitte versuche es erneut.",
+    "wishlist.retry": "Erneut versuchen",
 
     "comparison.eyebrow": "Produktvergleich",
     "comparison.title": "Produkte vergleichen",
@@ -344,6 +347,8 @@ export const siteDe = {
 
     "cart.title": "Warenkorb",
     "cart.description": "Prüfe deine Produkte, passe die Mengen an und fahre mit dem Checkout fort.",
+    "cart.emptyTitle": "Dein Warenkorb ist leer",
+    "cart.emptyDescription": "Füge Produkte aus dem Katalog hinzu. Sie erscheinen dann hier.",
     "cart.table.product": "Produkt",
     "cart.table.basePrice": "Basispreis",
     "cart.table.quantity": "Menge",

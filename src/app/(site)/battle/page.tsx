@@ -1,6 +1,7 @@
 import { GitHub } from "@/components/GitHubBattle";
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { PageLoading } from "@/shared/ui";
 
 export const metadata: Metadata = {
   title: "GitHub Battle",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function BattlePage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<PageLoading />}>
       <GitHub />
     </Suspense>
   );

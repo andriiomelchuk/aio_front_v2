@@ -7,8 +7,8 @@ import { arrayMove, sortableKeyboardCoordinates, SortableContext, verticalListSo
 import { contentPageLocales, createLocalizedText, type T_ContentPageLocale, type T_ContentPageSeo, type T_ContentPageStatus, type T_LocalizedText, type T_PageBlock } from "@/entities/contentPage";
 import { ContentPagesApiError, createContentPage, getContentPageById, updateContentPage } from "@/shared/api/contentPages";
 import { useI18n } from "@/shared/i18n";
-import { Button, Checkbox, Input, Select } from "@/shared/ui";
-import { AdminCard, AdminPage } from "@/widgets/AdminWidgets";
+import { Checkbox, Input, Select } from "@/shared/ui";
+import { AdminCard, AdminFormActions, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
 import { createPageBlock } from "../../model";
 import { BlockLibrary } from "../BlockLibrary";
 import { ContentPagePreview } from "../ContentPagePreview";
@@ -136,18 +136,14 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
   return (
     <AdminPage>
       <form className="space-y-4" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <div>
             <h1 className="text-2xl font-semibold text-foreground">{mode === "edit" ? t("admin.contentPages.builder.editTitle") : t("admin.contentPages.builder.createTitle")}</h1>
             <p className="mt-1 text-sm text-muted">{t("admin.contentPages.builder.description")}</p>
           </div>
-          <div className="flex gap-2">
-            <Button type="button" variant="secondary" className="h-10" onClick={() => router.push("/admin/pages")}>{t("admin.actions.cancel")}</Button>
-            <Button type="submit" className="h-10" disabled={isSaving}>{isSaving ? t("admin.contentPages.actions.saving") : t("admin.actions.saveChanges")}</Button>
-          </div>
         </div>
 
-        {error && <p className="rounded-md border border-danger bg-danger-soft p-3 text-sm text-danger">{error}</p>}
+        <AdminFormAlert message={error} />
 
         <AdminCard title={t("admin.contentPages.builder.settings")}>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -196,6 +192,7 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
         </div>
 
         <ContentPagePreview blocks={blocks} locale={locale} defaultLocale={defaultLocale} />
+        <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.saveChanges")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} isSticky onCancel={() => router.push("/admin/pages")} />
       </form>
     </AdminPage>
   );

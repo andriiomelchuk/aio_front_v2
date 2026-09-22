@@ -320,6 +320,9 @@ export const siteEn = {
     "wishlist.backToProducts": "Browse products",
     "wishlist.clear": "Clear wishlist",
     "wishlist.loading": "Loading wishlist...",
+    "wishlist.errorTitle": "Wishlist unavailable",
+    "wishlist.errorDescription": "We could not load your saved products. Please try again.",
+    "wishlist.retry": "Try again",
 
     "comparison.eyebrow": "Product comparison",
     "comparison.title": "Compare products",
@@ -343,6 +346,8 @@ export const siteEn = {
 
     "cart.title": "Cart",
     "cart.description": "Review your products, adjust quantities, and continue to checkout.",
+    "cart.emptyTitle": "Your cart is empty",
+    "cart.emptyDescription": "Add products from the catalog and they will appear here.",
     "cart.table.product": "Product",
     "cart.table.basePrice": "Base price",
     "cart.table.quantity": "Quantity",

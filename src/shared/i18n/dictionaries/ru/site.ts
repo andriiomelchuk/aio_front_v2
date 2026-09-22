@@ -320,6 +320,9 @@ export const siteRu = {
     "wishlist.backToProducts": "Перейти к товарам",
     "wishlist.clear": "Очистить избранное",
     "wishlist.loading": "Загружаем избранное...",
+    "wishlist.errorTitle": "Избранное недоступно",
+    "wishlist.errorDescription": "Не удалось загрузить сохранённые товары. Попробуйте ещё раз.",
+    "wishlist.retry": "Попробовать ещё раз",
 
     "comparison.eyebrow": "Сравнение товаров",
     "comparison.title": "Сравнить товары",
@@ -343,6 +346,8 @@ export const siteRu = {
 
     "cart.title": "Корзина",
     "cart.description": "Проверь товары, измени количество и перейди к оформлению заказа.",
+    "cart.emptyTitle": "Корзина пуста",
+    "cart.emptyDescription": "Добавьте товары из каталога, и они появятся здесь.",
     "cart.table.product": "Товар",
     "cart.table.basePrice": "Базовая цена",
     "cart.table.quantity": "Количество",

@@ -160,7 +160,7 @@ export const AccountManagement = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-5xl">
+    <section className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <header className="mb-6">
         <p className="text-sm font-medium text-accent">{t("account.eyebrow")}</p>
         <h1 className="mt-1 text-2xl font-bold text-foreground">{t("account.title")}</h1>

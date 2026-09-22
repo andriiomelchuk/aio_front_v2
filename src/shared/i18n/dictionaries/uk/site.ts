@@ -321,6 +321,9 @@ export const siteUk = {
     "wishlist.backToProducts": "Перейти до товарів",
     "wishlist.clear": "Очистити обране",
     "wishlist.loading": "Завантажуємо обране...",
+    "wishlist.errorTitle": "Обране недоступне",
+    "wishlist.errorDescription": "Не вдалося завантажити збережені товари. Спробуйте ще раз.",
+    "wishlist.retry": "Спробувати ще раз",
 
     "comparison.eyebrow": "Порівняння товарів",
     "comparison.title": "Порівняти товари",
@@ -344,6 +347,8 @@ export const siteUk = {
 
     "cart.title": "Кошик",
     "cart.description": "Перевір товари, зміни кількість і переходь до оформлення замовлення.",
+    "cart.emptyTitle": "Кошик порожній",
+    "cart.emptyDescription": "Додайте товари з каталогу, і вони з'являться тут.",
     "cart.table.product": "Товар",
     "cart.table.basePrice": "Базова ціна",
     "cart.table.quantity": "Кількість",

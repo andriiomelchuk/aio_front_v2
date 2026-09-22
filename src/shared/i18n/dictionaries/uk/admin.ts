@@ -7,6 +7,8 @@ export const adminUk = {
     "admin.actions.addUser": "Додати користувача",
     "admin.actions.addCategory": "Додати категорію",
     "admin.actions.cancel": "Скасувати",
+    "admin.form.saving": "Збереження...",
+    "admin.user.error.saveFailed": "Не вдалося зберегти користувача.",
     "admin.actions.createUser": "Створити користувача",
     "admin.actions.saveChanges": "Зберегти зміни",
     "admin.actions.createCategory": "Створити категорію",

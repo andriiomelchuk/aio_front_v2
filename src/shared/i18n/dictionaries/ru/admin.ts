@@ -8,6 +8,8 @@ export const adminRu = {
     "admin.actions.addUser": "Добавить пользователя",
     "admin.actions.addCategory": "Добавить категорию",
     "admin.actions.cancel": "Отмена",
+    "admin.form.saving": "Сохранение...",
+    "admin.user.error.saveFailed": "Не удалось сохранить пользователя.",
     "admin.actions.createUser": "Создать пользователя",
     "admin.actions.saveChanges": "Сохранить изменения",
     "admin.actions.createCategory": "Создать категорию",

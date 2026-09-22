@@ -84,7 +84,7 @@ export const ResultBattle = () => {
   const { winner, loser } = battleState;
 
   return (
-    <div className="flex flex-col items-center">
+    <section className="mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <PageHeader
         eyebrow={t("ghBattle.resultEyebrow")}
         title={t("ghBattle.resultTitle")}
@@ -128,6 +128,6 @@ export const ResultBattle = () => {
           </CardShell>
         </div>
       </div>
-    </div>
+    </section>
   );
 };

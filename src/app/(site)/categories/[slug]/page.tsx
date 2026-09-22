@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AssignedMenuLayout } from "@/components/Menu";
 import type { Metadata } from "next";
+import { PageLoading } from "@/shared/ui";
 
 type T_CategoryPageProps = {
   params: Promise<{
@@ -36,12 +37,14 @@ export default async function CategoryPage({ params }: T_CategoryPageProps) {
   }
 
   return (
-    <AssignedMenuLayout target={{ type: "category", entityId: category.id }}><Suspense fallback={null}>
-      <CategoryProducts
-        category={category}
-        products={products}
-        categories={categories}
-      />
-    </Suspense></AssignedMenuLayout>
+    <AssignedMenuLayout target={{ type: "category", entityId: category.id }}>
+      <Suspense fallback={<PageLoading />}>
+        <CategoryProducts
+          category={category}
+          products={products}
+          categories={categories}
+        />
+      </Suspense>
+    </AssignedMenuLayout>
   );
 }

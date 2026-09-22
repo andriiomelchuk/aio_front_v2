@@ -9,7 +9,7 @@ import { adminModules, type T_AdminModule } from "@/shared/config/adminModules";
 import { useDeveloperSettings } from "@/shared/developerSettings";
 import { useI18n } from "@/shared/i18n";
 import { Button, Switch } from "@/shared/ui";
-import { AdminCard, AdminPage } from "@/widgets/AdminWidgets";
+import { AdminCard, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
 
 const configurableModules = Object.keys(adminModules).filter(
   (module): module is T_AdminModule => module !== "developerSettings",
@@ -52,11 +52,12 @@ export const DeveloperSettingsManagement = () => {
     <Button variant="secondary" className="inline-flex h-10 items-center gap-2" onClick={exportJson}><Download size={18} />{t("admin.settings.actions.export")}</Button>
     <Button variant="secondary" className="inline-flex h-10 items-center gap-2" onClick={() => importRef.current?.click()}><Upload size={18} />{t("admin.settings.actions.import")}</Button>
     <Button variant="secondary" className="inline-flex h-10 items-center gap-2" disabled={isBusy} onClick={reset}><RotateCcw size={18} />{t("admin.settings.actions.reset")}</Button>
-    <Button className="h-10" disabled={isBusy} onClick={() => void save()}>{t("admin.actions.saveChanges")}</Button>
+    <Button className="h-10" disabled={isBusy} aria-busy={isBusy} onClick={() => void save()}>{isBusy ? t("admin.form.saving") : t("admin.actions.saveChanges")}</Button>
     <input ref={importRef} type="file" accept="application/json,.json" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) void importJson(file); }} />
   </>}>
     <div className="space-y-4">
-      {(error || message) && <p role={error ? "alert" : "status"} className={`border p-3 text-sm ${error ? "border-danger bg-danger/10 text-danger" : "border-accent bg-accent/10 text-foreground"}`}>{error || message}</p>}
+      <AdminFormAlert message={error} />
+      {message && <p role="status" className="rounded-md border border-accent bg-accent/10 p-3 text-sm text-foreground">{message}</p>}
       <div className="grid gap-4 xl:grid-cols-2">
         <AdminCard title={t("admin.developerSettings.modules.title")} description={t("admin.developerSettings.modules.description")}><div className="grid gap-3 sm:grid-cols-2">
           {configurableModules.map((module) => <Switch key={module} label={t(`admin.navigation.${module}.label`)} checked={settings.modules[module]} disabled={!canManage} onChange={(event) => setSettings((current) => ({ ...current, modules: { ...current.modules, [module]: event.target.checked } }))} />)}

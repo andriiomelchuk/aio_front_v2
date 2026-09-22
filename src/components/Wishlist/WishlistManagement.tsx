@@ -14,16 +14,22 @@ export const WishlistManagement = () => {
   const { productIds, clearAllWishlist } = useWishlist();
   const [products, setProducts] = useState<T_Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
 
     const loadProducts = async () => {
-      const loadedProducts = await getProducts();
-
-      if (isMounted) {
-        setProducts(loadedProducts);
-        setIsLoading(false);
+      setIsLoading(true);
+      setHasError(false);
+      try {
+        const loadedProducts = await getProducts();
+        if (isMounted) setProducts(loadedProducts);
+      } catch {
+        if (isMounted) setHasError(true);
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
     };
 
@@ -32,7 +38,7 @@ export const WishlistManagement = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   const wishlistProducts = products.filter((product) =>
     productIds.includes(product.id),
@@ -69,6 +75,14 @@ export const WishlistManagement = () => {
         <div className="flex min-h-48 items-center justify-center rounded-lg border border-border bg-surface px-6 text-sm text-muted">
           {t("wishlist.loading")}
         </div>
+      ) : hasError ? (
+        <section role="alert" className="rounded-lg border border-border bg-surface p-6 text-center sm:p-10">
+          <h2 className="text-xl font-bold text-foreground">{t("wishlist.errorTitle")}</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-muted">{t("wishlist.errorDescription")}</p>
+          <Button type="button" className="mt-5 h-11 px-5" onClick={() => setReloadKey((key) => key + 1)}>
+            {t("wishlist.retry")}
+          </Button>
+        </section>
       ) : wishlistProducts.length === 0 ? (
         <section className="rounded-lg border border-border bg-surface p-6 text-center sm:p-10">
           <h2 className="text-xl font-bold text-foreground">

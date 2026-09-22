@@ -11,7 +11,7 @@ import { addWarehouseLocation, createWarehouse, getWarehouseState, recordInvento
 import { useI18n, type T_I18nKey } from "@/shared/i18n";
 import { useSiteSettings } from "@/shared/siteSettings";
 import { Button, Input, Select } from "@/shared/ui";
-import { AdminCard, AdminPage } from "@/widgets/AdminWidgets";
+import { AdminCard, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
 
 const initialState: T_WarehouseState = { warehouses: [], balances: [], movements: [] };
 const locationValue = (warehouseId: string, locationId: string) => `${warehouseId}|${locationId}`;
@@ -126,7 +126,8 @@ export const WarehouseManagement = () => {
 
   return <AdminPage title={t("admin.warehouse.title")} description={t("admin.warehouse.description")}>
     <div className="space-y-4">
-      {(error || message) && <p role={error ? "alert" : "status"} className={`border p-3 text-sm ${error ? "border-danger bg-danger/10 text-danger" : "border-accent bg-accent/10 text-foreground"}`}>{error || message}</p>}
+      <AdminFormAlert message={error} />
+      {message && <p role="status" className="rounded-md border border-accent bg-accent/10 p-3 text-sm text-foreground">{message}</p>}
       <section className="grid gap-3 sm:grid-cols-3">
         {(["physical", "reserved", "available"] as const).map((key) => <div key={key} className="border border-border bg-surface p-4"><p className="text-sm text-muted">{t(`admin.warehouse.summary.${key}`)}</p><p className="mt-2 text-2xl font-bold text-foreground">{totals[key]}</p></div>)}
       </section>

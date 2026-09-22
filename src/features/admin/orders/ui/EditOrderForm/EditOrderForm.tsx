@@ -5,8 +5,8 @@ import type { T_Order, T_OrderDeliveryMethod, T_OrderPaymentMethod, T_OrderPayme
 import { useI18n } from "@/shared/i18n";
 import { updateOrder } from "@/shared/api/orders";
 import { useAdminAccess } from "@/features/auth";
-import { Button, Input, Select, Textarea, useToast } from "@/shared/ui";
-import { AdminCard } from "@/widgets/AdminWidgets";
+import { Input, Select, Textarea, useToast } from "@/shared/ui";
+import { AdminCard, AdminFormActions } from "@/widgets/AdminWidgets";
 import type { T_EditOrderFormProps } from "./types";
 
 export const EditOrderForm = ({ order, onCancel, onUpdate }: T_EditOrderFormProps) => {
@@ -110,10 +110,7 @@ export const EditOrderForm = ({ order, onCancel, onUpdate }: T_EditOrderFormProp
         </aside>
       </div>
       </fieldset>
-      <div className="sticky bottom-0 z-10 flex flex-col-reverse gap-3 border-t border-border bg-background/95 py-4 backdrop-blur sm:flex-row sm:justify-end">
-        <Button type="button" variant="secondary" className="h-10" onClick={onCancel}>{t("admin.actions.cancel")}</Button>
-        {canManage && <Button type="submit" className="h-10" disabled={isSaving}>{isSaving ? t("account.action.saving") : t("admin.actions.saveChanges")}</Button>}
-      </div>
+      <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.saveChanges")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} showSubmit={canManage} isSticky onCancel={onCancel} />
     </form>
   );
 };

@@ -1,6 +1,7 @@
 
 
 export const commonUk = {
+    "common.closeModal": "Закрити діалог",
     "language.uk": "Українська",
     "language.en": "English",
     "language.de": "Deutsch",

@@ -8,6 +8,8 @@ export const adminEn = {
     "admin.actions.addUser": "Add User",
     "admin.actions.addCategory": "Add category",
     "admin.actions.cancel": "Cancel",
+    "admin.form.saving": "Saving...",
+    "admin.user.error.saveFailed": "Could not save the user.",
     "admin.actions.createUser": "Create user",
     "admin.actions.saveChanges": "Save changes",
     "admin.actions.createCategory": "Create category",

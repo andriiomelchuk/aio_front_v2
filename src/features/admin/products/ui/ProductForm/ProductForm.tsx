@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useI18n } from "@/shared/i18n";
 import { Button } from "@/shared/ui";
+import { AdminFormActions, AdminFormAlert } from "@/widgets/AdminWidgets";
 import { ProductPreview } from "../ProductPreview";
 import type { T_Product } from "@/entities/product/model/types";
 import {
@@ -70,6 +71,7 @@ export const ProductForm = ({
   const isEditMode = mode === "edit";
   const [errors, setErrors] = useState<T_ProductFormErrors>({});
   const [submitError, setSubmitError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [initialPlacement, setInitialPlacement] = useState<T_InitialStockPlacement>();
   const [openSections, setOpenSections] = useState(() =>
     createSectionState(true),
@@ -117,6 +119,7 @@ export const ProductForm = ({
           return;
         }
 
+        setIsSaving(true);
         try {
           if (isEditMode && product) {
             await onUpdate?.({
@@ -134,6 +137,8 @@ export const ProductForm = ({
               ? caughtError.message
               : t("admin.product.error.saveFailed"),
           );
+        } finally {
+          setIsSaving(false);
         }
       }}
     >
@@ -151,21 +156,6 @@ export const ProductForm = ({
           </p>
         </div>
 
-        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-          <Button
-            type="button"
-            variant="ghost"
-            className="h-10 w-full sm:w-auto"
-            onClick={onCancel}
-          >
-            {t("admin.actions.cancel")}
-          </Button>
-          <Button type="submit" className="h-10 w-full sm:w-auto">
-            {isEditMode
-              ? t("admin.actions.saveChanges")
-              : t("admin.actions.createProduct")}
-          </Button>
-        </div>
       </div>
 
       <div className="flex flex-wrap justify-end gap-2">
@@ -188,17 +178,10 @@ export const ProductForm = ({
         </Button>
       </div>
 
-      {(errorMessages.length > 0 || submitError) && (
-        <div className="rounded-md border border-danger bg-danger/10 px-4 py-3 text-sm text-danger">
-          <p className="font-semibold">{t("admin.validation.formErrorTitle")}</p>
-          <ul className="mt-2 list-disc space-y-1 pl-4">
-            {submitError && <li>{submitError}</li>}
-            {errorMessages.map((error, index) => (
-              <li key={`${error}-${index}`}>{error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <AdminFormAlert
+        title={t("admin.validation.formErrorTitle")}
+        messages={[...(submitError ? [submitError] : []), ...errorMessages]}
+      />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="flex min-w-0 flex-col gap-4">
@@ -261,6 +244,15 @@ export const ProductForm = ({
 
         <ProductPreview product={previewProduct} />
       </div>
+
+      <AdminFormActions
+        cancelLabel={t("admin.actions.cancel")}
+        submitLabel={isEditMode ? t("admin.actions.saveChanges") : t("admin.actions.createProduct")}
+        submittingLabel={t("admin.form.saving")}
+        isSubmitting={isSaving}
+        isSticky
+        onCancel={() => onCancel?.()}
+      />
     </form>
   );
 };

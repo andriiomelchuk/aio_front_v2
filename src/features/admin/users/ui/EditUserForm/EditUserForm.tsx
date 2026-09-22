@@ -3,12 +3,13 @@
 import { SyntheticEvent, useState } from "react";
 
 import { useI18n } from "@/shared/i18n";
-import { Button, Input, Select } from "@/shared/ui";
+import { Input, Select } from "@/shared/ui";
 
 import type { T_EditUserData, T_EditUserFormProps } from "./types";
 import { updateUser } from "@/shared/api/users";
 import { useAdminAccess } from "@/features/auth";
 import { assignableStaffRoles, canAssignStaffRoles } from "@/shared/config/adminRoles";
+import { AdminFormActions, AdminFormAlert } from "@/widgets/AdminWidgets";
 
 export const EditUserForm = ({
   user,
@@ -25,6 +26,8 @@ export const EditUserForm = ({
     role: user.role,
     status: user.status,
   });
+  const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const updateField = (field: keyof T_EditUserData, value: string) => {
     setFormData((prevFormData) => ({
@@ -38,16 +41,24 @@ export const EditUserForm = ({
 
     if (!role || !canAssignStaffRoles(role) || user.role === "developer") return;
 
-    const updatedUser = await updateUser({
-      ...user,
-      ...formData,
-    });
-
-    onUpdate(updatedUser);
+    setError("");
+    setIsSaving(true);
+    try {
+      const updatedUser = await updateUser({
+        ...user,
+        ...formData,
+      });
+      onUpdate(updatedUser);
+    } catch {
+      setError(t("admin.user.error.saveFailed"));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <AdminFormAlert message={error} />
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label={t("admin.user.form.nameLabel")}
@@ -110,20 +121,7 @@ export const EditUserForm = ({
         />
       </div>
 
-      <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="secondary"
-          className="h-10 w-full sm:w-auto"
-          onClick={onCancel}
-        >
-          {t("admin.actions.cancel")}
-        </Button>
-
-        <Button type="submit" variant="default" className="h-10 w-full sm:w-auto">
-          {t("admin.actions.saveChanges")}
-        </Button>
-      </div>
+      <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.saveChanges")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} onCancel={onCancel} />
     </form>
   );
 };

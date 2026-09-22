@@ -18,6 +18,27 @@ export const CartManagement = () => {
 
   const { subtotal, discount, itemsTotal } = calculateCartTotals(products);
 
+  if (products.length === 0) {
+    return (
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <section className="mx-auto max-w-2xl rounded-lg border border-border bg-surface px-6 py-12 text-center sm:px-10">
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
+            {t("cart.emptyTitle")}
+          </h1>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-muted">
+            {t("cart.emptyDescription")}
+          </p>
+          <Link
+            href="/products"
+            className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-accent px-5 text-sm font-semibold text-background transition hover:opacity-90"
+          >
+            {t("cart.continueShopping")}
+          </Link>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <div className="mb-6 flex flex-col gap-2 sm:mb-8">

@@ -17,7 +17,7 @@ export const AuthFormShell = ({
   footerHref,
   children,
 }: T_AuthFormShellProps) => (
-  <section className="mx-auto w-full max-w-md py-6 sm:py-12">
+  <section className="mx-auto w-full max-w-md px-4 py-8 sm:px-0 sm:py-12">
     <header className="mb-6">
       <h1 className="text-2xl font-bold text-foreground">{title}</h1>
       <p className="mt-2 text-sm text-muted">{description}</p>

@@ -44,7 +44,7 @@ export const AccountOrderDetail = ({ orderId }: { orderId: string }) => {
 
   const currency = order.currency ?? "USD";
   return (
-    <section className="mx-auto w-full max-w-5xl">
+    <section className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <Link href="/account" className="text-sm font-medium text-muted hover:text-accent">{t("account.order.back")}</Link>
       <header className="mt-5 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
         <div><p className="text-sm text-accent">{t("account.order.eyebrow")}</p><h1 className="mt-1 break-all text-2xl font-bold">#{order.id}</h1><p className="mt-2 text-sm text-muted">{formatAccountDate(order.createdAt, locale)}</p></div>

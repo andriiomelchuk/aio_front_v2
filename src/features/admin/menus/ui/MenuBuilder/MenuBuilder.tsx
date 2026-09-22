@@ -7,7 +7,7 @@ import { createMenuLocalizedText, getMenuLocalizedText, type T_MenuItem, type T_
 import { createMenu, getMenuById, MenusApiError, updateMenu } from "@/shared/api/menus";
 import { locales, useI18n, type T_Locale } from "@/shared/i18n";
 import { Button, Checkbox, Input, Select } from "@/shared/ui";
-import { AdminCard, AdminPage } from "@/widgets/AdminWidgets";
+import { AdminCard, AdminFormActions, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
 import { MenuAssignments } from "../MenuAssignments";
 import { isMenuItemComplete } from "../../model";
 
@@ -74,6 +74,7 @@ export const MenuBuilder = ({ mode, menuId }: { mode: "create" | "edit"; menuId?
   const [items, setItems] = useState<T_MenuItem[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(mode === "edit");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (mode !== "edit" || !menuId) return;
@@ -86,21 +87,25 @@ export const MenuBuilder = ({ mode, menuId }: { mode: "create" | "edit"; menuId?
   const submit = async (event: FormEvent) => {
     event.preventDefault(); setError("");
     if (!name.trim() || !key.trim() || (status === "published" && !items.every((item) => isMenuItemComplete(item, defaultLocale)))) { setError(t("admin.menus.error.required")); return; }
+    setIsSaving(true);
     try {
       const values = { name: name.trim(), key: key.trim(), status, defaultLocale, items };
       const saved = mode === "edit" && menuId ? await updateMenu({ id: menuId, ...values }) : await createMenu(values);
       router.replace(`/admin/menus/${saved.id}/edit`);
     } catch (caught) {
       setError(caught instanceof MenusApiError && caught.code === "DUPLICATE_KEY" ? t("admin.menus.error.duplicateKey") : caught instanceof MenusApiError && caught.code === "INVALID_KEY" ? t("admin.menus.error.invalidKey") : t("admin.menus.error.saveFailed"));
+    } finally {
+      setIsSaving(false);
     }
   };
 
   if (isLoading) return <p className="p-6 text-sm text-muted">{t("admin.menus.loading")}</p>;
   return <AdminPage><form className="space-y-4" onSubmit={submit}>
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><h1 className="text-2xl font-semibold text-foreground">{mode === "edit" ? t("admin.menus.builder.editTitle") : t("admin.menus.builder.createTitle")}</h1><p className="mt-1 text-sm text-muted">{t("admin.menus.builder.description")}</p></div><div className="flex gap-2"><Button type="button" variant="secondary" onClick={() => router.push("/admin/menus")}>{t("admin.actions.cancel")}</Button><Button type="submit">{t("admin.actions.saveChanges")}</Button></div></div>
-    {error && <p role="alert" className="rounded-md border border-danger bg-danger-soft p-3 text-sm text-danger">{error}</p>}
+    <div><h1 className="text-2xl font-semibold text-foreground">{mode === "edit" ? t("admin.menus.builder.editTitle") : t("admin.menus.builder.createTitle")}</h1><p className="mt-1 text-sm text-muted">{t("admin.menus.builder.description")}</p></div>
+    <AdminFormAlert message={error} />
     <AdminCard title={t("admin.menus.builder.settings")}><div className="grid gap-4 sm:grid-cols-2"><label className="block space-y-2"><span className="block text-sm font-medium text-foreground">{t("admin.menus.form.name")}</span><Input required className="h-10 w-full" type="text" value={name} onChange={(event) => setName(event.target.value)} /></label><label className="block space-y-2"><span className="block text-sm font-medium text-foreground">{t("admin.menus.form.key")}</span><Input required className="h-10 w-full" type="text" value={key} onChange={(event) => setKey(event.target.value)} /></label><Select id="menu-status" label={t("admin.menus.form.status")} value={status} onChange={(event) => setStatus(event.target.value as T_MenuStatus)} options={[{ value: "draft", label: t("admin.menus.status.draft") }, { value: "published", label: t("admin.menus.status.published") }]} /><Select id="menu-default-locale" label={t("admin.menus.form.defaultLocale")} value={defaultLocale} onChange={(event) => setDefaultLocale(event.target.value as T_Locale)} options={locales.map((value) => ({ value, label: t(`language.${value}`) }))} /></div></AdminCard>
     <AdminCard title={t("admin.menus.builder.items")} description={t("admin.menus.builder.itemsDescription")}><div className="space-y-3">{items.map((item, index) => <MenuItemEditor key={item.id} item={item} defaultLocale={defaultLocale} depth={0} canMoveUp={index > 0} canMoveDown={index < items.length - 1} onMoveUp={() => move(index, -1)} onMoveDown={() => move(index, 1)} onChange={(next) => setItems((current) => current.map((value) => value.id === item.id ? next : value))} onDelete={() => setItems((current) => current.filter((value) => value.id !== item.id))} />)}<Button type="button" variant="secondary" className="inline-flex h-10 items-center whitespace-nowrap" onClick={() => setItems((current) => [...current, createItem()])}><Plus className="mr-2 h-4 w-4" />{t("admin.menus.actions.addItem")}</Button></div></AdminCard>
     {mode === "edit" && menuId && <MenuAssignments menuId={menuId} />}
+    <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.saveChanges")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} isSticky onCancel={() => router.push("/admin/menus")} />
   </form></AdminPage>;
 };
