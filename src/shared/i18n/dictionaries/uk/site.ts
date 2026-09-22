@@ -270,6 +270,8 @@ export const siteUk = {
     "products.detail.shipping": "Доставка",
     "products.detail.weight": "Вага",
     "products.detail.dimensions": "Розміри",
+    "products.detail.selectVariant": "Оберіть варіант",
+    "products.detail.variantAttributes": "Обраний варіант",
 
     "catalog.eyebrow": "Каталог товарів",
     "catalog.title": "Усі товари",

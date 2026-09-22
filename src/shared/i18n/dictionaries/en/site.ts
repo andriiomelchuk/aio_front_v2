@@ -269,6 +269,8 @@ export const siteEn = {
     "products.detail.shipping": "Shipping",
     "products.detail.weight": "Weight",
     "products.detail.dimensions": "Dimensions",
+    "products.detail.selectVariant": "Choose an option",
+    "products.detail.variantAttributes": "Selected option",
 
     "catalog.eyebrow": "Product catalog",
     "catalog.title": "All products",

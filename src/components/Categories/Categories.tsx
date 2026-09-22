@@ -3,10 +3,12 @@
 import { useI18n } from "@/shared/i18n";
 import { CategoryCard } from "./CategoryCard";
 import type { T_CategoriesProps } from "./types";
+import { useLocalizedCategories } from "@/features/catalog";
 
 export const Categories = ({ categories, products }: T_CategoriesProps) => {
   const { t } = useI18n();
-  const activeCategories = categories.filter(
+  const localizedCategories = useLocalizedCategories(categories);
+  const activeCategories = localizedCategories.filter(
     (category) => category.status === "active",
   );
 

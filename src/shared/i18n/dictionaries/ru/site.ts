@@ -269,6 +269,8 @@ export const siteRu = {
     "products.detail.shipping": "Доставка",
     "products.detail.weight": "Вес",
     "products.detail.dimensions": "Размеры",
+    "products.detail.selectVariant": "Выберите вариант",
+    "products.detail.variantAttributes": "Выбранный вариант",
 
     "catalog.eyebrow": "Каталог товаров",
     "catalog.title": "Все товары",

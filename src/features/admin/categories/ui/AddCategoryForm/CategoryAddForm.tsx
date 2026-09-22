@@ -4,13 +4,21 @@ import { Input, Select } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
 import { CategoriesApiError, createCategory } from "@/shared/api/categories";
 import { AdminFormActions, AdminFormAlert } from "@/widgets/AdminWidgets";
+import { createCategoryTranslation, type T_CategoryTranslation } from "@/entities/categories";
+import { useSiteSettings } from "@/shared/siteSettings";
+import type { T_Locale } from "@/shared/i18n";
+import { CategoryTranslationFields } from "../CategoryTranslationFields";
 
 export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) => {
   const { t } = useI18n();
+  const { localization } = useSiteSettings();
   const [category, setCategory] = useState<T_CategoryData>({
     name: "",
+    description: "",
     slug: "",
     status: "inactive",
+    defaultLocale: localization.defaultLocale,
+    translations: {},
   });
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -22,6 +30,20 @@ export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) 
     }));
   };
 
+  const updateTranslation = (locale: T_Locale, field: keyof T_CategoryTranslation, value: string) => {
+    setCategory((current) => {
+      const translation = current.translations[locale] ?? createCategoryTranslation();
+      return {
+        ...current,
+        ...(locale === current.defaultLocale ? { [field]: value } : {}),
+        translations: {
+          ...current.translations,
+          [locale]: { ...translation, [field]: value },
+        },
+      };
+    });
+  };
+
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -31,8 +53,11 @@ export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) 
     try {
       const createdCategory = await createCategory({
         name: category.name,
+        description: category.description,
         slug: category.slug,
         status: category.status,
+        defaultLocale: category.defaultLocale,
+        translations: category.translations,
       });
       onCreate(createdCategory);
     } catch (caughtError) {
@@ -50,16 +75,7 @@ export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) 
     <form onSubmit={handleSubmit} className="space-y-5">
       <AdminFormAlert message={error} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input
-          label={t("admin.category.form.nameLabel")}
-          name="name"
-          value={category.name}
-          onChange={(event) => updateCategory("name", event.target.value)}
-          placeholder={t("admin.category.form.namePlaceholder")}
-          className="h-10 w-full"
-          type="text"
-          required
-        />
+        <CategoryTranslationFields defaultLocale={category.defaultLocale} values={category.translations} onChange={updateTranslation} />
 
         <Input
           label={t("admin.category.form.slugLabel")}

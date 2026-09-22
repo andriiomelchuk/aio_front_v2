@@ -292,6 +292,9 @@ export const adminRu = {
 
     "admin.category.form.nameLabel": "Название",
     "admin.category.form.namePlaceholder": "Введите название категории",
+    "admin.category.form.languageLabel": "Язык",
+    "admin.category.form.descriptionLabel": "Описание",
+    "admin.category.form.descriptionPlaceholder": "Опишите эту категорию",
     "admin.category.form.slugLabel": "Slug",
     "admin.category.form.slugPlaceholder": "Введите slug категории",
     "admin.category.form.statusLabel": "Статус",

@@ -62,7 +62,7 @@ describe("cartSlice", () => {
     const product = createProduct(1);
     const initialState = reducer(undefined, addCartItem({ product, quantity: 1 }));
     const limitedState = reducer(initialState, increaseCartItemQuantity({ productId: product.id }));
-    const emptyState = reducer(limitedState, decreaseCartItemQuantity(product.id));
+    const emptyState = reducer(limitedState, decreaseCartItemQuantity({ productId: product.id }));
 
     expect(limitedState.products[0].quantity).toBe(1);
     expect(emptyState.products).toHaveLength(0);
@@ -73,5 +73,22 @@ describe("cartSlice", () => {
     const state = reducer(undefined, addCartItem({ product, quantity: 3, allowBackorders: true }));
 
     expect(state.products[0].quantity).toBe(3);
+  });
+
+  it("keeps product variants as separate cart lines and respects variant stock", () => {
+    const product: T_Product = {
+      ...createProduct(20),
+      variants: [
+        { id: "small", sku: "TEST-S", title: "Small", price: 90, stockQuantity: 2, stockStatus: "in_stock", attributes: [] },
+        { id: "large", sku: "TEST-L", title: "Large", price: 110, stockQuantity: 4, stockStatus: "in_stock", attributes: [] },
+      ],
+    };
+
+    const firstState = reducer(undefined, addCartItem({ product, variantId: "small", quantity: 5 }));
+    const nextState = reducer(firstState, addCartItem({ product, variantId: "large", quantity: 3 }));
+
+    expect(nextState.products).toHaveLength(2);
+    expect(nextState.products[0].quantity).toBe(2);
+    expect(nextState.products[1].quantity).toBe(3);
   });
 });

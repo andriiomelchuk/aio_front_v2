@@ -296,6 +296,9 @@ export const adminUk = {
 
     "admin.category.form.nameLabel": "Назва",
     "admin.category.form.namePlaceholder": "Введіть назву категорії",
+    "admin.category.form.languageLabel": "Мова",
+    "admin.category.form.descriptionLabel": "Опис",
+    "admin.category.form.descriptionPlaceholder": "Опишіть цю категорію",
     "admin.category.form.slugLabel": "Slug",
     "admin.category.form.slugPlaceholder": "Введіть slug категорії",
     "admin.category.form.statusLabel": "Статус",

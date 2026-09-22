@@ -11,16 +11,18 @@ export const AddToCartControl = ({
   product,
   disabled = false,
   maxQuantity,
+  variantId,
 }: T_AddToCartControlProps) => {
   const { t } = useI18n();
   const { addToCart, getCartItemQuantity } = useCart();
   const { showToast } = useToast();
   const [quantity, setQuantity] = useState(1);
   const settings = useSiteSettings();
-  const quantityInCart = getCartItemQuantity(product.id);
+  const quantityInCart = getCartItemQuantity(product.id, variantId);
+  const stockQuantity = maxQuantity ?? product.stockQuantity;
   const availableQuantity = settings.commerce.allowBackorders
     ? Math.max(0, (maxQuantity ?? 99) - quantityInCart)
-    : Math.max(0, Math.min(maxQuantity ?? product.stockQuantity, product.stockQuantity - quantityInCart));
+    : Math.max(0, stockQuantity - quantityInCart);
 
   const decreaseQuantity = () => {
     setQuantity((current) => Math.max(1, current - 1));
@@ -35,7 +37,7 @@ export const AddToCartControl = ({
 
     if (quantityToAdd <= 0) return;
 
-    addToCart(product, quantityToAdd);
+    addToCart(product, quantityToAdd, variantId);
     showToast({
       message: t("notifications.cart.addedWithQuantity", {
         count: quantityToAdd,

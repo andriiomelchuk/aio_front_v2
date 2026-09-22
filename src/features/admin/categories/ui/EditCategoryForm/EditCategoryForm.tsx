@@ -8,6 +8,10 @@ import { Input, Select } from "@/shared/ui";
 import type { T_EditCategoryData, T_EditCategoryFormProps } from "./types";
 import { CategoriesApiError, updateCategory } from "@/shared/api/categories";
 import { AdminFormActions, AdminFormAlert } from "@/widgets/AdminWidgets";
+import { createCategoryTranslation, normalizeCategoryTranslations, type T_CategoryTranslation } from "@/entities/categories";
+import { useSiteSettings } from "@/shared/siteSettings";
+import type { T_Locale } from "@/shared/i18n";
+import { CategoryTranslationFields } from "../CategoryTranslationFields";
 
 export const EditCategoryForm = ({
   category,
@@ -15,12 +19,24 @@ export const EditCategoryForm = ({
   onUpdate,
 }: T_EditCategoryFormProps) => {
   const { t } = useI18n();
+  const { localization } = useSiteSettings();
+  const defaultLocale = category.defaultLocale ?? localization.defaultLocale;
+  const initialTranslations = normalizeCategoryTranslations(category.translations);
 
   const [formData, setFormData] = useState<T_EditCategoryData>({
     id: category.slug,
     name: category.name,
+    description: category.description ?? "",
     slug: category.slug,
     status: category.status,
+    defaultLocale,
+    translations: {
+      ...initialTranslations,
+      [defaultLocale]: initialTranslations[defaultLocale] ?? {
+        name: category.name,
+        description: category.description ?? "",
+      },
+    },
   });
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -30,6 +46,20 @@ export const EditCategoryForm = ({
       ...prevFormData,
       [field]: value,
     }));
+  };
+
+  const updateTranslation = (locale: T_Locale, field: keyof T_CategoryTranslation, value: string) => {
+    setFormData((current) => {
+      const translation = current.translations[locale] ?? createCategoryTranslation();
+      return {
+        ...current,
+        ...(locale === current.defaultLocale ? { [field]: value } : {}),
+        translations: {
+          ...current.translations,
+          [locale]: { ...translation, [field]: value },
+        },
+      };
+    });
   };
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
@@ -61,16 +91,7 @@ export const EditCategoryForm = ({
     <form onSubmit={handleSubmit} className="space-y-5">
       <AdminFormAlert message={error} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input
-          label={t("admin.category.form.nameLabel")}
-          name="name"
-          value={formData.name}
-          onChange={(event) => updateField("name", event.target.value)}
-          placeholder={t("admin.category.form.namePlaceholder")}
-          className="h-10 w-full"
-          type="text"
-          required
-        />
+        <CategoryTranslationFields defaultLocale={formData.defaultLocale} values={formData.translations} onChange={updateTranslation} />
 
         <Input
           label={t("admin.category.form.slugLabel")}

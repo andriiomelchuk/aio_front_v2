@@ -270,6 +270,8 @@ export const siteDe = {
     "products.detail.shipping": "Versand",
     "products.detail.weight": "Gewicht",
     "products.detail.dimensions": "Abmessungen",
+    "products.detail.selectVariant": "Option auswählen",
+    "products.detail.variantAttributes": "Ausgewählte Option",
 
     "catalog.eyebrow": "Produktkatalog",
     "catalog.title": "Alle Produkte",

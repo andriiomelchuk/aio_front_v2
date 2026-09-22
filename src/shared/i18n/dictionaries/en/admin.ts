@@ -304,6 +304,9 @@ export const adminEn = {
 
     "admin.category.form.nameLabel": "Name",
     "admin.category.form.namePlaceholder": "Enter category name",
+    "admin.category.form.languageLabel": "Language",
+    "admin.category.form.descriptionLabel": "Description",
+    "admin.category.form.descriptionPlaceholder": "Describe this category",
     "admin.category.form.slugLabel": "Slug",
     "admin.category.form.slugPlaceholder": "Enter category slug",
     "admin.category.form.statusLabel": "Status",

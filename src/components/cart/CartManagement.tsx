@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { calculateCartTotals } from "@/features/cart";
+import { calculateCartTotals, getCartLineKey } from "@/features/cart";
 import { useI18n } from "@/shared/i18n";
 import { useAppSelector } from "@/shared/store/hooks";
 import { usePriceFormatter, useSiteSettings } from "@/shared/siteSettings";
@@ -62,7 +62,7 @@ export const CartManagement = () => {
 
           <div className="divide-y divide-border">
             {products.map((item) => (
-              <CartItem key={item.product.id} item={item} />
+              <CartItem key={getCartLineKey(item)} item={item} />
             ))}
           </div>
         </section>

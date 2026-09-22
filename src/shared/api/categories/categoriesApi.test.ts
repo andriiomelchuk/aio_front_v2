@@ -46,12 +46,12 @@ describe("category slug uniqueness", () => {
     await expect(
       createCategory({ name: "Offers 2", slug: "offers", status: "active" }),
     ).rejects.toMatchObject<Partial<CategoriesApiError>>({ code: "DUPLICATE_SLUG" });
-    await expect(getCategories()).resolves.toContainEqual({
+    await expect(getCategories()).resolves.toContainEqual(expect.objectContaining({
       id: "offers",
       name: "Offers",
       slug: "offers",
       status: "active",
-    });
+    }));
   });
 
   it("allows the current category to retain its slug", async () => {
