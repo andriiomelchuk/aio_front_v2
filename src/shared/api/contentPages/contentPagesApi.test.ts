@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createLocalizedText } from "@/entities/contentPage";
-import { createContentPage, getContentPages } from "./contentPagesApi";
+import { createContentPage, deleteContentPage, duplicateContentPage, getContentPages } from "./contentPagesApi";
 import { ContentPagesApiError } from "./types";
 
 const createStorage = (initialValue: string): Storage => {
@@ -15,6 +15,9 @@ const createStorage = (initialValue: string): Storage => {
     setItem: (key, value) => { values.set(key, value); },
   };
 };
+
+const stubWindow = (storage: Storage) =>
+  vi.stubGlobal("window", { localStorage: storage, dispatchEvent: vi.fn() });
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -41,7 +44,7 @@ describe("content pages API migration", () => {
       createdAt: "2026-09-01T00:00:00.000Z",
       updatedAt: "2026-09-01T00:00:00.000Z",
     };
-    vi.stubGlobal("window", { localStorage: createStorage(JSON.stringify([page])) });
+    stubWindow(createStorage(JSON.stringify([page])));
 
     const [migratedPage] = await getContentPages();
 
@@ -71,7 +74,7 @@ describe("content page root slugs", () => {
   });
 
   it("rejects slugs reserved by application routes", async () => {
-    vi.stubGlobal("window", { localStorage: createStorage("[]") });
+    stubWindow(createStorage("[]"));
 
     await expect(createPage("products")).rejects.toMatchObject<Partial<ContentPagesApiError>>({
       code: "RESERVED_SLUG",
@@ -79,10 +82,47 @@ describe("content page root slugs", () => {
   });
 
   it("rejects nested or malformed slugs", async () => {
-    vi.stubGlobal("window", { localStorage: createStorage("[]") });
+    stubWindow(createStorage("[]"));
 
     await expect(createPage("about/team")).rejects.toMatchObject<Partial<ContentPagesApiError>>({
       code: "INVALID_SLUG",
     });
+  });
+
+  it("duplicates a page as a draft with a unique slug", async () => {
+    const storage = createStorage("[]");
+    stubWindow(storage);
+    const source = await createPage("about");
+
+    const duplicate = await duplicateContentPage(source.id);
+
+    expect(duplicate).toMatchObject({ slug: "about-copy", status: "draft" });
+    expect(duplicate.id).not.toBe(source.id);
+  });
+
+  it("removes menu assignments when their content page is deleted", async () => {
+    const storage = createStorage("[]");
+    stubWindow(storage);
+    const page = await createPage("about");
+    storage.setItem("aio-menu-assignments", JSON.stringify([
+      { id: "page-menu", menuId: "menu-1", target: { type: "contentPage", entityId: page.id }, region: "content-before", order: 0, isVisible: true },
+      { id: "global-menu", menuId: "menu-1", target: { type: "global" }, region: "header", order: 0, isVisible: true },
+    ]));
+
+    await deleteContentPage(page.id);
+
+    expect(JSON.parse(storage.getItem("aio-menu-assignments") ?? "[]")).toHaveLength(1);
+  });
+
+  it("rejects incomplete published content at the API boundary", async () => {
+    stubWindow(createStorage("[]"));
+    await expect(createContentPage({
+      slug: "about",
+      status: "published",
+      defaultLocale: "en",
+      title: createLocalizedText("en", "About"),
+      blocks: [{ id: "text-1", type: "text", isVisible: true, data: { title: createLocalizedText(), content: createLocalizedText(), alignment: "left" } }],
+      seo: { title: createLocalizedText(), description: createLocalizedText(), noIndex: true },
+    })).rejects.toMatchObject<Partial<ContentPagesApiError>>({ code: "INVALID_CONTENT" });
   });
 });

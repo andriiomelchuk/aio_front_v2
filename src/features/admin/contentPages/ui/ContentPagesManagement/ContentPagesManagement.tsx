@@ -7,6 +7,7 @@ import { useAdminAccess } from "@/features/auth";
 import { paginate } from "@/lib";
 import {
   deleteContentPage,
+  duplicateContentPage,
   getContentPages,
 } from "@/shared/api/contentPages";
 import { useI18n } from "@/shared/i18n";
@@ -71,10 +72,20 @@ export const ContentPagesManagement = () => {
     }
   };
 
+  const handleDuplicate = async (page: T_ContentPage) => {
+    try {
+      const duplicate = await duplicateContentPage(page.id);
+      router.push(`/admin/pages/${duplicate.id}/edit`);
+    } catch {
+      setError(t("admin.contentPages.error.duplicateFailed"));
+    }
+  };
+
   const rows = mapContentPagesRows(
     paginatedPages,
     t,
     (page) => router.push(`/admin/pages/${page.id}/edit`),
+    (page) => void handleDuplicate(page),
     (page) => void handleDelete(page),
     canManage,
     locale,

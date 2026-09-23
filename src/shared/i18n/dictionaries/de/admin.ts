@@ -930,4 +930,8 @@ export const adminDe = {
   "admin.customers.notification.profileSaved": "Kundenprofil aktualisiert",
   "admin.order.sections.statusHistory": "Statusverlauf",
   "admin.order.statusHistory.empty": "Es wurden noch keine Statusänderungen erfasst.",
+    "admin.contentPages.error.duplicateFailed": "Die Seite konnte nicht dupliziert werden.",
+    "admin.menus.actions.duplicate": "Duplizieren",
+    "admin.menus.error.duplicateFailed": "Das Menü konnte nicht dupliziert werden.",
+    "admin.form.unsavedConfirmation": "Nicht gespeicherte Änderungen verwerfen?",
 } as const;

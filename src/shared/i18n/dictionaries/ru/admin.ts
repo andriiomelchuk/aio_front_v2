@@ -932,4 +932,8 @@ export const adminRu = {
   "admin.customers.notification.profileSaved": "Профиль клиента обновлён",
   "admin.order.sections.statusHistory": "История статусов",
   "admin.order.statusHistory.empty": "Изменения статуса пока не зафиксированы.",
+    "admin.contentPages.error.duplicateFailed": "Не удалось дублировать страницу.",
+    "admin.menus.actions.duplicate": "Дублировать",
+    "admin.menus.error.duplicateFailed": "Не удалось дублировать меню.",
+    "admin.form.unsavedConfirmation": "Отменить несохранённые изменения?",
 } as const;

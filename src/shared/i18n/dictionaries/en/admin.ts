@@ -989,4 +989,8 @@ export const adminEn = {
   "admin.product.translations.source": "primary",
   "admin.product.translations.empty": "empty",
   "admin.product.translations.imageAlt": "Image {index} alt text",
+    "admin.contentPages.error.duplicateFailed": "Could not duplicate the page.",
+    "admin.menus.actions.duplicate": "Duplicate",
+    "admin.menus.error.duplicateFailed": "Could not duplicate the menu.",
+    "admin.form.unsavedConfirmation": "Discard unsaved changes?",
 } as const;

@@ -952,4 +952,8 @@ export const adminUk = {
   "admin.customers.notification.profileSaved": "Профіль клієнта оновлено",
   "admin.order.sections.statusHistory": "Історія статусів",
   "admin.order.statusHistory.empty": "Змін статусу ще не зафіксовано.",
+    "admin.contentPages.error.duplicateFailed": "Не вдалося дублювати сторінку.",
+    "admin.menus.actions.duplicate": "Дублювати",
+    "admin.menus.error.duplicateFailed": "Не вдалося дублювати меню.",
+    "admin.form.unsavedConfirmation": "Відхилити незбережені зміни?",
 } as const;

@@ -2,6 +2,7 @@ import type {
   T_CreateMenuDto,
   T_Menu,
   T_MenuAssignment,
+  T_MenuAssignmentTarget,
   T_SaveMenuAssignmentDto,
   T_UpdateMenuDto,
 } from "@/entities/menu";
@@ -21,6 +22,11 @@ const getStorage = () => typeof window === "undefined" ? undefined : window.loca
 const createId = () => typeof crypto !== "undefined" && "randomUUID" in crypto
   ? crypto.randomUUID()
   : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+const duplicateMenuItem = (item: T_Menu["items"][number]): T_Menu["items"][number] => ({
+  ...structuredClone(item),
+  id: createId(),
+  children: item.children.map(duplicateMenuItem),
+});
 
 const preserveMigrationBackup = (storage: Storage, key: string, rawValue: string) => {
   const backupKey = `${key}-migration-backup-v0`;
@@ -86,6 +92,15 @@ const writeArray = <T>(key: string, value: T[]) => {
 };
 
 const normalizeKey = (key: string) => key.trim().toLowerCase();
+const isMenuItemComplete = (item: T_Menu["items"][number], locale: T_Menu["defaultLocale"]): boolean =>
+  Boolean(item.label[locale].trim() && item.href.trim()) &&
+  item.children.every((child) => isMenuItemComplete(child, locale));
+
+const validateMenuContent = (menu: Pick<T_Menu, "name" | "status" | "defaultLocale" | "items">) => {
+  if (!menu.name.trim() || (menu.status === "published" && !menu.items.every((item) => isMenuItemComplete(item, menu.defaultLocale)))) {
+    throw new MenusApiError("INVALID_CONTENT", "Published menu content is incomplete");
+  }
+};
 const validateKey = (menus: T_Menu[], key: string, ignoredId?: string) => {
   const normalizedKey = normalizeKey(key);
   if (!MENU_KEY_PATTERN.test(normalizedKey)) throw new MenusApiError("INVALID_KEY", "Menu key is invalid");
@@ -130,6 +145,7 @@ export const createMenu = async (input: T_CreateMenuDto): Promise<T_Menu> => {
   const menus = readMenus();
   const timestamp = new Date().toISOString();
   const menu: T_Menu = { ...input, id: createId(), key: validateKey(menus, input.key), createdAt: timestamp, updatedAt: timestamp };
+  validateMenuContent(menu);
   writeArray(MENUS_STORAGE_KEY, [menu, ...menus]);
   return menu;
 };
@@ -140,10 +156,38 @@ export const updateMenu = async (input: T_UpdateMenuDto): Promise<T_Menu> => {
   if (index < 0) throw new MenusApiError("NOT_FOUND", "Menu not found");
   const current = menus[index];
   const menu: T_Menu = { ...current, ...input, id: current.id, key: input.key ? validateKey(menus, input.key, current.id) : current.key, createdAt: current.createdAt, updatedAt: new Date().toISOString() };
+  validateMenuContent(menu);
   const next = [...menus];
   next[index] = menu;
   writeArray(MENUS_STORAGE_KEY, next);
   return menu;
+};
+
+export const duplicateMenu = async (id: string): Promise<T_Menu> => {
+  const menus = readMenus();
+  const source = menus.find((menu) => menu.id === id);
+  if (!source) throw new MenusApiError("NOT_FOUND", "Menu not found");
+
+  let suffix = 1;
+  let key = `${source.key}-copy`;
+  while (menus.some((menu) => menu.key === key)) {
+    suffix += 1;
+    key = `${source.key}-copy-${suffix}`;
+  }
+
+  const timestamp = new Date().toISOString();
+  const duplicate: T_Menu = {
+    ...structuredClone(source),
+    id: createId(),
+    name: `${source.name} copy`,
+    key,
+    status: "draft",
+    items: source.items.map(duplicateMenuItem),
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+  writeArray(MENUS_STORAGE_KEY, [duplicate, ...menus]);
+  return duplicate;
 };
 
 export const deleteMenu = async (id: string): Promise<string> => {
@@ -158,6 +202,9 @@ export const getMenuAssignments = async (): Promise<T_MenuAssignment[]> => readA
 
 export const saveMenuAssignment = async (input: T_SaveMenuAssignmentDto): Promise<T_MenuAssignment> => {
   const assignments = readAssignments();
+  if (!readMenus().some((menu) => menu.id === input.menuId)) {
+    throw new MenusApiError("INVALID_MENU", "Assigned menu does not exist");
+  }
   if (assignments.some((assignment) => assignment.id !== input.id && assignment.menuId === input.menuId && assignment.region === input.region && targetsMatch(assignment.target, input.target))) {
     throw new MenusApiError("DUPLICATE_ASSIGNMENT", "This menu assignment already exists");
   }
@@ -191,4 +238,15 @@ export const saveMenuAssignment = async (input: T_SaveMenuAssignmentDto): Promis
 export const deleteMenuAssignment = async (id: string): Promise<string> => {
   writeArray(MENU_ASSIGNMENTS_STORAGE_KEY, readAssignments().filter((item) => item.id !== id));
   return id;
+};
+
+export const deleteMenuAssignmentsForTarget = async (
+  target: T_MenuAssignmentTarget,
+): Promise<number> => {
+  const assignments = readAssignments();
+  const nextAssignments = assignments.filter((assignment) => !targetsMatch(assignment.target, target));
+  if (nextAssignments.length !== assignments.length) {
+    writeArray(MENU_ASSIGNMENTS_STORAGE_KEY, nextAssignments);
+  }
+  return assignments.length - nextAssignments.length;
 };

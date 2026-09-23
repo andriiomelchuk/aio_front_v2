@@ -4,11 +4,12 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { contentPageLocales, createLocalizedText, type T_ContentPageLocale, type T_ContentPageSeo, type T_ContentPageStatus, type T_LocalizedText, type T_PageBlock } from "@/entities/contentPage";
+import { contentPageLocales, createLocalizedText, isContentPageBlockComplete, isContentPageComplete, type T_ContentPageLocale, type T_ContentPageSeo, type T_ContentPageStatus, type T_LocalizedText, type T_PageBlock } from "@/entities/contentPage";
 import { ContentPagesApiError, createContentPage, getContentPageById, updateContentPage } from "@/shared/api/contentPages";
 import { useI18n } from "@/shared/i18n";
 import { Checkbox, Input, Select } from "@/shared/ui";
 import { AdminCard, AdminFormActions, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
+import { useUnsavedChanges } from "@/shared/hooks";
 import { createPageBlock } from "../../model";
 import { BlockLibrary } from "../BlockLibrary";
 import { ContentPagePreview } from "../ContentPagePreview";
@@ -17,21 +18,6 @@ import { LocalizedField } from "../LocalizedField";
 import type { T_ContentPageBuilderProps } from "./types";
 
 const emptySeo = (): T_ContentPageSeo => ({ title: createLocalizedText(), description: createLocalizedText(), noIndex: true });
-
-const isBlockComplete = (block: T_PageBlock, locale: T_ContentPageLocale) => {
-    if (block.type === "hero") return Boolean(block.data.title[locale].trim());
-    if (block.type === "text") return Boolean(block.data.content[locale].trim());
-    if (block.type === "image") return Boolean(block.data.src.trim() && block.data.alt[locale].trim());
-    if (block.type === "gallery") return block.data.images.length > 0 && block.data.images.every((image) => image.url.trim() && image.alt[locale].trim());
-    if (block.type === "products") return block.data.productIds.length > 0;
-    if (block.type === "categories") return block.data.categorySlugs.length > 0;
-    if (block.type === "faq") return block.data.items.length > 0 && block.data.items.every((item) => item.question[locale].trim() && item.answer[locale].trim());
-    if (block.type === "menu") return Boolean(block.data.menuId);
-    return Boolean(block.data.title[locale].trim());
-};
-
-const isContentComplete = (title: T_LocalizedText, blocks: T_PageBlock[], locale: T_ContentPageLocale) =>
-  Boolean(title[locale].trim()) && blocks.filter((block) => block.isVisible).every((block) => isBlockComplete(block, locale));
 
 export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) => {
   const { t, locale } = useI18n();
@@ -46,6 +32,12 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
   const [showValidationErrors, setShowValidationErrors] = useState(false);
+  const currentSnapshot = JSON.stringify({ slug, status, defaultLocale, title, blocks, seo });
+  const [initialSnapshot, setInitialSnapshot] = useState<string | null>(
+    mode === "create" ? currentSnapshot : null,
+  );
+  const isDirty = initialSnapshot !== null && initialSnapshot !== currentSnapshot;
+  useUnsavedChanges(isDirty && !isSaving);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -61,6 +53,7 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
         setTitle(page.title);
         setBlocks(page.blocks);
         setSeo(page.seo);
+        setInitialSnapshot(JSON.stringify({ slug: page.slug, status: page.status, defaultLocale: page.defaultLocale, title: page.title, blocks: page.blocks, seo: page.seo }));
       } catch {
         setError(t("admin.contentPages.error.loadFailed"));
       } finally {
@@ -91,7 +84,7 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
     }
 
     if (status === "published") {
-      if (!isContentComplete(title, blocks, defaultLocale)) {
+      if (!isContentPageComplete(title, blocks, defaultLocale)) {
         setShowValidationErrors(true);
         setError(t("admin.contentPages.validation.translations", { locales: defaultLocale.toUpperCase() }));
         return;
@@ -111,6 +104,7 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
       const savedPage = mode === "edit"
         ? await updateContentPage({ id: pageId, ...values })
         : await createContentPage(values);
+      setInitialSnapshot(JSON.stringify(values));
       router.replace(`/admin/pages/${savedPage.id}/edit`);
     } catch (caughtError) {
       if (caughtError instanceof ContentPagesApiError) {
@@ -179,7 +173,7 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
                     <SortablePageBlock key={block.id} block={block}
                       activeLocale={defaultLocale}
                       showValidationErrors={showValidationErrors}
-                      hasValidationError={!isBlockComplete(block, defaultLocale)}
+                      hasValidationError={!isContentPageBlockComplete(block, defaultLocale)}
                       onChange={(updatedBlock) => setBlocks((current) => current.map((item) => item.id === updatedBlock.id ? updatedBlock : item))}
                       onDuplicate={() => setBlocks((current) => { const index = current.findIndex((item) => item.id === block.id); const duplicate = { ...structuredClone(block), id: crypto.randomUUID() }; return [...current.slice(0, index + 1), duplicate, ...current.slice(index + 1)]; })}
                       onDelete={() => setBlocks((current) => current.filter((item) => item.id !== block.id))}
@@ -192,7 +186,7 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
         </div>
 
         <ContentPagePreview blocks={blocks} locale={locale} defaultLocale={defaultLocale} />
-        <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.saveChanges")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} isSticky onCancel={() => router.push("/admin/pages")} />
+        <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.saveChanges")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} isSticky onCancel={() => { if (!isDirty || window.confirm(t("admin.form.unsavedConfirmation"))) router.push("/admin/pages"); }} />
       </form>
     </AdminPage>
   );

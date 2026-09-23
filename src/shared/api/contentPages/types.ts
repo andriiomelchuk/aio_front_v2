@@ -3,6 +3,7 @@ export type T_ContentPagesApiErrorCode =
   | "DUPLICATE_SLUG"
   | "RESERVED_SLUG"
   | "INVALID_SLUG"
+  | "INVALID_CONTENT"
   | "STORAGE_UNAVAILABLE"
   | "STORAGE_WRITE_FAILED";
 
