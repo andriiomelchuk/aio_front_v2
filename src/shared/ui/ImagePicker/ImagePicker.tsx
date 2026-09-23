@@ -13,7 +13,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 const imageLoader = ({ src }: { src: string }) => src;
 
-export const ImagePicker = ({ label, value = "", alt = "", required, onChange }: T_ImagePickerProps) => {
+export const ImagePicker = ({ label, value = "", alt = "", required, disabled = false, onChange }: T_ImagePickerProps) => {
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const previewUrl = useManagedImageUrl(value);
@@ -21,7 +21,7 @@ export const ImagePicker = ({ label, value = "", alt = "", required, onChange }:
   const [error, setError] = useState("");
 
   const selectFile = async (file?: File) => {
-    if (!file) return;
+    if (!file || disabled) return;
     if (!ACCEPTED_TYPES.includes(file.type)) {
       setError(t("imagePicker.invalidType"));
       return;
@@ -43,11 +43,13 @@ export const ImagePicker = ({ label, value = "", alt = "", required, onChange }:
 
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    if (disabled) return;
     setIsDragging(false);
     void selectFile(event.dataTransfer.files[0]);
   };
 
   const clearImage = () => {
+    if (disabled) return;
     if (isManagedImageReference(value)) void deleteManagedImage(value);
     onChange("");
     setError("");
@@ -57,8 +59,9 @@ export const ImagePicker = ({ label, value = "", alt = "", required, onChange }:
     <div className="space-y-2">
       <span className="text-sm font-medium text-foreground">{label}</span>
       <div
-        className={`grid gap-3 rounded-md border border-dashed p-3 transition sm:grid-cols-[120px_1fr] ${isDragging ? "border-accent bg-accent-soft" : "border-border bg-background"}`}
-        onDragEnter={(event) => { event.preventDefault(); setIsDragging(true); }}
+        className={`grid gap-3 rounded-md border border-dashed p-3 transition sm:grid-cols-[120px_1fr] ${disabled ? "cursor-not-allowed opacity-60" : ""} ${isDragging ? "border-accent bg-accent-soft" : "border-border bg-background"}`}
+        aria-disabled={disabled}
+        onDragEnter={(event) => { event.preventDefault(); if (!disabled) setIsDragging(true); }}
         onDragOver={(event) => event.preventDefault()}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
@@ -71,13 +74,13 @@ export const ImagePicker = ({ label, value = "", alt = "", required, onChange }:
           )}
         </div>
         <div className="min-w-0 space-y-3">
-          <Input required={required && !value} type="url" value={isManagedImageReference(value) ? "" : value} placeholder={t("imagePicker.urlPlaceholder")} onChange={(event) => onChange(event.target.value)} />
+          <Input disabled={disabled} required={required && !value} type="url" value={isManagedImageReference(value) ? "" : value} placeholder={t("imagePicker.urlPlaceholder")} onChange={(event) => onChange(event.target.value)} />
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="secondary" className="h-9" onClick={() => inputRef.current?.click()}>{t("imagePicker.chooseFile")}</Button>
-            {value && <Button type="button" variant="danger" className="flex h-9 w-9 items-center justify-center p-0" onClick={clearImage} aria-label={t("imagePicker.remove")} title={t("imagePicker.remove")}><Trash2 aria-hidden="true" className="h-5 w-5" /></Button>}
+            <Button disabled={disabled} type="button" variant="secondary" className="h-9" onClick={() => inputRef.current?.click()}>{t("imagePicker.chooseFile")}</Button>
+            {value && <Button disabled={disabled} type="button" variant="danger" className="flex h-9 w-9 items-center justify-center p-0" onClick={clearImage} aria-label={t("imagePicker.remove")} title={t("imagePicker.remove")}><Trash2 aria-hidden="true" className="h-5 w-5" /></Button>}
           </div>
           <p className="text-xs text-muted">{t("imagePicker.dropHint")}</p>
-          <input ref={inputRef} className="sr-only" type="file" accept={ACCEPTED_TYPES.join(",")} onChange={(event) => { void selectFile(event.target.files?.[0]); event.target.value = ""; }} />
+          <input disabled={disabled} ref={inputRef} className="sr-only" type="file" accept={ACCEPTED_TYPES.join(",")} onChange={(event) => { void selectFile(event.target.files?.[0]); event.target.value = ""; }} />
         </div>
       </div>
       {error && <p className="text-xs text-danger">{error}</p>}

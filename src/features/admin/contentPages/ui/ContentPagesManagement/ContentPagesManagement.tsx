@@ -7,10 +7,11 @@ import { useAdminAccess } from "@/features/auth";
 import { paginate } from "@/lib";
 import {
   deleteContentPage,
+  duplicateContentPage,
   getContentPages,
 } from "@/shared/api/contentPages";
 import { useI18n } from "@/shared/i18n";
-import { Pagination } from "@/shared/ui";
+import { DataState, Pagination } from "@/shared/ui";
 import { AdminCard, AdminPage, AdminTable } from "@/widgets/AdminWidgets";
 import {
   filterContentPages,
@@ -29,9 +30,12 @@ export const ContentPagesManagement = () => {
   const [pages, setPages] = useState<T_ContentPage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     const loadPages = async () => {
+      setIsLoading(true);
+      setError("");
       try {
         setPages(await getContentPages());
       } catch {
@@ -42,7 +46,7 @@ export const ContentPagesManagement = () => {
     };
 
     void loadPages();
-  }, [t]);
+  }, [reloadKey, t]);
 
   const filteredPages = filterContentPages(pages, {
     search: controls.search,
@@ -71,10 +75,20 @@ export const ContentPagesManagement = () => {
     }
   };
 
+  const handleDuplicate = async (page: T_ContentPage) => {
+    try {
+      const duplicate = await duplicateContentPage(page.id);
+      router.push(`/admin/pages/${duplicate.id}/edit`);
+    } catch {
+      setError(t("admin.contentPages.error.duplicateFailed"));
+    }
+  };
+
   const rows = mapContentPagesRows(
     paginatedPages,
     t,
     (page) => router.push(`/admin/pages/${page.id}/edit`),
+    (page) => void handleDuplicate(page),
     (page) => void handleDelete(page),
     canManage,
     locale,
@@ -97,13 +111,7 @@ export const ContentPagesManagement = () => {
           total: filteredPages.length,
         })}
       >
-        {error && (
-          <p className="mb-4 rounded-md border border-danger bg-danger-soft p-3 text-sm text-danger">
-            {error}
-          </p>
-        )}
-
-        <AdminTable
+        {isLoading ? <DataState compact variant="loading" title={t("admin.contentPages.loading")} /> : error ? <DataState compact variant="error" description={error} onAction={() => setReloadKey((value) => value + 1)} /> : rows.length === 0 ? <DataState compact variant="empty" title={t("admin.contentPages.notFound")} /> : <AdminTable
           columns={getContentPagesColumns(t)}
           rows={rows}
           getRowKey={(row) => row.id}
@@ -111,12 +119,7 @@ export const ContentPagesManagement = () => {
             const page = pages.find((item) => item.id === row.id);
             if (page) router.push(`/admin/pages/${page.id}/edit`);
           } : undefined}
-          emptyText={
-            isLoading
-              ? t("admin.contentPages.loading")
-              : t("admin.contentPages.notFound")
-          }
-        />
+        />}
 
         <Pagination
           page={controls.page}

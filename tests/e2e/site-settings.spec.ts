@@ -14,7 +14,9 @@ test("developer updates settings that apply to the public site", async ({ page }
 
   await page.getByLabel("Site name").fill("AIO Configured");
   await page.getByLabel("Currency").selectOption("UAH");
-  await page.getByText("Maintenance mode", { exact: true }).click();
+  await page.locator("label").filter({ hasText: "Deutsch" }).click();
+  await expect(page.getByLabel("Deutsch")).not.toBeChecked();
+  await page.locator("label").filter({ hasText: "Maintenance mode" }).click();
   await expect(page.getByLabel(/Maintenance mode/)).toBeChecked();
   await page.getByRole("button", { name: "Save changes" }).click();
   await expect(page.getByText("Site settings saved.")).toBeVisible();
@@ -25,5 +27,18 @@ test("developer updates settings that apply to the public site", async ({ page }
   await page.goto("/");
   await expect(page.getByText("AIO Configured", { exact: true }).first()).toBeVisible();
   await expect(page.getByRole("status")).toContainText("maintenance mode");
+  await page.evaluate(() => {
+    const settings = JSON.parse(localStorage.getItem("aio-site-settings") ?? "{}");
+    settings.operations.maintenanceMode = false;
+    localStorage.setItem("aio-site-settings", JSON.stringify(settings));
+  });
+  await page.reload();
+  if ((page.viewportSize()?.width ?? 0) < 1024) {
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await expect(page.getByRole("button", { name: "Deutsch" })).toHaveCount(0);
+  } else {
+    await page.getByRole("button", { name: "Language" }).click();
+    await expect(page.getByRole("option", { name: "Deutsch" })).toHaveCount(0);
+  }
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });

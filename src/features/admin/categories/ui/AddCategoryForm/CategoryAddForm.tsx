@@ -1,17 +1,27 @@
 import { SyntheticEvent, useState } from "react";
 import type { T_AddCategoryFormProps, T_CategoryData } from "./types";
-import { Button, Input, Select } from "@/shared/ui";
+import { Input, Select } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
 import { CategoriesApiError, createCategory } from "@/shared/api/categories";
+import { AdminFormActions, AdminFormAlert } from "@/widgets/AdminWidgets";
+import { createCategoryTranslation, type T_CategoryTranslation } from "@/entities/categories";
+import { useSiteSettings } from "@/shared/siteSettings";
+import type { T_Locale } from "@/shared/i18n";
+import { CategoryTranslationFields } from "../CategoryTranslationFields";
 
 export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) => {
   const { t } = useI18n();
+  const { localization } = useSiteSettings();
   const [category, setCategory] = useState<T_CategoryData>({
     name: "",
+    description: "",
     slug: "",
     status: "inactive",
+    defaultLocale: localization.defaultLocale,
+    translations: {},
   });
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const updateCategory = (field: keyof T_CategoryData, value: string) => {
     setCategory((prevCategory) => ({
@@ -20,16 +30,34 @@ export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) 
     }));
   };
 
+  const updateTranslation = (locale: T_Locale, field: keyof T_CategoryTranslation, value: string) => {
+    setCategory((current) => {
+      const translation = current.translations[locale] ?? createCategoryTranslation();
+      return {
+        ...current,
+        ...(locale === current.defaultLocale ? { [field]: value } : {}),
+        translations: {
+          ...current.translations,
+          [locale]: { ...translation, [field]: value },
+        },
+      };
+    });
+  };
+
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setError("");
+    setIsSaving(true);
 
     try {
       const createdCategory = await createCategory({
         name: category.name,
+        description: category.description,
         slug: category.slug,
         status: category.status,
+        defaultLocale: category.defaultLocale,
+        translations: category.translations,
       });
       onCreate(createdCategory);
     } catch (caughtError) {
@@ -38,23 +66,16 @@ export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) 
           ? t("admin.category.error.duplicateSlug")
           : t("admin.category.error.saveFailed"),
       );
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {error && <p className="rounded-md border border-danger bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
+      <AdminFormAlert message={error} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input
-          label={t("admin.category.form.nameLabel")}
-          name="name"
-          value={category.name}
-          onChange={(event) => updateCategory("name", event.target.value)}
-          placeholder={t("admin.category.form.namePlaceholder")}
-          className="h-10 w-full"
-          type="text"
-          required
-        />
+        <CategoryTranslationFields defaultLocale={category.defaultLocale} values={category.translations} onChange={updateTranslation} />
 
         <Input
           label={t("admin.category.form.slugLabel")}
@@ -81,20 +102,7 @@ export const AddCategoryForm = ({ onCancel, onCreate }: T_AddCategoryFormProps) 
         />
       </div>
 
-      <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="secondary"
-          className="h-10 w-full sm:w-auto"
-          onClick={onCancel}
-        >
-          {t("admin.actions.cancel")}
-        </Button>
-
-        <Button type="submit" variant="default" className="h-10 w-full sm:w-auto">
-          {t("admin.actions.createCategory")}
-        </Button>
-      </div>
+      <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.createCategory")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} onCancel={onCancel} />
     </form>
   );
 };

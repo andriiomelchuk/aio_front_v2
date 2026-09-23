@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createMenuLocalizedText } from "@/entities/menu";
-import { createMenu, deleteMenu, getMenuAssignments, getMenuById, getMenus, saveMenuAssignment, updateMenu } from "./menusApi";
+import { createMenu, deleteMenu, duplicateMenu, getMenuAssignments, getMenuById, getMenus, saveMenuAssignment, updateMenu } from "./menusApi";
 import type { MenusApiError } from "./types";
 
 const createStorage = (initial: Record<string, string> = {}): Storage => {
@@ -118,6 +118,31 @@ describe("menus CRUD", () => {
     await expect(createMenu(input)).rejects.toMatchObject<Partial<MenusApiError>>({ code: "DUPLICATE_KEY" });
     await expect(createMenu({ ...input, key: "Main menu" })).rejects.toMatchObject<Partial<MenusApiError>>({ code: "INVALID_KEY" });
   });
+
+  it("duplicates a menu as an independent draft", async () => {
+    stubWindow(createStorage());
+    const source = await createMenu({
+      name: "Main",
+      key: "main",
+      status: "published",
+      defaultLocale: "en",
+      items: [{ id: "item-1", label: createMenuLocalizedText("en", "Home"), href: "/", openInNewTab: false, isVisible: true, children: [] }],
+    });
+
+    const duplicate = await duplicateMenu(source.id);
+
+    expect(duplicate).toMatchObject({ name: "Main copy", key: "main-copy", status: "draft" });
+    expect(duplicate.id).not.toBe(source.id);
+    expect(duplicate.items[0].id).not.toBe(source.items[0].id);
+  });
+
+  it("rejects incomplete published menu content at the API boundary", async () => {
+    stubWindow(createStorage());
+    await expect(createMenu({
+      name: "Main", key: "main", status: "published", defaultLocale: "en",
+      items: [{ id: "item-1", label: createMenuLocalizedText(), href: "", openInNewTab: false, isVisible: true, children: [] }],
+    })).rejects.toMatchObject<Partial<MenusApiError>>({ code: "INVALID_CONTENT" });
+  });
 });
 
 describe("menu assignment constraints", () => {
@@ -147,15 +172,26 @@ describe("menu assignment constraints", () => {
 
   it("rejects duplicate assignments", async () => {
     const assignment = { id: "assignment-1", menuId: "menu-1", target: { type: "category" as const, entityId: "beauty" }, region: "content-before" as const, order: 0, isVisible: true };
-    stubWindow(createStorage({ "aio-menu-assignments": JSON.stringify([assignment]) }));
+    stubWindow(createStorage({ "aio-menus": JSON.stringify([validMenu]), "aio-menu-assignments": JSON.stringify([assignment]) }));
 
     await expect(saveMenuAssignment({ ...assignment, id: undefined })).rejects.toMatchObject<Partial<MenusApiError>>({ code: "DUPLICATE_ASSIGNMENT" });
   });
 
   it("rejects opposite sidebars for the same target", async () => {
     const assignment = { id: "assignment-1", menuId: "menu-1", target: { type: "category" as const, entityId: "beauty" }, region: "sidebar-left" as const, order: 0, isVisible: true };
-    stubWindow(createStorage({ "aio-menu-assignments": JSON.stringify([assignment]) }));
+    stubWindow(createStorage({ "aio-menus": JSON.stringify([validMenu, { ...validMenu, id: "menu-2", key: "secondary" }]), "aio-menu-assignments": JSON.stringify([assignment]) }));
 
     await expect(saveMenuAssignment({ menuId: "menu-2", target: assignment.target, region: "sidebar-right", order: 1, isVisible: true })).rejects.toMatchObject<Partial<MenusApiError>>({ code: "SIDEBAR_REGION_CONFLICT" });
+  });
+
+  it("rejects assignments for a missing menu", async () => {
+    stubWindow(createStorage());
+    await expect(saveMenuAssignment({
+      menuId: "missing",
+      target: { type: "global" },
+      region: "header",
+      order: 0,
+      isVisible: true,
+    })).rejects.toMatchObject<Partial<MenusApiError>>({ code: "INVALID_MENU" });
   });
 });

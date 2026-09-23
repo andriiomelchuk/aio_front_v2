@@ -41,6 +41,7 @@ export type T_OrderPayment = {
 
 export type T_OrderItem = {
   productId: string;
+  variantId?: string;
   title: string;
   sku: string;
   thumbnail: string;
@@ -57,6 +58,14 @@ export type T_OrderTotals = {
   total: number;
 };
 
+export type T_OrderStatusHistoryEntry = {
+  id: string;
+  from?: T_OrderStatus;
+  to: T_OrderStatus;
+  createdAt: string;
+  createdBy: string;
+};
+
 export type T_Order = {
   id: string | number;
   customerId?: string;
@@ -70,6 +79,7 @@ export type T_Order = {
   currency?: T_ProductCurrency;
   comment?: string;
   internalNote?: string;
+  statusHistory?: T_OrderStatusHistoryEntry[];
   createdAt: string;
   updatedAt: string;
 };
@@ -88,4 +98,10 @@ export type T_CreateOrderDto = Required<
 > &
   Pick<T_Order, "comment" | "customerId">;
 
-export type T_UpdateOrderDto = T_Order;
+export type T_UpdateOrderDto = Partial<
+  Omit<T_Order, "id" | "createdAt" | "updatedAt">
+> & Pick<T_Order, "id">;
+
+export type T_UpdateOrderOptions = {
+  updatedBy?: string;
+};

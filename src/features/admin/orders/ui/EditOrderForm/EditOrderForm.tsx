@@ -1,18 +1,19 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
+import Link from "next/link";
 import type { T_Order, T_OrderDeliveryMethod, T_OrderPaymentMethod, T_OrderPaymentStatus, T_OrderStatus } from "@/entities/order";
 import { useI18n } from "@/shared/i18n";
 import { updateOrder } from "@/shared/api/orders";
 import { useAdminAccess } from "@/features/auth";
-import { Button, Input, Select, Textarea, useToast } from "@/shared/ui";
-import { AdminCard } from "@/widgets/AdminWidgets";
+import { Input, Select, Textarea, useToast } from "@/shared/ui";
+import { AdminCard, AdminFormActions } from "@/widgets/AdminWidgets";
 import type { T_EditOrderFormProps } from "./types";
 
 export const EditOrderForm = ({ order, onCancel, onUpdate }: T_EditOrderFormProps) => {
   const { t, locale } = useI18n();
   const { showToast } = useToast();
-  const { canManage } = useAdminAccess();
+  const { canManage, session } = useAdminAccess();
   const [formOrder, setFormOrder] = useState<T_Order>(order);
   const [isSaving, setIsSaving] = useState(false);
   const totals = useMemo(() => {
@@ -29,7 +30,10 @@ export const EditOrderForm = ({ order, onCancel, onUpdate }: T_EditOrderFormProp
     event.preventDefault();
     setIsSaving(true);
     try {
-      const updatedOrder = await updateOrder({ ...formOrder, price: totals.total, totals });
+      const updatedOrder = await updateOrder(
+        { ...formOrder, price: totals.total, totals },
+        { updatedBy: session?.displayName },
+      );
       setFormOrder(updatedOrder);
       onUpdate?.(updatedOrder);
       showToast({ message: t("admin.order.notification.saved") });
@@ -51,7 +55,7 @@ export const EditOrderForm = ({ order, onCancel, onUpdate }: T_EditOrderFormProp
               <Input required type="text" label={t("checkout.field.lastName")} value={formOrder.customer.lastName} onChange={(e) => setFormOrder((o) => ({ ...o, customer: { ...o.customer!, lastName: e.target.value } }))} />
               <Input required type="email" label={t("checkout.field.email")} value={formOrder.customer.email} onChange={(e) => setFormOrder((o) => ({ ...o, customer: { ...o.customer!, email: e.target.value } }))} />
               <Input required type="tel" label={t("checkout.field.phone")} value={formOrder.customer.phone} onChange={(e) => setFormOrder((o) => ({ ...o, customer: { ...o.customer!, phone: e.target.value } }))} />
-              {formOrder.customerId && <p className="text-sm text-muted sm:col-span-2">{t("admin.order.customerId")}: <span className="text-foreground">{formOrder.customerId}</span></p>}
+              {formOrder.customerId && <p className="text-sm text-muted sm:col-span-2">{t("admin.order.customerId")}: <Link className="font-medium text-accent hover:underline" href={`/admin/customers/${formOrder.customerId}`}>{formOrder.customerId}</Link></p>}
             </div> : <p className="text-sm text-muted">{t("admin.order.legacyDataUnavailable")}</p>}
           </AdminCard>
 
@@ -107,13 +111,13 @@ export const EditOrderForm = ({ order, onCancel, onUpdate }: T_EditOrderFormProp
           <AdminCard title={t("admin.order.sections.system")}>
             <dl className="space-y-2 text-sm"><div><dt className="text-muted">{t("admin.orders.table.orderId")}</dt><dd className="break-all">{formOrder.id}</dd></div><div><dt className="text-muted">{t("admin.orders.table.createdAt")}</dt><dd>{formOrder.createdAt}</dd></div><div><dt className="text-muted">{t("admin.orders.table.updatedAt")}</dt><dd>{formOrder.updatedAt}</dd></div></dl>
           </AdminCard>
+          <AdminCard title={t("admin.order.sections.statusHistory")}>
+            {!formOrder.statusHistory?.length ? <p className="text-sm text-muted">{t("admin.order.statusHistory.empty")}</p> : <ol className="space-y-3">{formOrder.statusHistory.map((entry) => <li key={entry.id} className="border-l-2 border-border pl-3 text-sm"><p className="font-medium text-foreground">{entry.from ? `${t(`admin.orders.status.${entry.from}`)} → ` : ""}{t(`admin.orders.status.${entry.to}`)}</p><p className="mt-1 text-xs text-muted">{entry.createdBy} · {new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(entry.createdAt))}</p></li>)}</ol>}
+          </AdminCard>
         </aside>
       </div>
       </fieldset>
-      <div className="sticky bottom-0 z-10 flex flex-col-reverse gap-3 border-t border-border bg-background/95 py-4 backdrop-blur sm:flex-row sm:justify-end">
-        <Button type="button" variant="secondary" className="h-10" onClick={onCancel}>{t("admin.actions.cancel")}</Button>
-        {canManage && <Button type="submit" className="h-10" disabled={isSaving}>{isSaving ? t("account.action.saving") : t("admin.actions.saveChanges")}</Button>}
-      </div>
+      <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.saveChanges")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} showSubmit={canManage} isSticky onCancel={onCancel} />
     </form>
   );
 };

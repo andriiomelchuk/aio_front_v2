@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useI18n, type T_Locale } from "@/shared/i18n";
 import type { T_LanguageOption, T_LanguageSwitcherProps } from "./types";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 const languageOptions: T_LanguageOption[] = [
   {
@@ -41,10 +43,14 @@ export const LanguageSwitcher = ({
   const switcherRef = useRef<HTMLDivElement>(null);
 
   const { locale, setLocale, t } = useI18n();
+  const settings = useSiteSettings();
+  const enabledLanguageOptions = languageOptions.filter((option) =>
+    settings.localization.enabledLocales.includes(option.locale),
+  );
 
   const selectedLanguage =
-    languageOptions.find((option) => option.locale === locale) ??
-    languageOptions[0];
+    enabledLanguageOptions.find((option) => option.locale === locale) ??
+    enabledLanguageOptions[0];
 
   useEffect(() => {
     if (!isOpen) {
@@ -110,7 +116,7 @@ export const LanguageSwitcher = ({
         role="group"
         aria-label={t("language.switcherLabel")}
       >
-        {languageOptions.map((option) => {
+        {enabledLanguageOptions.map((option) => {
           const isActive = option.locale === locale;
 
           return (
@@ -156,7 +162,7 @@ export const LanguageSwitcher = ({
           {renderOptionContent(selectedLanguage)}
         </span>
 
-        <span className="shrink-0 text-xs text-muted">▼</span>
+        <ChevronDown aria-hidden="true" className="h-4 w-4 shrink-0 text-muted" />
       </button>
 
       {isOpen && (
@@ -164,7 +170,7 @@ export const LanguageSwitcher = ({
           className="absolute right-0 z-50 mt-2 min-w-36 overflow-hidden rounded-md border border-border bg-surface shadow-lg"
           role="listbox"
         >
-          {languageOptions.map((option) => {
+          {enabledLanguageOptions.map((option) => {
             const isActive = option.locale === locale;
 
             return (

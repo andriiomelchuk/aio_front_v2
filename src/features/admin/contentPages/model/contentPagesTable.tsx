@@ -32,6 +32,7 @@ export const mapContentPagesRows = (
   pages: T_ContentPage[],
   t: T_I18nContext["t"],
   onEdit: (page: T_ContentPage) => void,
+  onDuplicate: (page: T_ContentPage) => void,
   onDelete: (page: T_ContentPage) => void,
   canManage: boolean,
   locale: T_ContentPageLocale,
@@ -47,7 +48,7 @@ export const mapContentPagesRows = (
     ),
     updatedAt: new Date(page.updatedAt).toLocaleDateString(),
     actions: canManage ? (
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-wrap justify-end gap-2">
         <Button
           type="button"
           variant="ghost"
@@ -58,6 +59,17 @@ export const mapContentPagesRows = (
           }}
         >
           {t("admin.contentPages.actions.edit")}
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          className="h-9 px-3"
+          onClick={(event) => {
+            event.stopPropagation();
+            onDuplicate(page);
+          }}
+        >
+          {t("admin.contentPages.actions.duplicate")}
         </Button>
         <Button
           type="button"

@@ -11,28 +11,28 @@ export const useCart = () => {
   const products = useAppSelector((state) => state.cart.products);
   const settings = useSiteSettings();
 
-  const getCartItemQuantity = (productId: string) =>
-    products.find((item) => item.product.id === productId)?.quantity ?? 0;
+  const getCartItemQuantity = (productId: string, variantId?: string) =>
+    products.find((item) => item.product.id === productId && item.variantId === variantId)?.quantity ?? 0;
 
-  const addToCart = (product: T_Product, quantity = 1) => {
-    dispatch(addCartItem({ product, quantity, allowBackorders: settings.commerce.allowBackorders }));
+  const addToCart = (product: T_Product, quantity = 1, variantId?: string) => {
+    dispatch(addCartItem({ product, variantId, quantity, allowBackorders: settings.commerce.allowBackorders }));
 
   };
 
-  const removeFromCart = (product: T_Product) => {
-    dispatch(removeCartItem(product.id));
+  const removeFromCart = (product: T_Product, variantId?: string) => {
+    dispatch(removeCartItem({ productId: product.id, variantId }));
   };
 
-  const increaseQuantity = (product: T_Product) => {
-    dispatch(increaseCartItemQuantity({ productId: product.id, allowBackorders: settings.commerce.allowBackorders }));
+  const increaseQuantity = (product: T_Product, variantId?: string) => {
+    dispatch(increaseCartItemQuantity({ productId: product.id, variantId, allowBackorders: settings.commerce.allowBackorders }));
   };
 
-  const decreaseQuantity = (product: T_Product) => {
-    dispatch(decreaseCartItemQuantity(product.id));
+  const decreaseQuantity = (product: T_Product, variantId?: string) => {
+    dispatch(decreaseCartItemQuantity({ productId: product.id, variantId }));
   };
 
-  const setQuantity = (product: T_Product, quantity: number) => {
-    dispatch(setCartItemQuantity({ productId: product.id, quantity, allowBackorders: settings.commerce.allowBackorders }));
+  const setQuantity = (product: T_Product, quantity: number, variantId?: string) => {
+    dispatch(setCartItemQuantity({ productId: product.id, variantId, quantity, allowBackorders: settings.commerce.allowBackorders }));
   };
 
   const clearCart = () => {

@@ -7,26 +7,33 @@ import { getContentPageBySlug } from "@/shared/api/contentPages";
 import { useI18n } from "@/shared/i18n";
 import { ContentPageBlocks } from "./ContentPageBlocks";
 import { AssignedMenuLayout } from "@/components/Menu";
+import { ContentPagesApiError } from "@/shared/api/contentPages";
+import { DataState } from "@/shared/ui";
 
 export const ContentPageRenderer = ({ slug }: { slug: string }) => {
   const { t, locale } = useI18n();
   const [page, setPage] = useState<T_ContentPage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     const loadPage = async () => {
+      setIsLoading(true);
+      setHasError(false);
       try {
         const contentPage = await getContentPageBySlug(slug);
         setPage(contentPage.status === "published" ? contentPage : null);
-      } catch {
+      } catch (error) {
         setPage(null);
+        setHasError(!(error instanceof ContentPagesApiError && error.code === "NOT_FOUND"));
       } finally {
         setIsLoading(false);
       }
     };
 
     void loadPage();
-  }, [slug]);
+  }, [reloadKey, slug]);
 
   useEffect(() => {
     if (page) {
@@ -35,11 +42,11 @@ export const ContentPageRenderer = ({ slug }: { slug: string }) => {
   }, [locale, page]);
 
   if (isLoading) {
-    return (
-      <main className="mx-auto flex min-h-80 w-full max-w-7xl items-center justify-center px-4 py-12 text-sm text-muted">
-        {t("contentPage.loading")}
-      </main>
-    );
+    return <main className="mx-auto w-full max-w-7xl px-4 py-12"><DataState variant="loading" title={t("contentPage.loading")} /></main>;
+  }
+
+  if (hasError) {
+    return <main className="mx-auto w-full max-w-7xl px-4 py-12"><DataState variant="error" description={t("contentPage.loadError")} onAction={() => setReloadKey((value) => value + 1)} /></main>;
   }
 
   if (!page) {

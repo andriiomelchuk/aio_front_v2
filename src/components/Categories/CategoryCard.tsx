@@ -37,6 +37,11 @@ export const CategoryCard = ({
         <h2 className="line-clamp-2 min-h-7 text-lg font-semibold text-foreground">
           {category.name}
         </h2>
+        {category.description ? (
+          <p className="mt-1 line-clamp-2 min-h-10 text-sm leading-5 text-muted">
+            {category.description}
+          </p>
+        ) : null}
         <p className="mt-1 text-sm text-muted">
           {t("categories.productCount", { count: productCount })}
         </p>

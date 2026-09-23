@@ -231,7 +231,7 @@ export const importTranslationDraft = async (
 ) => {
   try {
     const values = normalizeValues(JSON.parse(json));
-    if (!values) throw new Error("Invalid translation object");
+    if (!values) throw new TranslationsApiError("INVALID_IMPORT", "Invalid translation object");
     assertKnownKeys(namespace, values);
     const current = await getTranslationWorkspace(locale, namespace);
     return saveTranslationDraft(locale, namespace, { ...current.draft, ...values }, actor, "imported");

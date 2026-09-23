@@ -8,6 +8,7 @@ import type { T_Order } from "@/entities/order";
 import { useAuth } from "@/features/auth";
 import { getOrderById } from "@/shared/api/orders";
 import { useI18n } from "@/shared/i18n";
+import { DataState } from "@/shared/ui";
 import {
   formatAccountDate,
   formatAccountPrice,
@@ -23,6 +24,7 @@ export const AccountOrderDetail = ({ orderId }: { orderId: string }) => {
   const router = useRouter();
   const [order, setOrder] = useState<T_Order | null>(null);
   const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -37,14 +39,15 @@ export const AccountOrderDetail = ({ orderId }: { orderId: string }) => {
         setOrder(loadedOrder);
       })
       .catch(() => setHasError(true));
-  }, [isInitialized, orderId, router, session]);
+  }, [isInitialized, orderId, reloadKey, router, session]);
 
-  if (!isInitialized || (!order && !hasError)) return <p className="py-16 text-center text-muted">{t("account.orders.loading")}</p>;
-  if (!session || hasError || !order) return <div className="py-16 text-center"><h1 className="text-xl font-semibold">{t("account.order.notFound")}</h1><Link href="/account" className="mt-4 inline-flex text-sm font-medium text-accent hover:underline">{t("account.order.back")}</Link></div>;
+  if (!isInitialized || (!order && !hasError)) return <DataState variant="loading" title={t("account.orders.loading")} className="mx-auto my-8 max-w-5xl" />;
+  if (hasError) return <DataState variant="error" description={t("account.orders.loadError")} onAction={() => { setHasError(false); setOrder(null); setReloadKey((value) => value + 1); }} className="mx-auto my-8 max-w-5xl" />;
+  if (!session || !order) return <DataState variant="empty" title={t("account.order.notFound")} className="mx-auto my-8 max-w-5xl" />;
 
   const currency = order.currency ?? "USD";
   return (
-    <section className="mx-auto w-full max-w-5xl">
+    <section className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <Link href="/account" className="text-sm font-medium text-muted hover:text-accent">{t("account.order.back")}</Link>
       <header className="mt-5 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
         <div><p className="text-sm text-accent">{t("account.order.eyebrow")}</p><h1 className="mt-1 break-all text-2xl font-bold">#{order.id}</h1><p className="mt-2 text-sm text-muted">{formatAccountDate(order.createdAt, locale)}</p></div>

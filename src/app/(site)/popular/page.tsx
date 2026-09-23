@@ -5,6 +5,7 @@ import { getPopular } from "@/lib/github";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { PageLoading } from "@/shared/ui";
 
 export const metadata: Metadata = {
   title: "Popular Repositories",
@@ -28,7 +29,7 @@ export default async function PopularPage({ searchParams }: SearchParams) {
   const repos = await getPopular(params.language);
 
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<PageLoading />}>
       <PopularRepos items={repos.items} />
     </Suspense>
   );

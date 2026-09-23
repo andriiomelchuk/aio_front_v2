@@ -1,4 +1,5 @@
 import type { T_StaffRole } from "@/shared/config/adminRoles";
+import { ApiError } from "@/shared/api/core";
 
 export type { T_StaffRole } from "@/shared/config/adminRoles";
 export type T_AuthRole = "customer" | T_StaffRole;
@@ -41,7 +42,7 @@ export type T_AuthErrorCode =
   | "INVALID_CREDENTIALS"
   | "ACCOUNT_UNAVAILABLE";
 
-export class AuthApiError extends Error {
+export class AuthApiError extends ApiError<T_AuthErrorCode> {
   constructor(public readonly code: T_AuthErrorCode) {
     super(code);
     this.name = "AuthApiError";

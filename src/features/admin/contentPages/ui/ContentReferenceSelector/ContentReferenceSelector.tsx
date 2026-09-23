@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getCategories } from "@/shared/api/categories";
 import { getProducts } from "@/shared/api/products";
 import { useI18n } from "@/shared/i18n";
-import { Input } from "@/shared/ui";
+import { DataState, Input } from "@/shared/ui";
 import type {
   T_ContentReferenceOption,
   T_ContentReferenceSelectorProps,
@@ -20,6 +20,7 @@ export const ContentReferenceSelector = ({
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -54,7 +55,7 @@ export const ContentReferenceSelector = ({
     };
 
     void loadOptions();
-  }, [type]);
+  }, [reloadKey, type]);
 
   const filteredOptions = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -99,19 +100,13 @@ export const ContentReferenceSelector = ({
 
       <div className="mt-2 max-h-64 overflow-y-auto rounded-md border border-border bg-background">
         {isLoading && (
-          <p className="p-4 text-center text-sm text-muted">
-            {t("admin.contentPages.selector.loading")}
-          </p>
+          <DataState compact variant="loading" title={t("admin.contentPages.selector.loading")} />
         )}
         {hasError && (
-          <p className="p-4 text-center text-sm text-danger">
-            {t("admin.contentPages.selector.loadFailed")}
-          </p>
+          <DataState compact variant="error" description={t("admin.contentPages.selector.loadFailed")} onAction={() => setReloadKey((value) => value + 1)} />
         )}
         {!isLoading && !hasError && filteredOptions.length === 0 && (
-          <p className="p-4 text-center text-sm text-muted">
-            {t("admin.contentPages.selector.empty")}
-          </p>
+          <DataState compact variant="empty" title={t("admin.contentPages.selector.empty")} />
         )}
         {!isLoading &&
           !hasError &&

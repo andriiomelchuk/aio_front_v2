@@ -6,9 +6,10 @@ import type {
   T_PageBlock,
   T_UpdateContentPageDto,
 } from "@/entities/contentPage";
-import { contentPageLocales, createLocalizedText } from "@/entities/contentPage";
-import { ContentPagesApiError } from "./types";
-import { deleteManagedImage, deleteManagedImagesInValue, getManagedImageReferences } from "@/shared/lib";
+import { contentPageLocales, createLocalizedText, isContentPageComplete } from "@/entities/contentPage";
+import { ContentPagesApiError, type T_ContentPagesApiContract } from "./types";
+import { deleteManagedImage, getManagedImageReferences } from "@/shared/lib";
+import { deleteMenuAssignmentsForTarget } from "@/shared/api/menus";
 
 const CONTENT_PAGES_STORAGE_KEY = "aio-content-pages";
 const RESERVED_CONTENT_PAGE_SLUGS = new Set([
@@ -213,6 +214,18 @@ const createContentPageId = () => {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 };
 
+const duplicateBlock = (block: T_PageBlock): T_PageBlock => {
+  const duplicate = structuredClone(block);
+  duplicate.id = createContentPageId();
+  if (duplicate.type === "gallery") {
+    duplicate.data.images = duplicate.data.images.map((image) => ({ ...image, id: createContentPageId() }));
+  }
+  if (duplicate.type === "faq") {
+    duplicate.data.items = duplicate.data.items.map((item) => ({ ...item, id: createContentPageId() }));
+  }
+  return duplicate;
+};
+
 const normalizeSlug = (slug: string) => slug.trim().toLowerCase();
 
 const ensureUniqueSlug = (
@@ -248,6 +261,15 @@ const ensureUniqueSlug = (
   }
 
   return normalizedSlug;
+};
+
+const validateContentPage = (
+  page: Pick<T_ContentPage, "status" | "title" | "blocks" | "defaultLocale">,
+) => {
+  if (!page.title[page.defaultLocale].trim() ||
+    (page.status === "published" && !isContentPageComplete(page.title, page.blocks, page.defaultLocale))) {
+    throw new ContentPagesApiError("INVALID_CONTENT", "Published page content is incomplete");
+  }
 };
 
 export const getContentPages = async (): Promise<T_ContentPage[]> =>
@@ -294,6 +316,8 @@ export const createContentPage = async (
     updatedAt: timestamp,
   };
 
+  validateContentPage(page);
+
   saveContentPages([page, ...pages]);
 
   return page;
@@ -321,18 +345,45 @@ export const updateContentPage = async (
     createdAt: currentPage.createdAt,
     updatedAt: new Date().toISOString(),
   };
+  validateContentPage(updatedPage);
   const updatedPages = [...pages];
 
   updatedPages[pageIndex] = updatedPage;
   saveContentPages(updatedPages);
 
-  const retainedReferences = new Set(getManagedImageReferences(updatedPage));
+  const retainedReferences = new Set(updatedPages.flatMap(getManagedImageReferences));
   const removedReferences = getManagedImageReferences(currentPage).filter(
     (reference) => !retainedReferences.has(reference),
   );
   await Promise.all(removedReferences.map(deleteManagedImage));
 
   return updatedPage;
+};
+
+export const duplicateContentPage = async (id: string): Promise<T_ContentPage> => {
+  const pages = loadContentPages();
+  const source = pages.find((page) => page.id === id);
+  if (!source) throw new ContentPagesApiError("NOT_FOUND", "Content page not found");
+
+  let suffix = 1;
+  let slug = `${source.slug}-copy`;
+  while (pages.some((page) => page.slug === slug)) {
+    suffix += 1;
+    slug = `${source.slug}-copy-${suffix}`;
+  }
+
+  const timestamp = new Date().toISOString();
+  const duplicate: T_ContentPage = {
+    ...structuredClone(source),
+    id: createContentPageId(),
+    slug,
+    status: "draft",
+    blocks: source.blocks.map(duplicateBlock),
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+  saveContentPages([duplicate, ...pages]);
+  return duplicate;
 };
 
 export const deleteContentPage = async (id: string): Promise<string> => {
@@ -343,8 +394,22 @@ export const deleteContentPage = async (id: string): Promise<string> => {
   }
 
   const deletedPage = pages.find((page) => page.id === id);
-  saveContentPages(pages.filter((page) => page.id !== id));
-  await deleteManagedImagesInValue(deletedPage);
+  const remainingPages = pages.filter((page) => page.id !== id);
+  saveContentPages(remainingPages);
+  await deleteMenuAssignmentsForTarget({ type: "contentPage", entityId: id });
+  const retainedReferences = new Set(remainingPages.flatMap(getManagedImageReferences));
+  const removableReferences = getManagedImageReferences(deletedPage).filter((reference) => !retainedReferences.has(reference));
+  await Promise.all(removableReferences.map(deleteManagedImage));
 
   return id;
 };
+
+export const contentPagesApi = {
+  getContentPages,
+  getContentPageById,
+  getContentPageBySlug,
+  createContentPage,
+  updateContentPage,
+  duplicateContentPage,
+  deleteContentPage,
+} satisfies T_ContentPagesApiContract;

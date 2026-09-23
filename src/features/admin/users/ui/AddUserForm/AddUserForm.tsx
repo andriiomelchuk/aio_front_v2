@@ -1,10 +1,11 @@
 import { SyntheticEvent, useState } from "react";
 import type { T_AddUserFormProps, T_UserData } from "./types";
-import { Button, Input, Select } from "@/shared/ui";
+import { Input, Select } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
 import { createUser } from "@/shared/api/users";
 import { useAdminAccess } from "@/features/auth";
 import { assignableStaffRoles, canAssignStaffRoles } from "@/shared/config/adminRoles";
+import { AdminFormActions, AdminFormAlert } from "@/widgets/AdminWidgets";
 
 export const AddUserForm = ({ onCancel, onCreate }: T_AddUserFormProps) => {
   const { t } = useI18n();
@@ -17,6 +18,8 @@ export const AddUserForm = ({ onCancel, onCreate }: T_AddUserFormProps) => {
     role: "",
     status: "",
   });
+  const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const updateUser = (field: keyof T_UserData, value: string) => {
     setUser((prevUser) => ({
@@ -32,20 +35,28 @@ export const AddUserForm = ({ onCancel, onCreate }: T_AddUserFormProps) => {
       return;
     }
 
-    const createdUser = await createUser({
-      name: user.name,
-      login: user.login,
-      email: user.email,
-      password: user.password,
-      role: user.role,
-      status: user.status,
-    });
-    console.log("Create user:", user);
-    onCreate(createdUser);
+    setError("");
+    setIsSaving(true);
+    try {
+      const createdUser = await createUser({
+        name: user.name,
+        login: user.login,
+        email: user.email,
+        password: user.password,
+        role: user.role,
+        status: user.status,
+      });
+      onCreate(createdUser);
+    } catch {
+      setError(t("admin.user.error.saveFailed"));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <AdminFormAlert message={error} />
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label={t("admin.user.form.nameLabel")}
@@ -121,20 +132,7 @@ export const AddUserForm = ({ onCancel, onCreate }: T_AddUserFormProps) => {
         />
       </div>
 
-      <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="secondary"
-          className="h-10 w-full sm:w-auto"
-          onClick={onCancel}
-        >
-          {t("admin.actions.cancel")}
-        </Button>
-
-        <Button type="submit" variant="default" className="h-10 w-full sm:w-auto">
-          {t("admin.actions.createUser")}
-        </Button>
-      </div>
+      <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.createUser")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} onCancel={onCancel} />
     </form>
   );
 };

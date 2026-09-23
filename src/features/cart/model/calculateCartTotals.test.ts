@@ -23,4 +23,17 @@ describe("calculateCartTotals", () => {
       itemsTotal: 0,
     });
   });
+
+  it("uses the selected variant price", () => {
+    const productWithVariant = {
+      ...product,
+      variants: [{ id: "variant-1", sku: "V-1", title: "Variant", price: 80, discountPercentage: 25, stockQuantity: 5, stockStatus: "in_stock", attributes: [] }],
+    } as T_Product;
+
+    expect(calculateCartTotals([{ product: productWithVariant, variantId: "variant-1", quantity: 2 }])).toEqual({
+      subtotal: 160,
+      discount: 40,
+      itemsTotal: 120,
+    });
+  });
 });

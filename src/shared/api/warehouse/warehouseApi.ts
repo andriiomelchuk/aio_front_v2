@@ -1,6 +1,7 @@
 import type {
   T_CreateWarehouseDto,
   T_CreateWarehouseLocationDto,
+  T_CreateInventoryItemDto,
   T_InventoryBalance,
   T_InventoryCondition,
   T_InventoryMovement,
@@ -15,11 +16,11 @@ import { readSiteSettings } from "@/shared/api/siteSettings";
 
 const STORAGE_KEY = "aio-warehouse-state";
 const VERSION_KEY = "aio-warehouse-version";
-const BACKUP_KEY = "aio-warehouse-migration-backup-v0";
-const SCHEMA_VERSION = 2;
+const BACKUP_KEY = "aio-warehouse-migration-backup-v2";
+const SCHEMA_VERSION = 3;
 export const WAREHOUSE_CHANGE_EVENT = "aio-warehouse-change";
 
-const emptyState: T_WarehouseState = { warehouses: [], balances: [], movements: [] };
+const emptyState: T_WarehouseState = { warehouses: [], inventoryItems: [], balances: [], movements: [] };
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 const createId = () => crypto.randomUUID();
@@ -30,8 +31,9 @@ const normalizeState = (value: unknown): T_WarehouseState => {
   if (!isRecord(value)) return emptyState;
   return {
     warehouses: Array.isArray(value.warehouses) ? value.warehouses as T_Warehouse[] : [],
-    balances: Array.isArray(value.balances) ? (value.balances as T_InventoryBalance[]).map((balance) => ({ ...balance, condition: balance.condition ?? "sellable" })) : [],
-    movements: Array.isArray(value.movements) ? (value.movements as T_InventoryMovement[]).map((movement) => ({ ...movement, condition: movement.condition ?? "sellable" })) : [],
+    inventoryItems: Array.isArray(value.inventoryItems) ? value.inventoryItems as T_WarehouseState["inventoryItems"] : [],
+    balances: Array.isArray(value.balances) ? (value.balances as T_InventoryBalance[]).map((balance) => ({ ...balance, itemType: balance.itemType ?? "product", condition: balance.condition ?? "sellable" })) : [],
+    movements: Array.isArray(value.movements) ? (value.movements as T_InventoryMovement[]).map((movement) => ({ ...movement, itemType: movement.itemType ?? "product", condition: movement.condition ?? "sellable" })) : [],
   };
 };
 
@@ -73,7 +75,8 @@ const balanceMatches = (
   locationId: string,
   variantId?: string,
   condition: T_InventoryCondition = "sellable",
-) => balance.productId === productId && balance.variantId === variantId && balance.warehouseId === warehouseId && balance.locationId === locationId && balance.condition === condition;
+  itemType: T_InventoryBalance["itemType"] = "product",
+) => (balance.itemType ?? "product") === itemType && balance.productId === productId && balance.variantId === variantId && balance.warehouseId === warehouseId && balance.locationId === locationId && balance.condition === condition;
 
 const getOrCreateBalance = (
   state: T_WarehouseState,
@@ -82,10 +85,11 @@ const getOrCreateBalance = (
   locationId: string,
   variantId?: string,
   condition: T_InventoryCondition = "sellable",
+  itemType: T_InventoryBalance["itemType"] = "product",
 ) => {
-  let balance = state.balances.find((item) => balanceMatches(item, productId, warehouseId, locationId, variantId, condition));
+  let balance = state.balances.find((item) => balanceMatches(item, productId, warehouseId, locationId, variantId, condition, itemType));
   if (!balance) {
-    balance = { productId, variantId, warehouseId, locationId, condition, physical: 0, reserved: 0, updatedAt: new Date().toISOString() };
+    balance = { itemType, productId, variantId, warehouseId, locationId, condition, physical: 0, reserved: 0, updatedAt: new Date().toISOString() };
     state.balances.push(balance);
   }
   return balance;
@@ -99,6 +103,37 @@ const assertLocation = (state: T_WarehouseState, warehouseId?: string, locationI
 };
 
 export const getWarehouseState = async () => readWarehouseState();
+
+export const createInventoryItem = async (input: T_CreateInventoryItemDto) => {
+  const state = readWarehouseState();
+  const sku = normalizeCode(input.sku);
+  const lowStockThreshold = Number(input.lowStockThreshold);
+  if (!input.name.trim() || !sku || !Number.isFinite(lowStockThreshold) || lowStockThreshold < 0) {
+    throw new WarehouseApiError("INVALID_INPUT", "Name, SKU and a valid low-stock threshold are required");
+  }
+  if (state.inventoryItems.some((item) => item.sku === sku)) {
+    throw new WarehouseApiError("DUPLICATE_CODE", "Inventory item SKU already exists");
+  }
+  const timestamp = new Date().toISOString();
+  const item: T_WarehouseState["inventoryItems"][number] = {
+    id: createId(), type: "consumable", name: input.name.trim(), sku,
+    unit: input.unit, lowStockThreshold, status: "active",
+    createdAt: timestamp, updatedAt: timestamp,
+  };
+  state.inventoryItems.push(item);
+  persist(state);
+  return item;
+};
+
+export const setInventoryItemStatus = async (itemId: string, status: "active" | "inactive") => {
+  const state = readWarehouseState();
+  const item = state.inventoryItems.find((entry) => entry.id === itemId);
+  if (!item) throw new WarehouseApiError("NOT_FOUND", "Inventory item was not found");
+  item.status = status;
+  item.updatedAt = new Date().toISOString();
+  persist(state);
+  return item;
+};
 
 export const seedWarehouseDemoData = async () => {
   const currentState = readWarehouseState();
@@ -161,7 +196,7 @@ export const seedWarehouseDemoData = async () => {
     movement("movement-demo-4", "receipt", "3", 15, "sellable", "Supplier delivery", reserveWarehouse.id, "location-demo-reserve-a", "AIO Manager"),
     movement("movement-demo-5", "receipt", "2", 8, "sellable", "Initial stock receipt", mainWarehouse.id, "location-demo-main-a", "AIO Manager"),
   ];
-  const demoState = { warehouses: [mainWarehouse, reserveWarehouse], balances, movements };
+  const demoState = { warehouses: [mainWarehouse, reserveWarehouse], inventoryItems: [], balances, movements };
   persist(demoState);
   return demoState;
 };
@@ -220,7 +255,11 @@ export const recordInventoryMovement = async (input: T_RecordInventoryMovementDt
   }
   const timestamp = new Date().toISOString();
   const condition = input.condition ?? "sellable";
-  const sourceRequired = input.type === "write_off" || input.type === "transfer" || input.type === "damage" || (input.type === "adjustment" && input.adjustmentDirection === "decrease");
+  const itemType = input.itemType ?? "product";
+  if (itemType === "consumable" && !state.inventoryItems.some((item) => item.id === input.productId && item.status === "active")) {
+    throw new WarehouseApiError("NOT_FOUND", "Active inventory item was not found");
+  }
+  const sourceRequired = input.type === "write_off" || input.type === "transfer" || input.type === "damage" || input.type === "service_usage" || (input.type === "adjustment" && input.adjustmentDirection === "decrease");
   const destinationRequired = input.type === "receipt" || input.type === "return" || input.type === "transfer" || (input.type === "adjustment" && input.adjustmentDirection !== "decrease");
   if (sourceRequired) assertLocation(state, input.fromWarehouseId, input.fromLocationId);
   if (destinationRequired) assertLocation(state, input.toWarehouseId, input.toLocationId);
@@ -229,23 +268,23 @@ export const recordInventoryMovement = async (input: T_RecordInventoryMovementDt
   }
   if (sourceRequired) {
     const sourceCondition = input.type === "damage" ? "sellable" : condition;
-    const source = getOrCreateBalance(state, input.productId, input.fromWarehouseId!, input.fromLocationId!, input.variantId, sourceCondition);
+    const source = getOrCreateBalance(state, input.productId, input.fromWarehouseId!, input.fromLocationId!, input.variantId, sourceCondition, itemType);
     if (source.physical - source.reserved < quantity) throw new WarehouseApiError("INSUFFICIENT_STOCK", "Available stock is insufficient");
     source.physical -= quantity;
     source.updatedAt = timestamp;
   }
   if (destinationRequired) {
-    const destination = getOrCreateBalance(state, input.productId, input.toWarehouseId!, input.toLocationId!, input.variantId, condition);
+    const destination = getOrCreateBalance(state, input.productId, input.toWarehouseId!, input.toLocationId!, input.variantId, condition, itemType);
     destination.physical += quantity;
     destination.updatedAt = timestamp;
   }
   if (input.type === "damage") {
-    const damaged = getOrCreateBalance(state, input.productId, input.fromWarehouseId!, input.fromLocationId!, input.variantId, "damaged");
+    const damaged = getOrCreateBalance(state, input.productId, input.fromWarehouseId!, input.fromLocationId!, input.variantId, "damaged", itemType);
     damaged.physical += quantity;
     damaged.updatedAt = timestamp;
   }
   const movement: T_InventoryMovement = {
-    id: createId(), type: input.type, productId: input.productId, variantId: input.variantId,
+    id: createId(), type: input.type, itemType, productId: input.productId, variantId: input.variantId,
     fromWarehouseId: input.fromWarehouseId, fromLocationId: input.fromLocationId,
     toWarehouseId: input.toWarehouseId, toLocationId: input.toLocationId,
     quantity, condition: input.type === "damage" ? "damaged" : condition, reason: input.reason.trim(), reference: input.reference?.trim() || undefined,
@@ -257,7 +296,7 @@ export const recordInventoryMovement = async (input: T_RecordInventoryMovementDt
 };
 
 export const getProductInventory = (productId: string, variantId?: string): T_ProductInventory => {
-  const balances = readWarehouseState().balances.filter((balance) => balance.productId === productId && balance.variantId === variantId);
+  const balances = readWarehouseState().balances.filter((balance) => (balance.itemType ?? "product") === "product" && balance.productId === productId && balance.variantId === variantId);
   const physical = balances.reduce((sum, balance) => sum + balance.physical, 0);
   const reserved = balances.reduce((sum, balance) => sum + balance.reserved, 0);
   const available = balances.filter((balance) => balance.condition === "sellable").reduce((sum, balance) => sum + balance.physical - balance.reserved, 0);
@@ -267,10 +306,10 @@ export const getProductInventory = (productId: string, variantId?: string): T_Pr
 export const reserveOrderStock = (orderId: string, items: T_OrderItem[], createdBy = "Checkout") => {
   const state = readWarehouseState();
   const allowBackorders = readSiteSettings().commerce.allowBackorders;
-  if (state.movements.some((movement) => movement.type === "reservation" && movement.reference === orderId)) return;
+  if (getOutstandingOrderReservations(state, orderId).some(({ quantity }) => quantity > 0)) return;
   const timestamp = new Date().toISOString();
   for (const item of items) {
-    const balances = state.balances.filter((balance) => balance.productId === item.productId && balance.condition === "sellable" && balance.physical > balance.reserved);
+    const balances = state.balances.filter((balance) => (balance.itemType ?? "product") === "product" && balance.productId === item.productId && balance.variantId === item.variantId && balance.condition === "sellable" && balance.physical > balance.reserved);
     if (!balances.length) continue;
     const available = balances.reduce((sum, balance) => sum + balance.physical - balance.reserved, 0);
     if (available < item.quantity && !allowBackorders) throw new WarehouseApiError("INSUFFICIENT_STOCK", `Insufficient warehouse stock for ${item.title}`);
@@ -279,7 +318,7 @@ export const reserveOrderStock = (orderId: string, items: T_OrderItem[], created
       const allocation = Math.min(remaining, balance.physical - balance.reserved);
       if (!allocation) continue;
       balance.reserved += allocation; balance.updatedAt = timestamp; remaining -= allocation;
-      state.movements.unshift({ id: createId(), type: "reservation", productId: item.productId, fromWarehouseId: balance.warehouseId, fromLocationId: balance.locationId, quantity: allocation, condition: "sellable", reason: "Order reservation", reference: orderId, createdAt: timestamp, createdBy });
+      state.movements.unshift({ id: createId(), type: "reservation", itemType: "product", productId: item.productId, variantId: item.variantId, fromWarehouseId: balance.warehouseId, fromLocationId: balance.locationId, quantity: allocation, condition: "sellable", reason: "Order reservation", reference: orderId, createdAt: timestamp, createdBy });
       if (!remaining) break;
     }
   }
@@ -288,11 +327,8 @@ export const reserveOrderStock = (orderId: string, items: T_OrderItem[], created
 
 export const finalizeOrderStock = (orderId: string, mode: "sale" | "release", createdBy = "System") => {
   const state = readWarehouseState();
-  const reservations = state.movements.filter((movement) => movement.type === "reservation" && movement.reference === orderId);
-  const isAlreadyFinalized = state.movements.some(
-    (movement) => (movement.type === "sale" || movement.type === "release") && movement.reference === orderId,
-  );
-  if (!reservations.length || isAlreadyFinalized) return;
+  const reservations = getOutstandingOrderReservations(state, orderId);
+  if (!reservations.length) return;
   const timestamp = new Date().toISOString();
   for (const reservation of reservations) {
     const balance = state.balances.find((item) => balanceMatches(item, reservation.productId, reservation.fromWarehouseId!, reservation.fromLocationId!, reservation.variantId, "sellable"));
@@ -303,4 +339,26 @@ export const finalizeOrderStock = (orderId: string, mode: "sale" | "release", cr
     state.movements.unshift({ ...reservation, id: createId(), type: mode, reason: mode === "sale" ? "Order completed" : "Order reservation released", createdAt: timestamp, createdBy });
   }
   persist(state);
+};
+
+export const replaceOrderStockReservation = (
+  orderId: string,
+  items: T_OrderItem[],
+  createdBy = "Administrator",
+) => {
+  finalizeOrderStock(orderId, "release", createdBy);
+  reserveOrderStock(orderId, items, createdBy);
+};
+
+const getOutstandingOrderReservations = (state: T_WarehouseState, orderId: string) => {
+  const allocations = new Map<string, T_InventoryMovement>();
+  state.movements
+    .filter((movement) => movement.reference === orderId && ["reservation", "release", "sale"].includes(movement.type))
+    .forEach((movement) => {
+      const key = [movement.itemType ?? "product", movement.productId, movement.variantId ?? "", movement.fromWarehouseId, movement.fromLocationId].join("|");
+      const current = allocations.get(key);
+      const quantity = (current?.quantity ?? 0) + (movement.type === "reservation" ? movement.quantity : -movement.quantity);
+      allocations.set(key, { ...movement, type: "reservation", quantity });
+    });
+  return [...allocations.values()].filter(({ quantity }) => quantity > 0);
 };

@@ -12,10 +12,10 @@ export const orderSort = (orders: T_Order[], sort: T_OrderSort): T_Order[] => {
             return sortedOrders.sort((a, b) => b.price - a.price);
 
         case "id-asc":
-            return sortedOrders.sort((a, b) => Number(a.id) - Number(b.id));
+            return sortedOrders.sort((a, b) => String(a.id).localeCompare(String(b.id), undefined, { numeric: true }));
 
         case "id-desc":
-            return sortedOrders.sort((a, b) => Number(b.id) - Number(a.id));
+            return sortedOrders.sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
 
         default:
             return sortedOrders;

@@ -2,6 +2,7 @@
 
 export const siteDe = {
     "contentPage.loading": "Seite wird geladen...",
+    "contentPage.loadError": "Die Seite konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
     "contentPage.notFound": "Seite nicht gefunden",
     "contentPage.notFoundDescription": "Diese Seite existiert nicht oder wurde noch nicht veröffentlicht.",
     "contentPage.backHome": "Zur Startseite",
@@ -270,6 +271,8 @@ export const siteDe = {
     "products.detail.shipping": "Versand",
     "products.detail.weight": "Gewicht",
     "products.detail.dimensions": "Abmessungen",
+    "products.detail.selectVariant": "Option auswählen",
+    "products.detail.variantAttributes": "Ausgewählte Option",
 
     "catalog.eyebrow": "Produktkatalog",
     "catalog.title": "Alle Produkte",
@@ -321,6 +324,9 @@ export const siteDe = {
     "wishlist.backToProducts": "Produkte ansehen",
     "wishlist.clear": "Wunschliste leeren",
     "wishlist.loading": "Wunschliste wird geladen...",
+    "wishlist.errorTitle": "Wunschliste nicht verfügbar",
+    "wishlist.errorDescription": "Deine gespeicherten Produkte konnten nicht geladen werden. Bitte versuche es erneut.",
+    "wishlist.retry": "Erneut versuchen",
 
     "comparison.eyebrow": "Produktvergleich",
     "comparison.title": "Produkte vergleichen",
@@ -344,6 +350,8 @@ export const siteDe = {
 
     "cart.title": "Warenkorb",
     "cart.description": "Prüfe deine Produkte, passe die Mengen an und fahre mit dem Checkout fort.",
+    "cart.emptyTitle": "Dein Warenkorb ist leer",
+    "cart.emptyDescription": "Füge Produkte aus dem Katalog hinzu. Sie erscheinen dann hier.",
     "cart.table.product": "Produkt",
     "cart.table.basePrice": "Basispreis",
     "cart.table.quantity": "Menge",

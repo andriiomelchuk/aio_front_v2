@@ -3,10 +3,13 @@ import type {
   T_CreateCategoryDto,
   T_UpdateCategoryDto,
 } from "@/entities/categories/model/types";
+import { normalizeCategoryTranslations } from "@/entities/categories";
+import { readSiteSettings } from "@/shared/api/siteSettings";
 import {
   CategoriesApiError,
-  type T_JsonPlaceholderCategory,
+  type T_CategoriesApiContract,
 } from "./types";
+import type { T_DummyJsonCategory } from "./providerTypes";
 
 const normalizeSlug = (slug: string) => slug.trim().toLowerCase();
 const CATEGORIES_STORAGE_KEY = "admin-categories-overrides";
@@ -53,14 +56,14 @@ const assertUniqueSlug = (
 };
 
 export const createCategory = async (category: T_CreateCategoryDto) => {
-  console.log("Create category request:", category);
-
   const categories = await getCategories();
   const slug = assertUniqueSlug(categories, category.slug);
   const createdCategory = {
     id: slug,
     ...category,
     slug,
+    defaultLocale: category.defaultLocale ?? readSiteSettings().localization.defaultLocale,
+    translations: normalizeCategoryTranslations(category.translations),
   };
   const overrides = getStoredCategoryOverrides();
 
@@ -73,8 +76,6 @@ export const createCategory = async (category: T_CreateCategoryDto) => {
 };
 
 export const updateCategory = async (category: T_UpdateCategoryDto) => {
-  console.log("Update category request:", category);
-
   const categories = await getCategories();
   const currentCategory = categories.find((item) => item.id === category.id);
 
@@ -83,7 +84,13 @@ export const updateCategory = async (category: T_UpdateCategoryDto) => {
   }
 
   const slug = assertUniqueSlug(categories, category.slug, category.id);
-  const updatedCategory = { ...category, id: currentCategory.id, slug };
+  const updatedCategory = {
+    ...category,
+    id: currentCategory.id,
+    slug,
+    defaultLocale: category.defaultLocale ?? currentCategory.defaultLocale ?? readSiteSettings().localization.defaultLocale,
+    translations: normalizeCategoryTranslations(category.translations),
+  };
   const overrides = getStoredCategoryOverrides();
 
   saveStoredCategoryOverrides({
@@ -98,25 +105,38 @@ export const getCategories = async (): Promise<T_Categories[]> => {
   const response = await fetch("https://dummyjson.com/products/categories");
 
   if (!response.ok) {
-    throw new Error("Failed to fetch categories");
+    throw new CategoriesApiError("FETCH_FAILED", "Failed to fetch categories");
   }
 
-  const categories: T_JsonPlaceholderCategory[] = await response.json();
+  const categories: T_DummyJsonCategory[] = await response.json();
 
   const remoteCategories = categories.map((category) => ({
     id: category.slug,
     name: category.name,
     slug: category.slug,
     status: "active",
+    defaultLocale: readSiteSettings().localization.defaultLocale,
+    translations: {},
   }));
   const overrides = getStoredCategoryOverrides();
   const remoteIds = new Set(remoteCategories.map((category) => category.id));
+  const normalizeCategory = (category: T_Categories): T_Categories => ({
+    ...category,
+    defaultLocale: category.defaultLocale ?? readSiteSettings().localization.defaultLocale,
+    translations: normalizeCategoryTranslations(category.translations),
+  });
   const updatedCategories = remoteCategories.map(
-    (category) => overrides[category.id] ?? category,
+    (category) => normalizeCategory(overrides[category.id] ?? category),
   );
   const createdCategories = Object.values(overrides).filter(
     (category) => !remoteIds.has(category.id),
-  );
+  ).map(normalizeCategory);
 
   return [...createdCategories, ...updatedCategories];
 };
+
+export const categoriesApi = {
+  getCategories,
+  createCategory,
+  updateCategory,
+} satisfies T_CategoriesApiContract;

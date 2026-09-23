@@ -2,6 +2,7 @@
 
 export const siteUk = {
     "contentPage.loading": "Завантаження сторінки...",
+    "contentPage.loadError": "Не вдалося завантажити сторінку. Спробуйте ще раз.",
     "contentPage.notFound": "Сторінку не знайдено",
     "contentPage.notFoundDescription": "Ця сторінка не існує або ще не опублікована.",
     "contentPage.backHome": "На головну",
@@ -270,6 +271,8 @@ export const siteUk = {
     "products.detail.shipping": "Доставка",
     "products.detail.weight": "Вага",
     "products.detail.dimensions": "Розміри",
+    "products.detail.selectVariant": "Оберіть варіант",
+    "products.detail.variantAttributes": "Обраний варіант",
 
     "catalog.eyebrow": "Каталог товарів",
     "catalog.title": "Усі товари",
@@ -321,6 +324,9 @@ export const siteUk = {
     "wishlist.backToProducts": "Перейти до товарів",
     "wishlist.clear": "Очистити обране",
     "wishlist.loading": "Завантажуємо обране...",
+    "wishlist.errorTitle": "Обране недоступне",
+    "wishlist.errorDescription": "Не вдалося завантажити збережені товари. Спробуйте ще раз.",
+    "wishlist.retry": "Спробувати ще раз",
 
     "comparison.eyebrow": "Порівняння товарів",
     "comparison.title": "Порівняти товари",
@@ -344,6 +350,8 @@ export const siteUk = {
 
     "cart.title": "Кошик",
     "cart.description": "Перевір товари, зміни кількість і переходь до оформлення замовлення.",
+    "cart.emptyTitle": "Кошик порожній",
+    "cart.emptyDescription": "Додайте товари з каталогу, і вони з'являться тут.",
     "cart.table.product": "Товар",
     "cart.table.basePrice": "Базова ціна",
     "cart.table.quantity": "Кількість",

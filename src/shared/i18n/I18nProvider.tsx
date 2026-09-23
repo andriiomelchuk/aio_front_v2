@@ -14,7 +14,7 @@ import {
   TRANSLATIONS_CHANGE_EVENT,
 } from "@/shared/api/translations";
 import { locales, type T_I18nContext, type T_Locale } from "./types";
-import { readSiteSettings } from "@/shared/api/siteSettings";
+import { readSiteSettings, SITE_SETTINGS_CHANGE_EVENT } from "@/shared/api/siteSettings";
 
 const DEFAULT_LOCALE: T_Locale = "uk";
 const STORAGE_KEY = "aio-locale";
@@ -45,17 +45,20 @@ const getStoredLocale = (): T_Locale => {
 
   const savedLocale = window.localStorage.getItem(STORAGE_KEY);
 
-  const defaultLocale = readSiteSettings().localization.defaultLocale;
-  return isLocale(savedLocale) ? savedLocale : isLocale(defaultLocale) ? defaultLocale : DEFAULT_LOCALE;
+  const localization = readSiteSettings().localization;
+  const savedLocaleEnabled = isLocale(savedLocale) && localization.enabledLocales.includes(savedLocale);
+  return savedLocaleEnabled ? savedLocale : localization.defaultLocale;
 };
 
 const subscribeToLocale = (callback: () => void) => {
   window.addEventListener("storage", callback);
   window.addEventListener("aio-locale-change", callback);
+  window.addEventListener(SITE_SETTINGS_CHANGE_EVENT, callback);
 
   return () => {
     window.removeEventListener("storage", callback);
     window.removeEventListener("aio-locale-change", callback);
+    window.removeEventListener(SITE_SETTINGS_CHANGE_EVENT, callback);
   };
 };
 
@@ -85,6 +88,7 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
   }, [locale]);
 
   const setLocale = (nextLocale: T_Locale) => {
+    if (!readSiteSettings().localization.enabledLocales.includes(nextLocale)) return;
     window.localStorage.setItem(STORAGE_KEY, nextLocale);
     window.dispatchEvent(new Event("aio-locale-change"));
   };

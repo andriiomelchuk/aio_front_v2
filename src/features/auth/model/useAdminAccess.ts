@@ -26,6 +26,6 @@ export const useAdminAccess = () => {
       currentModule,
       requiresManagePermission ? "manage" : "view",
     )),
-    canManage: Boolean(role && hasAdminPermission(role, currentModule, "manage")),
+    canManage: Boolean(role && moduleEnabled && hasAdminPermission(role, currentModule, "manage")),
   };
 };

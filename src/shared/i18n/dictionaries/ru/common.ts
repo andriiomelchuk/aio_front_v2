@@ -1,6 +1,7 @@
 
 
 export const commonRu = {
+    "common.closeModal": "Закрыть диалог",
     "language.uk": "Українська",
     "language.en": "English",
     "language.de": "Deutsch",
@@ -30,4 +31,8 @@ export const commonRu = {
     "imagePicker.saveFailed": "Не удалось сохранить изображение. Попробуйте другой файл.",
     "navigation.additionalLeft": "Дополнительная навигация",
     "navigation.additionalRight": "Связанные ссылки",
+    "common.dataState.loading": "Загрузка данных...",
+    "common.dataState.error": "Что-то пошло не так",
+    "common.dataState.empty": "Здесь пока ничего нет",
+    "common.dataState.retry": "Попробовать снова",
 } as const;

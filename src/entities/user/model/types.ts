@@ -40,4 +40,4 @@ export type T_ShippingAddress = {
 
 export type T_CreateUserDto = Omit<T_User, "id"> & { password: string };
 
-export type T_UpdateUserDto = T_User;
+export type T_UpdateUserDto = Partial<Omit<T_User, "id">> & Pick<T_User, "id">;

@@ -5,11 +5,14 @@ import type { T_Product } from "@/entities/product";
 import { AssignedMenuLayout } from "@/components/Menu";
 import { getProducts } from "@/shared/api/products";
 import { useI18n } from "@/shared/i18n";
+import { DataState } from "@/shared/ui";
 import { ProductDetail } from "./ProductDetail";
 
 export const ProductDetailLoader = ({ slug }: { slug: string }) => {
   const { t } = useI18n();
   const [product, setProduct] = useState<T_Product | null>();
+  const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -21,16 +24,19 @@ export const ProductDetailLoader = ({ slug }: { slug: string }) => {
           );
         }
       })
-      .catch(() => active && setProduct(null));
+      .catch(() => { if (active) setHasError(true); });
     return () => { active = false; };
-  }, [slug]);
+  }, [slug, reloadKey]);
 
   if (product === undefined) {
-    return <div className="mx-auto min-h-64 w-full max-w-7xl animate-pulse px-4 py-8" />;
+    if (hasError) {
+      return <main className="mx-auto w-full max-w-7xl px-4 py-12"><DataState variant="error" onAction={() => { setProduct(undefined); setHasError(false); setReloadKey((value) => value + 1); }} /></main>;
+    }
+    return <main className="mx-auto w-full max-w-7xl px-4 py-12"><DataState variant="loading" /></main>;
   }
 
   if (product === null) {
-    return <main className="mx-auto w-full max-w-7xl px-4 py-12 text-center"><h1 className="text-2xl font-bold text-foreground">{t("catalog.emptyTitle")}</h1></main>;
+    return <main className="mx-auto w-full max-w-7xl px-4 py-12"><DataState variant="empty" title={t("catalog.emptyTitle")} /></main>;
   }
 
   return <AssignedMenuLayout target={{ type: "product", entityId: product.id }}><ProductDetail product={product} /></AssignedMenuLayout>;

@@ -2,7 +2,13 @@ import type { T_Product } from "@/entities/product/model/types";
 
 export type T_CartItem = {
   product: T_Product;
+  variantId?: string;
   quantity: number;
+};
+
+export type T_CartLineReference = {
+  productId: string;
+  variantId?: string;
 };
 
 export type T_AddToCartButtonProps = {

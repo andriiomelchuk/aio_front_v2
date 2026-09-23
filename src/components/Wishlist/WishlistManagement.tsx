@@ -6,7 +6,7 @@ import type { T_Product } from "@/entities/product/model/types";
 import { useWishlist } from "@/features/wishlist/model/useWishlist";
 import { getProducts } from "@/shared/api/products";
 import { useI18n } from "@/shared/i18n";
-import { Button } from "@/shared/ui";
+import { Button, DataState } from "@/shared/ui";
 import { ProductCard } from "../Products/ProductCard";
 
 export const WishlistManagement = () => {
@@ -14,16 +14,22 @@ export const WishlistManagement = () => {
   const { productIds, clearAllWishlist } = useWishlist();
   const [products, setProducts] = useState<T_Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
 
     const loadProducts = async () => {
-      const loadedProducts = await getProducts();
-
-      if (isMounted) {
-        setProducts(loadedProducts);
-        setIsLoading(false);
+      setIsLoading(true);
+      setHasError(false);
+      try {
+        const loadedProducts = await getProducts();
+        if (isMounted) setProducts(loadedProducts);
+      } catch {
+        if (isMounted) setHasError(true);
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
     };
 
@@ -32,7 +38,7 @@ export const WishlistManagement = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   const wishlistProducts = products.filter((product) =>
     productIds.includes(product.id),
@@ -66,9 +72,9 @@ export const WishlistManagement = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex min-h-48 items-center justify-center rounded-lg border border-border bg-surface px-6 text-sm text-muted">
-          {t("wishlist.loading")}
-        </div>
+        <DataState variant="loading" title={t("wishlist.loading")} />
+      ) : hasError ? (
+        <DataState variant="error" title={t("wishlist.errorTitle")} description={t("wishlist.errorDescription")} actionLabel={t("wishlist.retry")} onAction={() => setReloadKey((key) => key + 1)} />
       ) : wishlistProducts.length === 0 ? (
         <section className="rounded-lg border border-border bg-surface p-6 text-center sm:p-10">
           <h2 className="text-xl font-bold text-foreground">

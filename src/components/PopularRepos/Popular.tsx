@@ -15,7 +15,7 @@ export const Popular = ({ items }: Items) => {
   const { t } = useI18n();
   
   return (
-    <>
+    <section className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <PageHeader
         eyebrow={t("popular.eyebrow")}
         title={t("popular.title")}
@@ -41,6 +41,6 @@ export const Popular = ({ items }: Items) => {
           </p>
         </div>
       )}
-    </>
+    </section>
   );
 };

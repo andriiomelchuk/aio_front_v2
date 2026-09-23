@@ -43,8 +43,8 @@ export const HomePage = () => {
   }, [settings.commerce.showOutOfStockProducts]);
 
   return (
-    <div className="space-y-16 pb-10 sm:space-y-24">
-      <section className="relative left-1/2 -mt-6 w-screen -translate-x-1/2 overflow-hidden border-b border-border bg-zinc-950 text-white sm:-mt-8">
+    <div>
+      <section className="overflow-hidden border-b border-border bg-zinc-950 text-white">
         <div className="mx-auto grid min-h-[min(720px,82vh)] max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(440px,0.9fr)] lg:px-8">
           <div className="max-w-2xl">
             <div className="mb-6 flex items-center gap-3 text-sm font-semibold text-emerald-300">
@@ -96,6 +96,7 @@ export const HomePage = () => {
         </div>
       </section>
 
+      <div className="mx-auto w-full max-w-7xl space-y-16 px-4 py-16 sm:space-y-24 sm:px-6 sm:py-24 lg:px-8">
       <section id="projects" aria-labelledby="projects-title" className="scroll-mt-24">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold text-accent">{t("home.projectsEyebrow")}</p>
@@ -171,6 +172,7 @@ export const HomePage = () => {
           </div>
         </section>
       )}
+      </div>
     </div>
   );
 };

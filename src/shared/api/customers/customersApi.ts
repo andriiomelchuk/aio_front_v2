@@ -4,7 +4,12 @@ import type {
   T_CustomerNote,
   T_UpdateCustomerDto,
 } from "@/entities/customer";
-import type { T_GetCustomersParams } from "./types";
+import {
+  CustomersApiError,
+  type T_CreateCustomerNoteDto,
+  type T_CustomersApiContract,
+  type T_GetCustomersParams,
+} from "./types";
 
 const CUSTOMERS_STORAGE_KEY = "customers";
 
@@ -35,8 +40,25 @@ const loadCustomers = (): T_Customer[] => {
 
 const saveCustomers = (customers: T_Customer[]) => {
   if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customers));
+  } catch (error) {
+    throw new CustomersApiError("STORAGE_WRITE_FAILED", "Could not save customers", { cause: error });
+  }
+};
 
-  localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customers));
+const validateCustomerProfile = (customer: T_Customer) => {
+  if (!customer.firstName.trim() || !customer.lastName.trim()) {
+    throw new CustomersApiError("INVALID_INPUT", "Customer name is required");
+  }
+
+  if (!/^\S+@\S+\.\S+$/.test(customer.email)) {
+    throw new CustomersApiError("INVALID_INPUT", "Customer email is invalid");
+  }
+
+  if (customer.type === "business" && !customer.company?.name.trim()) {
+    throw new CustomersApiError("INVALID_INPUT", "Company name is required for a business customer");
+  }
 };
 
 const validateCustomerAddresses = (
@@ -48,7 +70,7 @@ const validateCustomerAddresses = (
   const addressIds = customer.addresses.map(({ id }) => id);
 
   if (new Set(addressIds).size !== addressIds.length) {
-    throw new Error("Customer address IDs must be unique");
+    throw new CustomersApiError("INVALID_INPUT", "Customer address IDs must be unique");
   }
 
   const shippingAddress = customer.addresses.find(
@@ -62,14 +84,14 @@ const validateCustomerAddresses = (
     customer.defaultShippingAddressId &&
     shippingAddress?.type !== "shipping"
   ) {
-    throw new Error("Default shipping address is invalid");
+    throw new CustomersApiError("INVALID_INPUT", "Default shipping address is invalid");
   }
 
   if (
     customer.defaultBillingAddressId &&
     billingAddress?.type !== "billing"
   ) {
-    throw new Error("Default billing address is invalid");
+    throw new CustomersApiError("INVALID_INPUT", "Default billing address is invalid");
   }
 };
 
@@ -101,7 +123,7 @@ export const getCustomers = async (
 export const getCustomerById = async (id: string): Promise<T_Customer> => {
   const customer = loadCustomers().find((item) => item.id === id);
 
-  if (!customer) throw new Error("Customer not found");
+  if (!customer) throw new CustomersApiError("NOT_FOUND", "Customer not found");
 
   return customer;
 };
@@ -113,7 +135,7 @@ export const createCustomer = async (
   const normalizedEmail = customer.email.trim().toLocaleLowerCase();
 
   if (customers.some(({ email }) => email.toLocaleLowerCase() === normalizedEmail)) {
-    throw new Error("Customer with this email already exists");
+    throw new CustomersApiError("DUPLICATE_EMAIL", "Customer with this email already exists");
   }
 
   const timestamp = new Date().toISOString();
@@ -127,6 +149,7 @@ export const createCustomer = async (
     updatedAt: timestamp,
   };
 
+  validateCustomerProfile(createdCustomer);
   validateCustomerAddresses(createdCustomer);
 
   saveCustomers([...customers, createdCustomer]);
@@ -139,7 +162,7 @@ export const updateCustomer = async (
   const customers = loadCustomers();
   const customerIndex = customers.findIndex(({ id }) => id === changes.id);
 
-  if (customerIndex === -1) throw new Error("Customer not found");
+  if (customerIndex === -1) throw new CustomersApiError("NOT_FOUND", "Customer not found");
 
   const currentCustomer = customers[customerIndex];
   const updatedCustomer: T_Customer = {
@@ -158,9 +181,10 @@ export const updateCustomer = async (
   );
 
   if (hasDuplicateEmail) {
-    throw new Error("Customer with this email already exists");
+    throw new CustomersApiError("DUPLICATE_EMAIL", "Customer with this email already exists");
   }
 
+  validateCustomerProfile(updatedCustomer);
   validateCustomerAddresses(updatedCustomer);
 
   customers[customerIndex] = updatedCustomer;
@@ -172,7 +196,7 @@ export const deleteCustomer = async (id: string): Promise<string> => {
   const customers = loadCustomers();
 
   if (!customers.some((customer) => customer.id === id)) {
-    throw new Error("Customer not found");
+    throw new CustomersApiError("NOT_FOUND", "Customer not found");
   }
 
   saveCustomers(customers.filter((customer) => customer.id !== id));
@@ -181,7 +205,7 @@ export const deleteCustomer = async (id: string): Promise<string> => {
 
 export const addCustomerNote = async (
   customerId: string,
-  note: Pick<T_CustomerNote, "text" | "authorName">,
+  note: T_CreateCustomerNoteDto,
 ): Promise<T_CustomerNote> => {
   const customer = await getCustomerById(customerId);
   const createdNote: T_CustomerNote = {
@@ -192,7 +216,7 @@ export const addCustomerNote = async (
     createdAt: new Date().toISOString(),
   };
 
-  if (!createdNote.text) throw new Error("Customer note cannot be empty");
+  if (!createdNote.text) throw new CustomersApiError("INVALID_INPUT", "Customer note cannot be empty");
 
   await updateCustomer({
     id: customerId,
@@ -208,7 +232,7 @@ export const deleteCustomerNote = async (
   const customer = await getCustomerById(customerId);
 
   if (!customer.notes.some(({ id }) => id === noteId)) {
-    throw new Error("Customer note not found");
+    throw new CustomersApiError("NOT_FOUND", "Customer note not found");
   }
 
   await updateCustomer({
@@ -217,3 +241,13 @@ export const deleteCustomerNote = async (
   });
   return noteId;
 };
+
+export const customersApi = {
+  getCustomers,
+  getCustomerById,
+  createCustomer,
+  updateCustomer,
+  deleteCustomer,
+  addCustomerNote,
+  deleteCustomerNote,
+} satisfies T_CustomersApiContract;

@@ -3,5 +3,6 @@ export type T_ImagePickerProps = {
   value?: string;
   alt?: string;
   required?: boolean;
+  disabled?: boolean;
   onChange: (value: string) => void;
 };

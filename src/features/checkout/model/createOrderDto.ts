@@ -1,5 +1,5 @@
 import type { T_CreateOrderDto } from "@/entities/order";
-import { calculateCartTotals, type T_CartItem } from "@/features/cart";
+import { calculateCartTotals, getCartItemPricing, getCartItemVariant, type T_CartItem } from "@/features/cart";
 import type { T_CheckoutFormValues } from "./checkoutSchema";
 import { getCheckoutDeliveryFee } from "./getCheckoutDeliveryFee";
 
@@ -35,17 +35,23 @@ export const createOrderDto = (
       email: values.email,
       phone: values.phone,
     },
-    items: cartItems.map(({ product, quantity }) => ({
-      productId: product.id,
-      title: product.title,
-      sku: product.sku,
-      thumbnail: product.thumbnail,
-      quantity,
-      baseUnitPrice: product.oldPrice ?? product.price,
-      unitPrice:
-        product.price * (1 - (product.discountPercentage ?? 0) / 100),
-      currency: product.currency,
-    })),
+    items: cartItems.map((cartItem) => {
+      const { product, quantity, variantId } = cartItem;
+      const variant = getCartItemVariant(cartItem);
+      const pricing = getCartItemPricing(cartItem);
+
+      return {
+        productId: product.id,
+        variantId,
+        title: variant ? `${product.title} / ${variant.title}` : product.title,
+        sku: variant?.sku ?? product.sku,
+        thumbnail: product.thumbnail,
+        quantity,
+        baseUnitPrice: pricing.oldPrice ?? pricing.price,
+        unitPrice: pricing.price * (1 - (pricing.discountPercentage ?? 0) / 100),
+        currency: product.currency,
+      };
+    }),
     delivery: {
       method: values.deliveryMethod,
       fee: deliveryFee,

@@ -1,6 +1,7 @@
 
 
 export const commonEn = {
+    "common.closeModal": "Close dialog",
     "language.uk": "Українська",
     "language.en": "English",
     "language.de": "Deutsch",
@@ -30,4 +31,8 @@ export const commonEn = {
     "imagePicker.saveFailed": "Could not save the image. Try another file.",
     "navigation.additionalLeft": "Additional navigation",
     "navigation.additionalRight": "Related links",
+    "common.dataState.loading": "Loading data...",
+    "common.dataState.error": "Something went wrong",
+    "common.dataState.empty": "Nothing here yet",
+    "common.dataState.retry": "Try again",
 } as const;

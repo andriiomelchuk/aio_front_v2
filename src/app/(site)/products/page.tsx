@@ -1,6 +1,7 @@
 import { Products } from "@/components/Products";
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { PageLoading } from "@/shared/ui";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function ProductsPage() {
     return (
-        <Suspense fallback={null}>
+        <Suspense fallback={<PageLoading />}>
           <Products />
         </Suspense>
     )

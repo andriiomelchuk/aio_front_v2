@@ -3,10 +3,15 @@
 import { SyntheticEvent, useState } from "react";
 
 import { useI18n } from "@/shared/i18n";
-import { Button, Input, Select } from "@/shared/ui";
+import { Input, Select } from "@/shared/ui";
 
 import type { T_EditCategoryData, T_EditCategoryFormProps } from "./types";
 import { CategoriesApiError, updateCategory } from "@/shared/api/categories";
+import { AdminFormActions, AdminFormAlert } from "@/widgets/AdminWidgets";
+import { createCategoryTranslation, normalizeCategoryTranslations, type T_CategoryTranslation } from "@/entities/categories";
+import { useSiteSettings } from "@/shared/siteSettings";
+import type { T_Locale } from "@/shared/i18n";
+import { CategoryTranslationFields } from "../CategoryTranslationFields";
 
 export const EditCategoryForm = ({
   category,
@@ -14,14 +19,27 @@ export const EditCategoryForm = ({
   onUpdate,
 }: T_EditCategoryFormProps) => {
   const { t } = useI18n();
+  const { localization } = useSiteSettings();
+  const defaultLocale = category.defaultLocale ?? localization.defaultLocale;
+  const initialTranslations = normalizeCategoryTranslations(category.translations);
 
   const [formData, setFormData] = useState<T_EditCategoryData>({
     id: category.slug,
     name: category.name,
+    description: category.description ?? "",
     slug: category.slug,
     status: category.status,
+    defaultLocale,
+    translations: {
+      ...initialTranslations,
+      [defaultLocale]: initialTranslations[defaultLocale] ?? {
+        name: category.name,
+        description: category.description ?? "",
+      },
+    },
   });
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const updateField = (field: keyof T_EditCategoryData, value: string) => {
     setFormData((prevFormData) => ({
@@ -30,10 +48,25 @@ export const EditCategoryForm = ({
     }));
   };
 
+  const updateTranslation = (locale: T_Locale, field: keyof T_CategoryTranslation, value: string) => {
+    setFormData((current) => {
+      const translation = current.translations[locale] ?? createCategoryTranslation();
+      return {
+        ...current,
+        ...(locale === current.defaultLocale ? { [field]: value } : {}),
+        translations: {
+          ...current.translations,
+          [locale]: { ...translation, [field]: value },
+        },
+      };
+    });
+  };
+
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setError("");
+    setIsSaving(true);
 
     try {
       const updatedCategory = await updateCategory({
@@ -49,23 +82,16 @@ export const EditCategoryForm = ({
           ? t("admin.category.error.duplicateSlug")
           : t("admin.category.error.saveFailed"),
       );
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {error && <p className="rounded-md border border-danger bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
+      <AdminFormAlert message={error} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input
-          label={t("admin.category.form.nameLabel")}
-          name="name"
-          value={formData.name}
-          onChange={(event) => updateField("name", event.target.value)}
-          placeholder={t("admin.category.form.namePlaceholder")}
-          className="h-10 w-full"
-          type="text"
-          required
-        />
+        <CategoryTranslationFields defaultLocale={formData.defaultLocale} values={formData.translations} onChange={updateTranslation} />
 
         <Input
           label={t("admin.category.form.slugLabel")}
@@ -91,20 +117,7 @@ export const EditCategoryForm = ({
         />
       </div>
 
-      <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="secondary"
-          className="h-10 w-full sm:w-auto"
-          onClick={onCancel}
-        >
-          {t("admin.actions.cancel")}
-        </Button>
-
-        <Button type="submit" variant="default" className="h-10 w-full sm:w-auto">
-          {t("admin.actions.saveChanges")}
-        </Button>
-      </div>
+      <AdminFormActions cancelLabel={t("admin.actions.cancel")} submitLabel={t("admin.actions.saveChanges")} submittingLabel={t("admin.form.saving")} isSubmitting={isSaving} onCancel={onCancel} />
     </form>
   );
 };

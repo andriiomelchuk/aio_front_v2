@@ -1,5 +1,6 @@
 export const siteEn = {
     "contentPage.loading": "Loading page...",
+    "contentPage.loadError": "The page could not be loaded. Please try again.",
     "contentPage.notFound": "Page not found",
     "contentPage.notFoundDescription": "This page does not exist or has not been published yet.",
     "contentPage.backHome": "Back to home",
@@ -269,6 +270,8 @@ export const siteEn = {
     "products.detail.shipping": "Shipping",
     "products.detail.weight": "Weight",
     "products.detail.dimensions": "Dimensions",
+    "products.detail.selectVariant": "Choose an option",
+    "products.detail.variantAttributes": "Selected option",
 
     "catalog.eyebrow": "Product catalog",
     "catalog.title": "All products",
@@ -320,6 +323,9 @@ export const siteEn = {
     "wishlist.backToProducts": "Browse products",
     "wishlist.clear": "Clear wishlist",
     "wishlist.loading": "Loading wishlist...",
+    "wishlist.errorTitle": "Wishlist unavailable",
+    "wishlist.errorDescription": "We could not load your saved products. Please try again.",
+    "wishlist.retry": "Try again",
 
     "comparison.eyebrow": "Product comparison",
     "comparison.title": "Compare products",
@@ -343,6 +349,8 @@ export const siteEn = {
 
     "cart.title": "Cart",
     "cart.description": "Review your products, adjust quantities, and continue to checkout.",
+    "cart.emptyTitle": "Your cart is empty",
+    "cart.emptyDescription": "Add products from the catalog and they will appear here.",
     "cart.table.product": "Product",
     "cart.table.basePrice": "Base price",
     "cart.table.quantity": "Quantity",

@@ -23,13 +23,14 @@ afterEach(() => vi.unstubAllGlobals());
 describe("developer settings storage", () => {
   it("migrates partial settings and keeps developer access enabled", () => {
     const storage = createStorage({
-      "aio-developer-settings": JSON.stringify({ modules: { analytics: false } }),
+      "aio-developer-settings": JSON.stringify({ modules: { dashboard: false, analytics: false } }),
     });
     stubWindow(storage);
 
     const settings = readDeveloperSettings();
 
     expect(settings.modules.analytics).toBe(false);
+    expect(settings.modules.dashboard).toBe(true);
     expect(settings.modules.products).toBe(true);
     expect(settings.modules.developerSettings).toBe(true);
     expect(storage.getItem("aio-developer-settings-migration-backup-v0")).not.toBeNull();
@@ -48,11 +49,16 @@ describe("developer settings storage", () => {
     expect(settings.changeLog[0]).toMatchObject({ action: "update", updatedBy: "AIO Developer" });
   });
 
-  it("rejects unknown fields and disabling the developer-settings module", async () => {
+  it("rejects unknown fields and disabling protected modules", async () => {
     stubWindow(createStorage());
 
     await expect(importDeveloperSettings({
       modules: { ...defaultDeveloperSettings.modules, developerSettings: false },
+      diagnostics: defaultDeveloperSettings.diagnostics,
+    })).rejects.toMatchObject<Partial<DeveloperSettingsApiError>>({ code: "INVALID_IMPORT" });
+
+    await expect(importDeveloperSettings({
+      modules: { ...defaultDeveloperSettings.modules, dashboard: false },
       diagnostics: defaultDeveloperSettings.diagnostics,
     })).rejects.toMatchObject<Partial<DeveloperSettingsApiError>>({ code: "INVALID_IMPORT" });
 

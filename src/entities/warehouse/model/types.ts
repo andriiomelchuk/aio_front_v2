@@ -1,4 +1,7 @@
 export type T_WarehouseStatus = "active" | "inactive";
+export type T_InventoryItemType = "product" | "consumable";
+export type T_InventoryUnit = "piece" | "ml" | "l" | "g" | "kg";
+export type T_InventoryItemStatus = "active" | "inactive";
 export type T_InventoryCondition = "sellable" | "quarantine" | "damaged";
 export type T_InventoryMovementType =
   | "receipt"
@@ -9,7 +12,20 @@ export type T_InventoryMovementType =
   | "release"
   | "sale"
   | "return"
-  | "damage";
+  | "damage"
+  | "service_usage";
+
+export type T_InventoryItem = {
+  id: string;
+  type: "consumable";
+  name: string;
+  sku: string;
+  unit: T_InventoryUnit;
+  lowStockThreshold: number;
+  status: T_InventoryItemStatus;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type T_WarehouseLocation = {
   id: string;
@@ -29,6 +45,7 @@ export type T_Warehouse = {
 };
 
 export type T_InventoryBalance = {
+  itemType?: T_InventoryItemType;
   productId: string;
   variantId?: string;
   warehouseId: string;
@@ -42,6 +59,7 @@ export type T_InventoryBalance = {
 export type T_InventoryMovement = {
   id: string;
   type: T_InventoryMovementType;
+  itemType?: T_InventoryItemType;
   productId: string;
   variantId?: string;
   fromWarehouseId?: string;
@@ -58,9 +76,15 @@ export type T_InventoryMovement = {
 
 export type T_WarehouseState = {
   warehouses: T_Warehouse[];
+  inventoryItems: T_InventoryItem[];
   balances: T_InventoryBalance[];
   movements: T_InventoryMovement[];
 };
+
+export type T_CreateInventoryItemDto = Pick<
+  T_InventoryItem,
+  "name" | "sku" | "unit" | "lowStockThreshold"
+>;
 
 export type T_CreateWarehouseDto = Pick<T_Warehouse, "name" | "code" | "address"> & {
   locationName: string;
@@ -74,7 +98,8 @@ export type T_CreateWarehouseLocationDto = {
 };
 
 export type T_RecordInventoryMovementDto = {
-  type: "receipt" | "write_off" | "transfer" | "adjustment" | "return" | "damage";
+  type: "receipt" | "write_off" | "transfer" | "adjustment" | "return" | "damage" | "service_usage";
+  itemType?: T_InventoryItemType;
   productId: string;
   variantId?: string;
   fromWarehouseId?: string;

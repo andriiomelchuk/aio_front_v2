@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { T_CartItem } from "@/features/cart";
+import { getCartItemPricing, getCartItemStockQuantity, getCartItemVariant, type T_CartItem } from "@/features/cart";
 import { useLocalizedProduct } from "@/features/catalog";
 import { useCart } from "@/features/cart/model/useCart";
 import { useI18n } from "@/shared/i18n";
@@ -13,15 +13,18 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
   const settings = useSiteSettings();
   const { increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
   const product = useLocalizedProduct(item.product);
+  const sourceVariant = getCartItemVariant(item);
+  const variant = product.variants?.find((entry) => entry.id === item.variantId);
+  const pricing = getCartItemPricing(item);
+  const stockQuantity = getCartItemStockQuantity(item);
 
-  const finalPrice = item.product.discountPercentage
-    ? item.product.price -
-      (item.product.price * item.product.discountPercentage) / 100
-    : item.product.price;
+  const finalPrice = pricing.discountPercentage
+    ? pricing.price - (pricing.price * pricing.discountPercentage) / 100
+    : pricing.price;
 
-  const basePrice = item.product.oldPrice ?? item.product.price;
+  const basePrice = pricing.oldPrice ?? pricing.price;
 
-  const hasDiscount = Boolean(item.product.discountPercentage);
+  const hasDiscount = Boolean(pricing.discountPercentage || pricing.oldPrice);
 
   const mainImage =
     item.product.images.find((image) => image.isMain)?.url ??
@@ -44,8 +47,13 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
           <h2 className="line-clamp-2 text-base font-semibold text-foreground">
             {product.title}
           </h2>
+          {variant && (
+            <p className="mt-1 text-sm font-medium text-foreground">
+              {variant.title}
+            </p>
+          )}
           <p className="mt-1 text-sm text-muted">{item.product.brand}</p>
-          <p className="mt-2 text-xs text-muted">SKU: {item.product.sku}</p>
+          <p className="mt-2 text-xs text-muted">SKU: {sourceVariant?.sku ?? item.product.sku}</p>
         </div>
       </div>
 
@@ -60,7 +68,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
 
           {hasDiscount && (
             <div className="mt-1 text-sm font-semibold text-accent">
-              -{item.product.discountPercentage}%
+              -{pricing.discountPercentage}%
             </div>
           )}
         </div>
@@ -76,7 +84,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
               type="button"
               variant="ghost"
               className="h-10 w-10 text-foreground transition hover:bg-surface-muted"
-              onClick={() => decreaseQuantity(item.product)}
+              onClick={() => decreaseQuantity(item.product, item.variantId)}
             >
               -
             </Button>
@@ -87,15 +95,15 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
               type="button"
               variant="ghost"
               className="h-10 w-10 text-foreground transition hover:bg-surface-muted"
-              onClick={() => increaseQuantity(item.product)}
-              disabled={!settings.commerce.allowBackorders && item.quantity >= item.product.stockQuantity}
+              onClick={() => increaseQuantity(item.product, item.variantId)}
+              disabled={!settings.commerce.allowBackorders && item.quantity >= stockQuantity}
             >
               +
             </Button>
           </div>
           <p className="mt-2 text-xs text-muted">
             {t("cart.item.maxAvailable", {
-              count: item.product.stockQuantity,
+              count: stockQuantity,
             })}
           </p>
         </div>
@@ -115,7 +123,7 @@ export const CartItem = ({ item }: { item: T_CartItem }) => {
         variant="ghost"
         className="flex h-10 w-full items-center justify-center rounded-md border border-border text-sm text-muted transition hover:border-danger hover:text-danger md:w-10"
         aria-label={t("cart.table.remove")}
-        onClick={() => removeFromCart(item.product)}
+        onClick={() => removeFromCart(item.product, item.variantId)}
       >
         X
       </Button>
