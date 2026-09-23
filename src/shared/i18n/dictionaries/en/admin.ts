@@ -110,6 +110,7 @@ export const adminEn = {
     "admin.orders.pageTitle": "Orders",
     "admin.orders.description": "Showing {shown} of {total} orders",
     "admin.orders.products": "Products",
+    "admin.orders.activeOrders": "Active orders",
     "admin.orders.activeProducts": "Active products",
     "admin.orders.orders": "Orders",
     "admin.orders.ordersThisWeek": "Orders this week",
@@ -118,6 +119,8 @@ export const adminEn = {
     "admin.orders.recentOrders": "Recent orders",
     "admin.orders.latestCustomerOrders": "Latest customer orders",
     "admin.orders.noOrderFound": "No orders found",
+    "admin.orders.loading": "Loading orders...",
+    "admin.orders.loadError": "Could not load orders.",
 
     "admin.orders.status.allStatus": "All statuses",
     "admin.orders.status.new": "New",
@@ -220,6 +223,10 @@ export const adminEn = {
     "admin.customers.notification.noteAdded": "Note added",
     "admin.customers.notification.noteDeleted": "Note deleted",
     "admin.customers.error.saveFailed": "Could not save customer changes.",
+    "admin.customers.actions.saveProfile": "Save customer",
+    "admin.customers.notification.profileSaved": "Customer profile updated",
+    "admin.order.sections.statusHistory": "Status history",
+    "admin.order.statusHistory.empty": "No status changes have been recorded yet.",
 
     "admin.orders.bulk.cancelSelected": "Cancel selected",
     "admin.orders.bulk.inProcessSelected": "In process selected",

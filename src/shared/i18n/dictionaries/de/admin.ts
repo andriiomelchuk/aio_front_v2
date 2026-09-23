@@ -923,4 +923,11 @@ export const adminDe = {
   "admin.product.translations.source": "primär",
   "admin.product.translations.empty": "leer",
   "admin.product.translations.imageAlt": "Alt-Text für Bild {index}",
+  "admin.orders.activeOrders": "Aktive Bestellungen",
+  "admin.orders.loading": "Bestellungen werden geladen...",
+  "admin.orders.loadError": "Bestellungen konnten nicht geladen werden.",
+  "admin.customers.actions.saveProfile": "Kunde speichern",
+  "admin.customers.notification.profileSaved": "Kundenprofil aktualisiert",
+  "admin.order.sections.statusHistory": "Statusverlauf",
+  "admin.order.statusHistory.empty": "Es wurden noch keine Statusänderungen erfasst.",
 } as const;

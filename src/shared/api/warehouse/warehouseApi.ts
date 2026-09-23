@@ -306,7 +306,7 @@ export const getProductInventory = (productId: string, variantId?: string): T_Pr
 export const reserveOrderStock = (orderId: string, items: T_OrderItem[], createdBy = "Checkout") => {
   const state = readWarehouseState();
   const allowBackorders = readSiteSettings().commerce.allowBackorders;
-  if (state.movements.some((movement) => movement.type === "reservation" && movement.reference === orderId)) return;
+  if (getOutstandingOrderReservations(state, orderId).some(({ quantity }) => quantity > 0)) return;
   const timestamp = new Date().toISOString();
   for (const item of items) {
     const balances = state.balances.filter((balance) => (balance.itemType ?? "product") === "product" && balance.productId === item.productId && balance.variantId === item.variantId && balance.condition === "sellable" && balance.physical > balance.reserved);
@@ -327,11 +327,8 @@ export const reserveOrderStock = (orderId: string, items: T_OrderItem[], created
 
 export const finalizeOrderStock = (orderId: string, mode: "sale" | "release", createdBy = "System") => {
   const state = readWarehouseState();
-  const reservations = state.movements.filter((movement) => movement.type === "reservation" && movement.reference === orderId);
-  const isAlreadyFinalized = state.movements.some(
-    (movement) => (movement.type === "sale" || movement.type === "release") && movement.reference === orderId,
-  );
-  if (!reservations.length || isAlreadyFinalized) return;
+  const reservations = getOutstandingOrderReservations(state, orderId);
+  if (!reservations.length) return;
   const timestamp = new Date().toISOString();
   for (const reservation of reservations) {
     const balance = state.balances.find((item) => balanceMatches(item, reservation.productId, reservation.fromWarehouseId!, reservation.fromLocationId!, reservation.variantId, "sellable"));
@@ -342,4 +339,26 @@ export const finalizeOrderStock = (orderId: string, mode: "sale" | "release", cr
     state.movements.unshift({ ...reservation, id: createId(), type: mode, reason: mode === "sale" ? "Order completed" : "Order reservation released", createdAt: timestamp, createdBy });
   }
   persist(state);
+};
+
+export const replaceOrderStockReservation = (
+  orderId: string,
+  items: T_OrderItem[],
+  createdBy = "Administrator",
+) => {
+  finalizeOrderStock(orderId, "release", createdBy);
+  reserveOrderStock(orderId, items, createdBy);
+};
+
+const getOutstandingOrderReservations = (state: T_WarehouseState, orderId: string) => {
+  const allocations = new Map<string, T_InventoryMovement>();
+  state.movements
+    .filter((movement) => movement.reference === orderId && ["reservation", "release", "sale"].includes(movement.type))
+    .forEach((movement) => {
+      const key = [movement.itemType ?? "product", movement.productId, movement.variantId ?? "", movement.fromWarehouseId, movement.fromLocationId].join("|");
+      const current = allocations.get(key);
+      const quantity = (current?.quantity ?? 0) + (movement.type === "reservation" ? movement.quantity : -movement.quantity);
+      allocations.set(key, { ...movement, type: "reservation", quantity });
+    });
+  return [...allocations.values()].filter(({ quantity }) => quantity > 0);
 };

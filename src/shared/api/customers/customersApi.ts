@@ -39,6 +39,20 @@ const saveCustomers = (customers: T_Customer[]) => {
   localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customers));
 };
 
+const validateCustomerProfile = (customer: T_Customer) => {
+  if (!customer.firstName.trim() || !customer.lastName.trim()) {
+    throw new Error("Customer name is required");
+  }
+
+  if (!/^\S+@\S+\.\S+$/.test(customer.email)) {
+    throw new Error("Customer email is invalid");
+  }
+
+  if (customer.type === "business" && !customer.company?.name.trim()) {
+    throw new Error("Company name is required for a business customer");
+  }
+};
+
 const validateCustomerAddresses = (
   customer: Pick<
     T_Customer,
@@ -127,6 +141,7 @@ export const createCustomer = async (
     updatedAt: timestamp,
   };
 
+  validateCustomerProfile(createdCustomer);
   validateCustomerAddresses(createdCustomer);
 
   saveCustomers([...customers, createdCustomer]);
@@ -161,6 +176,7 @@ export const updateCustomer = async (
     throw new Error("Customer with this email already exists");
   }
 
+  validateCustomerProfile(updatedCustomer);
   validateCustomerAddresses(updatedCustomer);
 
   customers[customerIndex] = updatedCustomer;

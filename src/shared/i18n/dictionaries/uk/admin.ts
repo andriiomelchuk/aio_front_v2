@@ -945,4 +945,11 @@ export const adminUk = {
   "admin.product.translations.source": "основна",
   "admin.product.translations.empty": "порожньо",
   "admin.product.translations.imageAlt": "Alt-текст зображення {index}",
+  "admin.orders.activeOrders": "Активні замовлення",
+  "admin.orders.loading": "Завантаження замовлень...",
+  "admin.orders.loadError": "Не вдалося завантажити замовлення.",
+  "admin.customers.actions.saveProfile": "Зберегти клієнта",
+  "admin.customers.notification.profileSaved": "Профіль клієнта оновлено",
+  "admin.order.sections.statusHistory": "Історія статусів",
+  "admin.order.statusHistory.empty": "Змін статусу ще не зафіксовано.",
 } as const;

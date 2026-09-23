@@ -1,4 +1,5 @@
 export * from "./mapOrderRows";
+export * from "./calculateOrderMetrics";
 export * from "./orderFilters";
 export * from "./orderSort";
 export * from "./orderStatusView";

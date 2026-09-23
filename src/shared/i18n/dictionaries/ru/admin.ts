@@ -925,4 +925,11 @@ export const adminRu = {
   "admin.product.translations.source": "основной",
   "admin.product.translations.empty": "пусто",
   "admin.product.translations.imageAlt": "Alt-текст изображения {index}",
+  "admin.orders.activeOrders": "Активные заказы",
+  "admin.orders.loading": "Загрузка заказов...",
+  "admin.orders.loadError": "Не удалось загрузить заказы.",
+  "admin.customers.actions.saveProfile": "Сохранить клиента",
+  "admin.customers.notification.profileSaved": "Профиль клиента обновлён",
+  "admin.order.sections.statusHistory": "История статусов",
+  "admin.order.statusHistory.empty": "Изменения статуса пока не зафиксированы.",
 } as const;

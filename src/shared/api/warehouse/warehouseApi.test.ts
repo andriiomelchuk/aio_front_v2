@@ -6,6 +6,7 @@ import {
   getProductInventory,
   getWarehouseState,
   recordInventoryMovement,
+  replaceOrderStockReservation,
   reserveOrderStock,
 } from "./warehouseApi";
 import type { T_OrderItem } from "@/entities/order";
@@ -106,6 +107,25 @@ describe("warehouse inventory", () => {
     finalizeOrderStock("order-2", "release", "Manager");
 
     expect(getProductInventory("product-1")).toMatchObject({ physical: 6, reserved: 0, available: 6 });
+  });
+
+  it("replaces an active order reservation before completing the sale", async () => {
+    const warehouse = await createTestWarehouse();
+    const location = warehouse.locations[0];
+    await recordInventoryMovement({
+      type: "receipt", productId: "product-1", quantity: 10, reason: "Delivery", createdBy: "Manager",
+      toWarehouseId: warehouse.id, toLocationId: location.id,
+    });
+
+    reserveOrderStock("order-3", [{ productId: "product-1", title: "Product", quantity: 3 } as T_OrderItem]);
+    replaceOrderStockReservation("order-3", [{ productId: "product-1", title: "Product", quantity: 5 } as T_OrderItem], "Manager");
+
+    expect(getProductInventory("product-1")).toMatchObject({ physical: 10, reserved: 5, available: 5 });
+
+    finalizeOrderStock("order-3", "sale", "Manager");
+    finalizeOrderStock("order-3", "sale", "Manager");
+
+    expect(getProductInventory("product-1")).toMatchObject({ physical: 5, reserved: 0, available: 5 });
   });
 
   it("keeps damaged returns in physical stock but out of available stock", async () => {
