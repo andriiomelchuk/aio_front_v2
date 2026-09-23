@@ -7,7 +7,7 @@ import { arrayMove, sortableKeyboardCoordinates, SortableContext, verticalListSo
 import { contentPageLocales, createLocalizedText, isContentPageBlockComplete, isContentPageComplete, type T_ContentPageLocale, type T_ContentPageSeo, type T_ContentPageStatus, type T_LocalizedText, type T_PageBlock } from "@/entities/contentPage";
 import { ContentPagesApiError, createContentPage, getContentPageById, updateContentPage } from "@/shared/api/contentPages";
 import { useI18n } from "@/shared/i18n";
-import { Checkbox, Input, Select } from "@/shared/ui";
+import { Checkbox, DataState, Input, Select } from "@/shared/ui";
 import { AdminCard, AdminFormActions, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
 import { useUnsavedChanges } from "@/shared/hooks";
 import { createPageBlock } from "../../model";
@@ -31,6 +31,8 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
   const [isLoading, setIsLoading] = useState(mode === "edit");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const currentSnapshot = JSON.stringify({ slug, status, defaultLocale, title, blocks, seo });
   const [initialSnapshot, setInitialSnapshot] = useState<string | null>(
@@ -45,6 +47,8 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
   useEffect(() => {
     if (mode !== "edit") return;
     const loadPage = async () => {
+      setIsLoading(true);
+      setLoadError(false);
       try {
         const page = await getContentPageById(pageId);
         setSlug(page.slug);
@@ -55,13 +59,13 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
         setSeo(page.seo);
         setInitialSnapshot(JSON.stringify({ slug: page.slug, status: page.status, defaultLocale: page.defaultLocale, title: page.title, blocks: page.blocks, seo: page.seo }));
       } catch {
-        setError(t("admin.contentPages.error.loadFailed"));
+        setLoadError(true);
       } finally {
         setIsLoading(false);
       }
     };
     void loadPage();
-  }, [mode, pageId, t]);
+  }, [mode, pageId, reloadKey]);
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
@@ -125,7 +129,8 @@ export const ContentPageBuilder = ({ mode, pageId }: T_ContentPageBuilderProps) 
     }
   };
 
-  if (isLoading) return <p className="p-6 text-sm text-muted">{t("admin.contentPages.loading")}</p>;
+  if (isLoading) return <DataState variant="loading" title={t("admin.contentPages.loading")} />;
+  if (loadError) return <DataState variant="error" description={t("admin.contentPages.error.loadFailed")} onAction={() => setReloadKey((value) => value + 1)} />;
 
   return (
     <AdminPage>

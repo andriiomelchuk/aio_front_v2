@@ -31,4 +31,8 @@ export const commonUk = {
     "imagePicker.saveFailed": "Не вдалося зберегти зображення. Спробуйте інший файл.",
     "navigation.additionalLeft": "Додаткова навігація",
     "navigation.additionalRight": "Пов'язані посилання",
+    "common.dataState.loading": "Завантаження даних...",
+    "common.dataState.error": "Щось пішло не так",
+    "common.dataState.empty": "Тут поки що нічого немає",
+    "common.dataState.retry": "Спробувати ще раз",
 }as const;

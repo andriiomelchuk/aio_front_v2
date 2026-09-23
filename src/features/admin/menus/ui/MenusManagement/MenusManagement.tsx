@@ -6,7 +6,7 @@ import type { T_Menu } from "@/entities/menu";
 import { useAdminAccess } from "@/features/auth";
 import { deleteMenu, duplicateMenu, getMenus } from "@/shared/api/menus";
 import { useI18n } from "@/shared/i18n";
-import { Button } from "@/shared/ui";
+import { Button, DataState } from "@/shared/ui";
 import { AdminCard, AdminPage } from "@/widgets/AdminWidgets";
 
 export const MenusManagement = () => {
@@ -16,13 +16,14 @@ export const MenusManagement = () => {
   const [menus, setMenus] = useState<T_Menu[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     getMenus()
       .then(setMenus)
       .catch(() => setError(t("admin.menus.error.loadFailed")))
       .finally(() => setIsLoading(false));
-  }, [t]);
+  }, [reloadKey, t]);
 
   const remove = async (menu: T_Menu) => {
     if (!window.confirm(t("admin.menus.deleteConfirmation", { name: menu.name }))) return;
@@ -46,11 +47,12 @@ export const MenusManagement = () => {
   return (
     <AdminPage actions={canManage ? <Button onClick={() => router.push("/admin/menus/new")}>{t("admin.menus.actions.create")}</Button> : undefined}>
       <AdminCard title={t("admin.menus.pageTitle")} description={t("admin.menus.description", { total: menus.length })}>
-        {error && <p className="mb-4 rounded-md border border-danger bg-danger-soft p-3 text-sm text-danger">{error}</p>}
         {isLoading ? (
-          <p className="py-8 text-center text-sm text-muted">{t("admin.menus.loading")}</p>
+          <DataState compact variant="loading" title={t("admin.menus.loading")} />
+        ) : error ? (
+          <DataState compact variant="error" description={error} onAction={() => { setIsLoading(true); setError(""); setReloadKey((value) => value + 1); }} />
         ) : menus.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted">{t("admin.menus.empty")}</p>
+          <DataState compact variant="empty" title={t("admin.menus.empty")} />
         ) : (
           <div className="divide-y divide-border">
             {menus.map((menu) => (

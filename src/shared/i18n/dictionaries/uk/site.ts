@@ -2,6 +2,7 @@
 
 export const siteUk = {
     "contentPage.loading": "Завантаження сторінки...",
+    "contentPage.loadError": "Не вдалося завантажити сторінку. Спробуйте ще раз.",
     "contentPage.notFound": "Сторінку не знайдено",
     "contentPage.notFoundDescription": "Ця сторінка не існує або ще не опублікована.",
     "contentPage.backHome": "На головну",

@@ -7,6 +7,7 @@ import type { T_Order } from "@/entities/order";
 import { useAuth } from "@/features/auth";
 import { getOrders } from "@/shared/api/orders";
 import { useI18n } from "@/shared/i18n";
+import { DataState } from "@/shared/ui";
 import {
   formatAccountDate,
   formatAccountPrice,
@@ -19,6 +20,7 @@ export const AccountOrders = () => {
   const [orders, setOrders] = useState<T_Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!session) return;
@@ -27,10 +29,10 @@ export const AccountOrders = () => {
       .then(setOrders)
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
-  }, [session]);
+  }, [reloadKey, session]);
 
-  if (isLoading) return <p className="text-sm text-muted">{t("account.orders.loading")}</p>;
-  if (hasError) return <p role="alert" className="text-sm text-danger">{t("account.orders.loadError")}</p>;
+  if (isLoading) return <DataState compact variant="loading" title={t("account.orders.loading")} />;
+  if (hasError) return <DataState compact variant="error" description={t("account.orders.loadError")} onAction={() => { setIsLoading(true); setHasError(false); setReloadKey((value) => value + 1); }} />;
 
   return (
     <section>

@@ -167,6 +167,7 @@ export const adminUk = {
     "admin.customers.searchLabel": "Пошук клієнтів",
     "admin.customers.count": "Клієнтів: {count}",
     "admin.customers.loading": "Завантаження клієнтів...",
+    "admin.customers.loadError": "Не вдалося завантажити клієнтів. Спробуйте ще раз.",
     "admin.customers.empty": "Клієнтів не знайдено",
     "admin.customers.notFound": "Клієнта не знайдено",
     "admin.customers.back": "Назад до клієнтів",

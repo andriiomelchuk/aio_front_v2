@@ -1,6 +1,7 @@
 
 export const siteRu = {
     "contentPage.loading": "Загрузка страницы...",
+    "contentPage.loadError": "Не удалось загрузить страницу. Попробуйте ещё раз.",
     "contentPage.notFound": "Страница не найдена",
     "contentPage.notFoundDescription": "Эта страница не существует или ещё не опубликована.",
     "contentPage.backHome": "На главную",

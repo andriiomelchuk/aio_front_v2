@@ -7,7 +7,7 @@ import type { T_Customer, T_CustomerAddress } from "@/entities/customer";
 import { useAuth } from "@/features/auth";
 import { getCustomerById, updateCustomer } from "@/shared/api/customers";
 import { useI18n } from "@/shared/i18n";
-import { Button, Checkbox, Input, Select, useToast } from "@/shared/ui";
+import { Button, Checkbox, DataState, Input, Select, useToast } from "@/shared/ui";
 import { AddressForm } from "./AddressForm";
 import { AccountOrders } from "./AccountOrders";
 import type { T_AccountSection } from "./types";
@@ -31,6 +31,7 @@ export const AccountManagement = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [customerType, setCustomerType] = useState<T_Customer["type"]>("individual");
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -45,7 +46,7 @@ export const AccountManagement = () => {
         setCustomerType(loadedCustomer.type);
       })
       .catch(() => setLoadError(true));
-  }, [isInitialized, router, session]);
+  }, [isInitialized, reloadKey, router, session]);
 
   const saveCustomer = async (changes: Parameters<typeof updateCustomer>[0]) => {
     const updatedCustomer = await updateCustomer(changes);
@@ -153,10 +154,10 @@ export const AccountManagement = () => {
   };
 
   if (!isInitialized || (!customer && !loadError)) {
-    return <p className="py-16 text-center text-muted">{t("account.loading")}</p>;
+    return <DataState variant="loading" title={t("account.loading")} className="mx-auto my-8 max-w-5xl" />;
   }
   if (loadError || !customer) {
-    return <p role="alert" className="py-16 text-center text-danger">{t("account.error.loadFailed")}</p>;
+    return <DataState variant="error" description={t("account.error.loadFailed")} onAction={() => { setLoadError(false); setReloadKey((value) => value + 1); }} className="mx-auto my-8 max-w-5xl" />;
   }
 
   return (

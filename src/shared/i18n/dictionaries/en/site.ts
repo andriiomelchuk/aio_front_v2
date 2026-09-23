@@ -1,5 +1,6 @@
 export const siteEn = {
     "contentPage.loading": "Loading page...",
+    "contentPage.loadError": "The page could not be loaded. Please try again.",
     "contentPage.notFound": "Page not found",
     "contentPage.notFoundDescription": "This page does not exist or has not been published yet.",
     "contentPage.backHome": "Back to home",

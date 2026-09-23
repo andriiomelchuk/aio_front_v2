@@ -13,7 +13,7 @@ import {
 } from "@/shared/api/customers";
 import { getOrders } from "@/shared/api/orders";
 import { useI18n } from "@/shared/i18n";
-import { Button, Input, Select, Switch, Textarea, useToast } from "@/shared/ui";
+import { Button, DataState, Input, Select, Switch, Textarea, useToast } from "@/shared/ui";
 import { AdminBadge, AdminCard, AdminPage } from "@/widgets/AdminWidgets";
 import { useAdminAccess } from "@/features/auth";
 
@@ -38,6 +38,8 @@ export const CustomerDetail = ({ customerId }: { customerId: string }) => {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   const loadCustomerData = useCallback(async () => {
+    setIsLoading(true);
+    setHasError(false);
     try {
       const data = await getCustomerData(customerId);
       setCustomer(data.customer);
@@ -154,8 +156,9 @@ export const CustomerDetail = ({ customerId }: { customerId: string }) => {
     }
   };
 
-  if (isLoading) return <p className="py-16 text-center text-muted">{t("admin.customers.loading")}</p>;
-  if (hasError || !customer) return <div className="py-16 text-center"><h1 className="text-xl font-semibold">{t("admin.customers.notFound")}</h1><Link href="/admin/customers" className="mt-4 inline-flex text-sm font-medium text-accent hover:underline">{t("admin.customers.back")}</Link></div>;
+  if (isLoading) return <DataState variant="loading" title={t("admin.customers.loading")} />;
+  if (hasError) return <DataState variant="error" onAction={() => void loadCustomerData()} />;
+  if (!customer) return <DataState variant="empty" title={t("admin.customers.notFound")} />;
 
   const latestOrder = orders[0];
   return (

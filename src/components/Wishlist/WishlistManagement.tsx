@@ -6,7 +6,7 @@ import type { T_Product } from "@/entities/product/model/types";
 import { useWishlist } from "@/features/wishlist/model/useWishlist";
 import { getProducts } from "@/shared/api/products";
 import { useI18n } from "@/shared/i18n";
-import { Button } from "@/shared/ui";
+import { Button, DataState } from "@/shared/ui";
 import { ProductCard } from "../Products/ProductCard";
 
 export const WishlistManagement = () => {
@@ -72,17 +72,9 @@ export const WishlistManagement = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex min-h-48 items-center justify-center rounded-lg border border-border bg-surface px-6 text-sm text-muted">
-          {t("wishlist.loading")}
-        </div>
+        <DataState variant="loading" title={t("wishlist.loading")} />
       ) : hasError ? (
-        <section role="alert" className="rounded-lg border border-border bg-surface p-6 text-center sm:p-10">
-          <h2 className="text-xl font-bold text-foreground">{t("wishlist.errorTitle")}</h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-muted">{t("wishlist.errorDescription")}</p>
-          <Button type="button" className="mt-5 h-11 px-5" onClick={() => setReloadKey((key) => key + 1)}>
-            {t("wishlist.retry")}
-          </Button>
-        </section>
+        <DataState variant="error" title={t("wishlist.errorTitle")} description={t("wishlist.errorDescription")} actionLabel={t("wishlist.retry")} onAction={() => setReloadKey((key) => key + 1)} />
       ) : wishlistProducts.length === 0 ? (
         <section className="rounded-lg border border-border bg-surface p-6 text-center sm:p-10">
           <h2 className="text-xl font-bold text-foreground">

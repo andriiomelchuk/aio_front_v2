@@ -162,6 +162,7 @@ export const adminDe = {
     "admin.customers.searchLabel": "Kunden suchen",
     "admin.customers.count": "{count} Kunden",
     "admin.customers.loading": "Kunden werden geladen...",
+    "admin.customers.loadError": "Kunden konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
     "admin.customers.empty": "Keine Kunden gefunden",
     "admin.customers.notFound": "Kunde nicht gefunden",
     "admin.customers.back": "Zurück zu den Kunden",

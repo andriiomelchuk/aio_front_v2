@@ -10,7 +10,7 @@ import { getProducts } from "@/shared/api/products";
 import { addWarehouseLocation, createInventoryItem, createWarehouse, getWarehouseState, recordInventoryMovement, seedWarehouseDemoData, setInventoryItemStatus, setWarehouseStatus, WarehouseApiError } from "@/shared/api/warehouse";
 import { useI18n, type T_I18nKey } from "@/shared/i18n";
 import { useSiteSettings } from "@/shared/siteSettings";
-import { Button, Input, Select } from "@/shared/ui";
+import { Button, DataState, Input, Select } from "@/shared/ui";
 import { AdminCard, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
 
 const initialState: T_WarehouseState = { warehouses: [], inventoryItems: [], balances: [], movements: [] };
@@ -61,6 +61,9 @@ export const WarehouseManagement = () => {
   const [state, setState] = useState(initialState);
   const [products, setProducts] = useState<T_Product[]>([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [message, setMessage] = useState("");
   const [search, setSearch] = useState(() => typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("productId") ?? "");
   const [warehouseForm, setWarehouseForm] = useState({ name: "", code: "", address: "", locationName: "", locationCode: "" });
@@ -78,10 +81,12 @@ export const WarehouseManagement = () => {
       const nextWarehouseState = warehouseState.warehouses.length ? warehouseState : await seedWarehouseDemoData();
       if (!cancelled) { setState(nextWarehouseState); setProducts(productItems); }
     }).catch(() => {
-      if (!cancelled) setError(t("admin.warehouse.error.generic"));
+      if (!cancelled) setLoadError(true);
+    }).finally(() => {
+      if (!cancelled) setIsLoading(false);
     });
     return () => { cancelled = true; };
-  }, [t]);
+  }, [reloadKey]);
 
   const locationOptions = state.warehouses.filter(({ status }) => status === "active").flatMap((warehouse) =>
     warehouse.locations.map((location) => ({ value: locationValue(warehouse.id, location.id), label: `${warehouse.name} / ${location.name} (${location.code})` })),
@@ -148,6 +153,9 @@ export const WarehouseManagement = () => {
   const needsSource = movement.type === "write_off" || movement.type === "transfer" || movement.type === "damage" || movement.type === "service_usage" || (movement.type === "adjustment" && movement.adjustmentDirection === "decrease");
   const needsDestination = movement.type === "receipt" || movement.type === "return" || movement.type === "transfer" || (movement.type === "adjustment" && movement.adjustmentDirection === "increase");
   const selectedProduct = movement.itemType === "product" ? productMap.get(movement.productId) : undefined;
+
+  if (isLoading) return <DataState variant="loading" />;
+  if (loadError) return <DataState variant="error" description={t("admin.warehouse.error.generic")} onAction={() => { setIsLoading(true); setLoadError(false); setReloadKey((value) => value + 1); }} />;
 
   return <AdminPage title={t("admin.warehouse.title")} description={t("admin.warehouse.description")}>
     <div className="space-y-4">

@@ -31,4 +31,8 @@ export const commonDe = {
     "imagePicker.saveFailed": "Das Bild konnte nicht gespeichert werden. Versuchen Sie eine andere Datei.",
     "navigation.additionalLeft": "Zusätzliche Navigation",
     "navigation.additionalRight": "Verwandte Links",
+    "common.dataState.loading": "Daten werden geladen...",
+    "common.dataState.error": "Etwas ist schiefgelaufen",
+    "common.dataState.empty": "Noch keine Inhalte vorhanden",
+    "common.dataState.retry": "Erneut versuchen",
 } as const;

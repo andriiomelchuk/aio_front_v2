@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { T_Customer } from "@/entities/customer";
 import { getCustomers } from "@/shared/api/customers";
 import { useI18n } from "@/shared/i18n";
-import { Input } from "@/shared/ui";
+import { DataState, Input } from "@/shared/ui";
 import { AdminCard, AdminPage, AdminTable } from "@/widgets/AdminWidgets";
 import { getCustomerColumns, mapCustomerRows } from "../../model";
 
@@ -15,12 +15,15 @@ export const CustomersManagement = () => {
   const [customers, setCustomers] = useState<T_Customer[]>([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     getCustomers({ search })
       .then(setCustomers)
+      .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
-  }, [search]);
+  }, [reloadKey, search]);
 
   const rows = mapCustomerRows(customers, t);
 
@@ -33,20 +36,19 @@ export const CustomersManagement = () => {
           type="search"
           className="h-10 w-full sm:w-72"
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) => { setIsLoading(true); setHasError(false); setSearch(event.target.value); }}
           placeholder={t("admin.customers.searchPlaceholder")}
           aria-label={t("admin.customers.searchLabel")}
         />
       }
     >
       <AdminCard description={t("admin.customers.count", { count: customers.length })}>
-        <AdminTable
+        {isLoading ? <DataState compact variant="loading" title={t("admin.customers.loading")} /> : hasError ? <DataState compact variant="error" description={t("admin.customers.loadError")} onAction={() => { setIsLoading(true); setHasError(false); setReloadKey((value) => value + 1); }} /> : customers.length === 0 ? <DataState compact variant="empty" title={t("admin.customers.empty")} /> : <AdminTable
           columns={getCustomerColumns(t)}
           rows={rows}
           getRowKey={(row) => row.id}
           onRowClick={(row) => router.push(`/admin/customers/${row.id}`)}
-          emptyText={isLoading ? t("admin.customers.loading") : t("admin.customers.empty")}
-        />
+        />}
       </AdminCard>
     </AdminPage>
   );

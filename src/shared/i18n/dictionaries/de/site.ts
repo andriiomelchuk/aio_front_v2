@@ -2,6 +2,7 @@
 
 export const siteDe = {
     "contentPage.loading": "Seite wird geladen...",
+    "contentPage.loadError": "Die Seite konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
     "contentPage.notFound": "Seite nicht gefunden",
     "contentPage.notFoundDescription": "Diese Seite existiert nicht oder wurde noch nicht veröffentlicht.",
     "contentPage.backHome": "Zur Startseite",

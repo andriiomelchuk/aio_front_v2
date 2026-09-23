@@ -164,6 +164,7 @@ export const adminRu = {
     "admin.customers.searchLabel": "Поиск клиентов",
     "admin.customers.count": "Клиентов: {count}",
     "admin.customers.loading": "Загрузка клиентов...",
+    "admin.customers.loadError": "Не удалось загрузить клиентов. Попробуйте ещё раз.",
     "admin.customers.empty": "Клиенты не найдены",
     "admin.customers.notFound": "Клиент не найден",
     "admin.customers.back": "Назад к клиентам",

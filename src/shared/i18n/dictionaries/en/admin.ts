@@ -175,6 +175,7 @@ export const adminEn = {
     "admin.customers.searchLabel": "Search customers",
     "admin.customers.count": "{count} customers",
     "admin.customers.loading": "Loading customers...",
+    "admin.customers.loadError": "Customers could not be loaded. Please try again.",
     "admin.customers.empty": "No customers found",
     "admin.customers.notFound": "Customer not found",
     "admin.customers.back": "Back to customers",

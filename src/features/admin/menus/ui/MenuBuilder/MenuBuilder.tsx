@@ -6,7 +6,7 @@ import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { createMenuLocalizedText, getMenuLocalizedText, type T_MenuItem, type T_MenuStatus } from "@/entities/menu";
 import { createMenu, getMenuById, MenusApiError, updateMenu } from "@/shared/api/menus";
 import { locales, useI18n, type T_Locale } from "@/shared/i18n";
-import { Button, Checkbox, Input, Select } from "@/shared/ui";
+import { Button, Checkbox, DataState, Input, Select } from "@/shared/ui";
 import { AdminCard, AdminFormActions, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
 import { MenuAssignments } from "../MenuAssignments";
 import { isMenuItemComplete } from "../../model";
@@ -75,6 +75,8 @@ export const MenuBuilder = ({ mode, menuId }: { mode: "create" | "edit"; menuId?
   const [items, setItems] = useState<T_MenuItem[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(mode === "edit");
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const currentSnapshot = JSON.stringify({ name, key, status, defaultLocale, items });
   const [initialSnapshot, setInitialSnapshot] = useState<string | null>(
@@ -85,8 +87,8 @@ export const MenuBuilder = ({ mode, menuId }: { mode: "create" | "edit"; menuId?
 
   useEffect(() => {
     if (mode !== "edit" || !menuId) return;
-    void getMenuById(menuId).then((menu) => { setName(menu.name); setKey(menu.key); setStatus(menu.status); setDefaultLocale(menu.defaultLocale); setItems(menu.items); setInitialSnapshot(JSON.stringify({ name: menu.name, key: menu.key, status: menu.status, defaultLocale: menu.defaultLocale, items: menu.items })); }).catch(() => setError(t("admin.menus.error.loadFailed"))).finally(() => setIsLoading(false));
-  }, [menuId, mode, t]);
+    void getMenuById(menuId).then((menu) => { setName(menu.name); setKey(menu.key); setStatus(menu.status); setDefaultLocale(menu.defaultLocale); setItems(menu.items); setInitialSnapshot(JSON.stringify({ name: menu.name, key: menu.key, status: menu.status, defaultLocale: menu.defaultLocale, items: menu.items })); }).catch(() => setLoadError(true)).finally(() => setIsLoading(false));
+  }, [menuId, mode, reloadKey]);
 
   const move = (index: number, direction: -1 | 1) =>
     setItems((current) => arrayMoveItem(current, index, direction));
@@ -107,7 +109,8 @@ export const MenuBuilder = ({ mode, menuId }: { mode: "create" | "edit"; menuId?
     }
   };
 
-  if (isLoading) return <p className="p-6 text-sm text-muted">{t("admin.menus.loading")}</p>;
+  if (isLoading) return <DataState variant="loading" title={t("admin.menus.loading")} />;
+  if (loadError) return <DataState variant="error" description={t("admin.menus.error.loadFailed")} onAction={() => { setIsLoading(true); setLoadError(false); setReloadKey((value) => value + 1); }} />;
   return <AdminPage><form className="space-y-4" onSubmit={submit}>
     <div><h1 className="text-2xl font-semibold text-foreground">{mode === "edit" ? t("admin.menus.builder.editTitle") : t("admin.menus.builder.createTitle")}</h1><p className="mt-1 text-sm text-muted">{t("admin.menus.builder.description")}</p></div>
     <AdminFormAlert message={error} />

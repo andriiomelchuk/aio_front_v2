@@ -7,7 +7,7 @@ import { getCategories } from "@/shared/api/categories";
 import { getContentPages } from "@/shared/api/contentPages";
 import { getProducts } from "@/shared/api/products";
 import { useI18n } from "@/shared/i18n";
-import { Input } from "@/shared/ui";
+import { DataState, Input } from "@/shared/ui";
 
 type T_TargetType = Exclude<T_MenuAssignmentTarget["type"], "global">;
 type T_Option = { value: string; label: string; description: string };
@@ -18,6 +18,7 @@ export const MenuTargetSelector = ({ type, value, onChange }: { type: T_TargetTy
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     const load = async () => {
@@ -41,7 +42,7 @@ export const MenuTargetSelector = ({ type, value, onChange }: { type: T_TargetTy
       }
     };
     void load();
-  }, [locale, type]);
+  }, [locale, reloadKey, type]);
 
   const filteredOptions = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -52,9 +53,9 @@ export const MenuTargetSelector = ({ type, value, onChange }: { type: T_TargetTy
     <span className="mb-2 block text-sm font-medium text-foreground">{t("admin.menus.assignments.selectEntity")}</span>
     <Input className="h-10 w-full" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("admin.menus.assignments.searchEntity")} />
     <div className="mt-2 max-h-56 overflow-y-auto rounded-md border border-border bg-background">
-      {isLoading && <p className="p-4 text-center text-sm text-muted">{t("admin.menus.assignments.loadingEntities")}</p>}
-      {hasError && <p className="p-4 text-center text-sm text-danger">{t("admin.menus.assignments.entitiesLoadFailed")}</p>}
-      {!isLoading && !hasError && filteredOptions.length === 0 && <p className="p-4 text-center text-sm text-muted">{t("admin.menus.assignments.noEntities")}</p>}
+      {isLoading && <DataState compact variant="loading" title={t("admin.menus.assignments.loadingEntities")} />}
+      {hasError && <DataState compact variant="error" description={t("admin.menus.assignments.entitiesLoadFailed")} onAction={() => setReloadKey((value) => value + 1)} />}
+      {!isLoading && !hasError && filteredOptions.length === 0 && <DataState compact variant="empty" title={t("admin.menus.assignments.noEntities")} />}
       {!isLoading && !hasError && filteredOptions.map((option) => <label key={option.value} className="flex cursor-pointer items-start gap-3 border-b border-border px-3 py-2.5 last:border-0 hover:bg-surface-muted">
         <input type="radio" name="menu-assignment-target" className="mt-1 h-4 w-4 shrink-0 accent-accent" checked={value === option.value} onChange={() => onChange(option.value)} />
         <span className="min-w-0"><span className="block truncate text-sm font-medium text-foreground">{option.label}</span><span className="block truncate text-xs text-muted">{option.description} · {option.value}</span></span>

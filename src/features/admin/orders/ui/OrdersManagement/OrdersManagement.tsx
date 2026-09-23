@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { paginate } from "@/lib";
 import { AdminCard, AdminPage, AdminTable } from "@/widgets/AdminWidgets";
-import { Pagination } from "@/shared/ui";
+import { DataState, Pagination } from "@/shared/ui";
 import { OrdersToolbar } from "../OrdersToolbar/OrdersToolbar";
 import { useOrdersTableControls } from "../../model/useOrdersTableControls";
 import {
@@ -41,10 +41,11 @@ export function OrdersManagement() {
   const [bulkAction, setBulkAction] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     getOrders().then(setOrders).catch(() => setHasError(true)).finally(() => setIsLoading(false));
-  }, []);
+  }, [reloadKey]);
 
   const filteredOrders = ordersFilter(orders, {
     status: tableControls.status,
@@ -130,15 +131,14 @@ export function OrdersManagement() {
           description={t("admin.orders.latestCustomerOrders")}
         >
           <div className="space-y-3">
-            <AdminTable
+            {isLoading ? <DataState compact variant="loading" title={t("admin.orders.loading")} /> : hasError ? <DataState compact variant="error" description={t("admin.orders.loadError")} onAction={() => { setIsLoading(true); setHasError(false); setReloadKey((value) => value + 1); }} /> : orderRows.length === 0 ? <DataState compact variant="empty" title={t("admin.orders.noOrderFound")} /> : <AdminTable
               columns={orderColumns}
               rows={orderRows}
               getRowKey={(order) => order.id}
               onRowClick={(order) => router.push(`/admin/orders/${encodeURIComponent(order.id)}`)}
-              emptyText={hasError ? t("admin.orders.loadError") : isLoading ? t("admin.orders.loading") : t("admin.orders.noOrderFound")}
               selectedRowKeys={canManage ? selectedOrderIds : undefined}
               onSelectedRowKeysChange={canManage ? setSelectedOrderIds : undefined}
-            ></AdminTable>
+            ></AdminTable>}
 
             {canManage && <OrdersBulkActions
               selectedCount={selectedOrderIds.length}
