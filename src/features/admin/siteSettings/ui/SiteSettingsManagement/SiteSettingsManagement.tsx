@@ -9,6 +9,7 @@ import { useI18n } from "@/shared/i18n";
 import { useSiteSettings } from "@/shared/siteSettings";
 import { Button, ImagePicker, Input, Select, Switch, Textarea } from "@/shared/ui";
 import { AdminCard, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
+import { useUnsavedChanges } from "@/shared/hooks";
 
 const locales: T_SiteLocale[] = ["uk", "en", "de", "ru"];
 const currencies: T_SiteCurrency[] = ["UAH", "USD", "EUR", "GBP"];
@@ -23,14 +24,17 @@ export const SiteSettingsManagement = () => {
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(currentSettings));
+  const isDirty = JSON.stringify(settings) !== savedSnapshot;
+  useUnsavedChanges(isDirty && !isBusy);
 
-  const patchSection = <K extends Exclude<keyof T_SiteSettings, "updatedAt">>(section: K, values: Partial<T_SiteSettings[K]>) =>
+  const patchSection = <K extends Exclude<keyof T_SiteSettings, "updatedAt" | "updatedBy" | "changeLog">>(section: K, values: Partial<T_SiteSettings[K]>) =>
     setSettings((current) => ({ ...current, [section]: Object.assign({}, current[section], values) }));
 
   const run = async (action: () => Promise<T_SiteSettings>, successMessage: string) => {
     setIsBusy(true); setError(""); setMessage("");
     try {
-      const saved = await action(); setSettings(saved); setMessage(successMessage);
+      const saved = await action(); setSettings(saved); setSavedSnapshot(JSON.stringify(saved)); setMessage(successMessage);
     } catch (caughtError) {
       setError(caughtError instanceof SiteSettingsApiError && caughtError.code === "INVALID_SETTINGS" ? t("admin.settings.error.invalid") : t("admin.settings.error.save"));
     } finally { setIsBusy(false); }
@@ -89,7 +93,7 @@ export const SiteSettingsManagement = () => {
         <AdminCard title={t("admin.settings.general.title")} description={t("admin.settings.general.description")}><div className="space-y-4">
           <Input type="text" label={t("admin.settings.fields.siteName")} value={settings.general.siteName} disabled={!canManage} onChange={(event) => patchSection("general", { siteName: event.target.value })} required />
           <Textarea label={t("admin.settings.fields.siteDescription")} value={settings.general.siteDescription} disabled={!canManage} onChange={(event) => patchSection("general", { siteDescription: event.target.value })} />
-          <ImagePicker label={t("admin.settings.fields.logo")} value={settings.general.logoUrl} alt={settings.general.siteName} onChange={(logoUrl) => patchSection("general", { logoUrl })} />
+          <ImagePicker disabled={!canManage} label={t("admin.settings.fields.logo")} value={settings.general.logoUrl} alt={settings.general.siteName} onChange={(logoUrl) => patchSection("general", { logoUrl })} />
         </div></AdminCard>
         <AdminCard title={t("admin.settings.localization.title")} description={t("admin.settings.localization.description")}><div className="grid gap-4 sm:grid-cols-2">
           <Select label={t("admin.settings.fields.defaultLocale")} value={settings.localization.defaultLocale} disabled={!canManage} onChange={(event) => changeDefaultLocale(event.target.value as T_SiteLocale)} options={locales.map((locale) => ({ value: locale, label: t(`language.${locale}`) }))} />
@@ -119,7 +123,7 @@ export const SiteSettingsManagement = () => {
           <Input type="text" label={t("admin.settings.fields.defaultTitle")} value={settings.seo.defaultTitle} disabled={!canManage} onChange={(event) => patchSection("seo", { defaultTitle: event.target.value })} />
           <Textarea label={t("admin.settings.fields.defaultDescription")} value={settings.seo.defaultDescription} disabled={!canManage} onChange={(event) => patchSection("seo", { defaultDescription: event.target.value })} />
           <Input type="text" label={t("admin.settings.fields.keywords")} value={settings.seo.keywords} disabled={!canManage} onChange={(event) => patchSection("seo", { keywords: event.target.value })} />
-          <ImagePicker label={t("admin.settings.fields.socialImage")} value={settings.seo.socialImageUrl} alt={settings.seo.defaultTitle} onChange={(socialImageUrl) => patchSection("seo", { socialImageUrl })} />
+          <ImagePicker disabled={!canManage} label={t("admin.settings.fields.socialImage")} value={settings.seo.socialImageUrl} alt={settings.seo.defaultTitle} onChange={(socialImageUrl) => patchSection("seo", { socialImageUrl })} />
         </div></AdminCard>
         <AdminCard title={t("admin.settings.operations.title")} description={t("admin.settings.operations.description")}><div className="space-y-4">
           <Switch label={t("admin.settings.fields.maintenanceMode")} description={t("admin.settings.fields.maintenanceModeDescription")} checked={settings.operations.maintenanceMode} disabled={!canManage} onChange={(event) => patchSection("operations", { maintenanceMode: event.target.checked })} />

@@ -956,4 +956,5 @@ export const adminUk = {
     "admin.menus.actions.duplicate": "Дублювати",
     "admin.menus.error.duplicateFailed": "Не вдалося дублювати меню.",
     "admin.form.unsavedConfirmation": "Відхилити незбережені зміни?",
+    "admin.developerSettings.modules.protected": "Панель керування та налаштування розробника є захищеними системними модулями, які не можна вимкнути.",
 } as const;

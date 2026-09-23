@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const developerSettingsInputSchema = z.strictObject({
   modules: z.strictObject({
-    dashboard: z.boolean(),
+    dashboard: z.literal(true),
     users: z.boolean(),
     customers: z.boolean(),
     orders: z.boolean(),

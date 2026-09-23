@@ -12,6 +12,9 @@ const VERSION_KEY = "aio-developer-settings-version";
 const BACKUP_KEY = "aio-developer-settings-migration-backup-v0";
 const SCHEMA_VERSION = 1;
 export const DEVELOPER_SETTINGS_CHANGE_EVENT = "aio-developer-settings-change";
+const createId = () => typeof crypto !== "undefined" && "randomUUID" in crypto
+  ? crypto.randomUUID()
+  : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -22,7 +25,7 @@ export const migrateDeveloperSettings = (value: unknown): T_DeveloperSettings =>
   const diagnostics = isRecord(root.diagnostics) ? root.diagnostics : {};
   const modules = Object.keys(adminModules).reduce((result, module) => ({
     ...result,
-    [module]: module === "developerSettings"
+    [module]: module === "developerSettings" || module === "dashboard"
       ? true
       : typeof storedModules[module] === "boolean"
         ? storedModules[module]
@@ -106,7 +109,7 @@ const withAudit = (
     ...input,
     updatedAt: createdAt,
     updatedBy: actor,
-    changeLog: [{ id: crypto.randomUUID(), action, createdAt, updatedBy: actor }, ...readDeveloperSettings().changeLog].slice(0, 50),
+    changeLog: [{ id: createId(), action, createdAt, updatedBy: actor }, ...readDeveloperSettings().changeLog].slice(0, 50),
   } satisfies T_DeveloperSettings;
 };
 

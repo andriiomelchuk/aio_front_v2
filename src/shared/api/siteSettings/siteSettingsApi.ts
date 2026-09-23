@@ -13,6 +13,9 @@ const VERSION_KEY = "aio-site-settings-version";
 const BACKUP_KEY_PREFIX = "aio-site-settings-migration-backup-v";
 const SCHEMA_VERSION = 3;
 export const SITE_SETTINGS_CHANGE_EVENT = "aio-site-settings-change";
+const createId = () => typeof crypto !== "undefined" && "randomUUID" in crypto
+  ? crypto.randomUUID()
+  : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 const locales: T_SiteLocale[] = ["uk", "en", "de", "ru"];
 const currencies: T_SiteCurrency[] = ["UAH", "USD", "EUR", "GBP"];
@@ -146,6 +149,7 @@ const validate = (settings: T_UpdateSiteSettingsDto) => {
       `${issue.path.join(".") || "settings"}: ${issue.message}`,
     );
   }
+  return result.data;
 };
 
 const persist = (settings: T_SiteSettings) => {
@@ -173,13 +177,12 @@ const withAudit = (
     ...input,
     updatedAt: createdAt,
     updatedBy: actor,
-    changeLog: [{ id: crypto.randomUUID(), action, createdAt, updatedBy: actor }, ...current.changeLog].slice(0, 50),
+    changeLog: [{ id: createId(), action, createdAt, updatedBy: actor }, ...current.changeLog].slice(0, 50),
   };
 };
 
 export const updateSiteSettings = async (input: T_UpdateSiteSettingsDto, updatedBy = "System") => {
-  validate(input);
-  const settings = withAudit(input, "update", updatedBy);
+  const settings = withAudit(validate(input), "update", updatedBy);
   persist(settings);
   return settings;
 };

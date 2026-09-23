@@ -993,4 +993,5 @@ export const adminEn = {
     "admin.menus.actions.duplicate": "Duplicate",
     "admin.menus.error.duplicateFailed": "Could not duplicate the menu.",
     "admin.form.unsavedConfirmation": "Discard unsaved changes?",
+    "admin.developerSettings.modules.protected": "Dashboard and Developer settings are protected system modules and cannot be disabled.",
 } as const;

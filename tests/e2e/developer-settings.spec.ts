@@ -13,6 +13,9 @@ test("developer controls module access without locking themselves out", async ({
   await login(page, "developer@aio.local", "Developer123!");
   await page.goto("/admin/developer-settings");
 
+  await expect(page.getByLabel("Dashboard")).toHaveCount(0);
+  await expect(page.getByText(/Dashboard and Developer settings are protected/)).toBeVisible();
+
   await page.locator("label").filter({ hasText: "Analytics" }).click();
   await expect(page.getByLabel("Analytics")).not.toBeChecked();
   await page.locator("label").filter({ hasText: "Enable diagnostics panel" }).click();

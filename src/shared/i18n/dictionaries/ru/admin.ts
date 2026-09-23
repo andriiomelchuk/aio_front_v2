@@ -936,4 +936,5 @@ export const adminRu = {
     "admin.menus.actions.duplicate": "Дублировать",
     "admin.menus.error.duplicateFailed": "Не удалось дублировать меню.",
     "admin.form.unsavedConfirmation": "Отменить несохранённые изменения?",
+    "admin.developerSettings.modules.protected": "Панель управления и настройки разработчика являются защищёнными системными модулями, которые нельзя отключить.",
 } as const;

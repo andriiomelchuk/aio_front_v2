@@ -934,4 +934,5 @@ export const adminDe = {
     "admin.menus.actions.duplicate": "Duplizieren",
     "admin.menus.error.duplicateFailed": "Das Menü konnte nicht dupliziert werden.",
     "admin.form.unsavedConfirmation": "Nicht gespeicherte Änderungen verwerfen?",
+    "admin.developerSettings.modules.protected": "Dashboard und Entwicklereinstellungen sind geschützte Systemmodule und können nicht deaktiviert werden.",
 } as const;

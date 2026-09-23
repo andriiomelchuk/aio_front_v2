@@ -84,6 +84,21 @@ describe("site settings storage", () => {
       .rejects.toMatchObject<Partial<SiteSettingsApiError>>({ code: "INVALID_SETTINGS" });
   });
 
+  it("persists normalized values returned by the schema", async () => {
+    const storage = createStorage();
+    stubWindow(storage);
+    const input = createInput();
+
+    const saved = await updateSiteSettings({
+      ...input,
+      general: { ...input.general, siteName: "  Configured AIO  " },
+      commerce: { ...input.commerce, orderPrefix: "  SHOP  " },
+    });
+
+    expect(saved.general.siteName).toBe("Configured AIO");
+    expect(saved.commerce.orderPrefix).toBe("SHOP");
+  });
+
   it.each([
     ["unknown nested field", (input: ReturnType<typeof createInput>) => ({
       ...input,

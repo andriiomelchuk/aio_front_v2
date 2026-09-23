@@ -10,9 +10,10 @@ import { useDeveloperSettings } from "@/shared/developerSettings";
 import { useI18n } from "@/shared/i18n";
 import { Button, Switch } from "@/shared/ui";
 import { AdminCard, AdminFormAlert, AdminPage } from "@/widgets/AdminWidgets";
+import { useUnsavedChanges } from "@/shared/hooks";
 
 const configurableModules = Object.keys(adminModules).filter(
-  (module): module is T_AdminModule => module !== "developerSettings",
+  (module): module is T_AdminModule => module !== "developerSettings" && module !== "dashboard",
 );
 
 export const DeveloperSettingsManagement = () => {
@@ -23,12 +24,15 @@ export const DeveloperSettingsManagement = () => {
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(currentSettings));
   const importRef = useRef<HTMLInputElement>(null);
   const canManage = role === "developer";
+  const isDirty = JSON.stringify(settings) !== savedSnapshot;
+  useUnsavedChanges(isDirty && !isBusy);
 
   const run = async (action: () => Promise<T_DeveloperSettings>, success: string) => {
     setIsBusy(true); setError(""); setMessage("");
-    try { const saved = await action(); setSettings(saved); setMessage(success); }
+    try { const saved = await action(); setSettings(saved); setSavedSnapshot(JSON.stringify(saved)); setMessage(success); }
     catch (caughtError) { setError(caughtError instanceof DeveloperSettingsApiError ? caughtError.message : t("admin.developerSettings.error.save")); }
     finally { setIsBusy(false); }
   };
@@ -61,7 +65,7 @@ export const DeveloperSettingsManagement = () => {
       <div className="grid gap-4 xl:grid-cols-2">
         <AdminCard title={t("admin.developerSettings.modules.title")} description={t("admin.developerSettings.modules.description")}><div className="grid gap-3 sm:grid-cols-2">
           {configurableModules.map((module) => <Switch key={module} label={t(`admin.navigation.${module}.label`)} checked={settings.modules[module]} disabled={!canManage} onChange={(event) => setSettings((current) => ({ ...current, modules: { ...current.modules, [module]: event.target.checked } }))} />)}
-        </div></AdminCard>
+        </div><p className="mt-4 border-t border-border pt-3 text-xs text-muted">{t("admin.developerSettings.modules.protected")}</p></AdminCard>
         <AdminCard title={t("admin.developerSettings.diagnostics.title")} description={t("admin.developerSettings.diagnostics.description")}><div className="space-y-3">
           <Switch label={t("admin.developerSettings.diagnostics.enabled")} checked={settings.diagnostics.enabled} disabled={!canManage} onChange={(event) => setSettings((current) => ({ ...current, diagnostics: { ...current.diagnostics, enabled: event.target.checked } }))} />
           <Switch label={t("admin.developerSettings.diagnostics.storage")} checked={settings.diagnostics.showStorageUsage} disabled={!canManage || !settings.diagnostics.enabled} onChange={(event) => setSettings((current) => ({ ...current, diagnostics: { ...current.diagnostics, showStorageUsage: event.target.checked } }))} />
