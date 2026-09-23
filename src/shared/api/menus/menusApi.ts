@@ -11,7 +11,7 @@ import {
   migrateMenuAssignments,
   migrateMenus,
 } from "./menuStorageMigrations";
-import { MenusApiError } from "./types";
+import { MenusApiError, type T_MenusApiContract } from "./types";
 
 const MENUS_STORAGE_KEY = "aio-menus";
 const MENU_ASSIGNMENTS_STORAGE_KEY = "aio-menu-assignments";
@@ -250,3 +250,16 @@ export const deleteMenuAssignmentsForTarget = async (
   }
   return assignments.length - nextAssignments.length;
 };
+
+export const menusApi = {
+  getMenus,
+  getMenuById,
+  getMenuByKey,
+  createMenu,
+  updateMenu,
+  duplicateMenu,
+  deleteMenu,
+  getMenuAssignments,
+  saveMenuAssignment,
+  deleteMenuAssignment,
+} satisfies T_MenusApiContract;

@@ -7,8 +7,9 @@ import { normalizeCategoryTranslations } from "@/entities/categories";
 import { readSiteSettings } from "@/shared/api/siteSettings";
 import {
   CategoriesApiError,
-  type T_JsonPlaceholderCategory,
+  type T_CategoriesApiContract,
 } from "./types";
+import type { T_DummyJsonCategory } from "./providerTypes";
 
 const normalizeSlug = (slug: string) => slug.trim().toLowerCase();
 const CATEGORIES_STORAGE_KEY = "admin-categories-overrides";
@@ -104,10 +105,10 @@ export const getCategories = async (): Promise<T_Categories[]> => {
   const response = await fetch("https://dummyjson.com/products/categories");
 
   if (!response.ok) {
-    throw new Error("Failed to fetch categories");
+    throw new CategoriesApiError("FETCH_FAILED", "Failed to fetch categories");
   }
 
-  const categories: T_JsonPlaceholderCategory[] = await response.json();
+  const categories: T_DummyJsonCategory[] = await response.json();
 
   const remoteCategories = categories.map((category) => ({
     id: category.slug,
@@ -133,3 +134,9 @@ export const getCategories = async (): Promise<T_Categories[]> => {
 
   return [...createdCategories, ...updatedCategories];
 };
+
+export const categoriesApi = {
+  getCategories,
+  createCategory,
+  updateCategory,
+} satisfies T_CategoriesApiContract;

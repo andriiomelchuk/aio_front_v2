@@ -98,7 +98,9 @@ export type T_CreateOrderDto = Required<
 > &
   Pick<T_Order, "comment" | "customerId">;
 
-export type T_UpdateOrderDto = T_Order;
+export type T_UpdateOrderDto = Partial<
+  Omit<T_Order, "id" | "createdAt" | "updatedAt">
+> & Pick<T_Order, "id">;
 
 export type T_UpdateOrderOptions = {
   updatedBy?: string;

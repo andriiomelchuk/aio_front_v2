@@ -5,7 +5,7 @@ import type {
   T_UpdateOrderOptions,
 } from "@/entities/order";
 import { mockOrders } from "@/entities/order";
-import type { T_GetOrdersParams } from "./types";
+import { OrdersApiError, type T_GetOrdersParams, type T_OrdersApiContract } from "./types";
 import { readSiteSettings } from "@/shared/api/siteSettings";
 import { finalizeOrderStock, replaceOrderStockReservation, reserveOrderStock } from "@/shared/api/warehouse";
 
@@ -30,6 +30,9 @@ const createOrderNumber = (orders: T_Order[]) => {
 export const createOrder = async (
   order: T_CreateOrderDto,
 ): Promise<T_Order> => {
+  if (!order.items.length || !order.customer.email.trim() || !Number.isFinite(order.totals.total)) {
+    throw new OrdersApiError("INVALID_INPUT", "Order customer, items and totals are required");
+  }
   const timestamp = new Date().toISOString();
   const storedOrders = loadStoredOrders();
   const createdOrder: T_Order = {
@@ -43,10 +46,14 @@ export const createOrder = async (
 
   reserveOrderStock(String(createdOrder.id), createdOrder.items ?? [], "Checkout");
 
-  getStorage()?.setItem(
-    ORDERS_STORAGE_KEY,
-    JSON.stringify([...storedOrders, createdOrder]),
-  );
+  try {
+    getStorage()?.setItem(
+      ORDERS_STORAGE_KEY,
+      JSON.stringify([...storedOrders, createdOrder]),
+    );
+  } catch (error) {
+    throw new OrdersApiError("STORAGE_WRITE_FAILED", "Could not save order", { cause: error });
+  }
 
   return createdOrder;
 };
@@ -74,27 +81,32 @@ export const getOrderById = async (
 ): Promise<T_Order> => {
   const order = loadStoredOrders().find((item) => String(item.id) === String(id));
 
-  if (!order) throw new Error("Order not found");
+  if (!order) throw new OrdersApiError("NOT_FOUND", "Order not found");
   return order;
 };
 
-export const updateOrder = async (order: T_UpdateOrderDto, options: T_UpdateOrderOptions = {}) => {
+export const updateOrder = async (order: T_UpdateOrderDto, options: T_UpdateOrderOptions = {}): Promise<T_Order> => {
   const orders = loadStoredOrders();
   const previousOrder = orders.find((item) => String(item.id) === String(order.id));
-  if (!previousOrder) throw new Error("Order not found");
+  if (!previousOrder) throw new OrdersApiError("NOT_FOUND", "Order not found");
   const timestamp = new Date().toISOString();
-  const statusChanged = previousOrder.status !== order.status;
+  const nextStatus = order.status ?? previousOrder.status;
+  const statusChanged = previousOrder.status !== nextStatus;
   if (statusChanged && (previousOrder.status === "completed" || previousOrder.status === "cancelled")) {
-    throw new Error("A finalized order cannot return to an active workflow");
+    throw new OrdersApiError("INVALID_STATE", "A finalized order cannot return to an active workflow");
   }
-  const itemsChanged = JSON.stringify(previousOrder.items ?? []) !== JSON.stringify(order.items ?? []);
+  const nextItems = order.items ?? previousOrder.items ?? [];
+  const itemsChanged = JSON.stringify(previousOrder.items ?? []) !== JSON.stringify(nextItems);
   const updatedOrder: T_Order = {
+    ...previousOrder,
     ...order,
+    id: previousOrder.id,
+    createdAt: previousOrder.createdAt,
     statusHistory: statusChanged
       ? [{
           id: createId(),
           from: previousOrder.status,
-          to: order.status,
+          to: nextStatus,
           createdAt: timestamp,
           createdBy: options.updatedBy?.trim() || "Administrator",
         }, ...(previousOrder.statusHistory ?? [])]
@@ -102,16 +114,20 @@ export const updateOrder = async (order: T_UpdateOrderDto, options: T_UpdateOrde
     updatedAt: timestamp,
   };
   if (itemsChanged && (previousOrder.status === "new" || previousOrder.status === "processing")) {
-    replaceOrderStockReservation(String(order.id), order.items ?? [], options.updatedBy);
+    replaceOrderStockReservation(String(order.id), nextItems, options.updatedBy);
   }
   if (statusChanged) {
     const actor = options.updatedBy?.trim() || "Administrator";
-    if (order.status === "completed") finalizeOrderStock(String(order.id), "sale", actor);
-    if (order.status === "cancelled") finalizeOrderStock(String(order.id), "release", actor);
+    if (nextStatus === "completed") finalizeOrderStock(String(order.id), "sale", actor);
+    if (nextStatus === "cancelled") finalizeOrderStock(String(order.id), "release", actor);
   }
   const nextOrders = orders.map((item) => String(item.id) === String(order.id) ? updatedOrder : item);
 
-  getStorage()?.setItem(ORDERS_STORAGE_KEY, JSON.stringify(nextOrders));
+  try {
+    getStorage()?.setItem(ORDERS_STORAGE_KEY, JSON.stringify(nextOrders));
+  } catch (error) {
+    throw new OrdersApiError("STORAGE_WRITE_FAILED", "Could not save order", { cause: error });
+  }
   return updatedOrder;
 };
 
@@ -131,3 +147,10 @@ const loadStoredOrders = (): T_Order[] => {
     return mockOrders;
   }
 };
+
+export const ordersApi = {
+  getOrders,
+  getOrderById,
+  createOrder,
+  updateOrder,
+} satisfies T_OrdersApiContract;

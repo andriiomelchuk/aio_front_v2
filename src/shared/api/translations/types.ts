@@ -1,3 +1,5 @@
+import { ApiError } from "@/shared/api/core";
+
 export type T_TranslationsApiErrorCode =
   | "INVALID_IMPORT"
   | "UNKNOWN_KEY"
@@ -5,12 +7,12 @@ export type T_TranslationsApiErrorCode =
   | "STORAGE_UNAVAILABLE"
   | "STORAGE_WRITE_FAILED";
 
-export class TranslationsApiError extends Error {
+export class TranslationsApiError extends ApiError<T_TranslationsApiErrorCode> {
   constructor(
     public readonly code: T_TranslationsApiErrorCode,
     message: string,
   ) {
-    super(message);
+    super(code, message);
     this.name = "TranslationsApiError";
   }
 }

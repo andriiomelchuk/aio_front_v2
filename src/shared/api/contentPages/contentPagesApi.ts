@@ -7,7 +7,7 @@ import type {
   T_UpdateContentPageDto,
 } from "@/entities/contentPage";
 import { contentPageLocales, createLocalizedText, isContentPageComplete } from "@/entities/contentPage";
-import { ContentPagesApiError } from "./types";
+import { ContentPagesApiError, type T_ContentPagesApiContract } from "./types";
 import { deleteManagedImage, getManagedImageReferences } from "@/shared/lib";
 import { deleteMenuAssignmentsForTarget } from "@/shared/api/menus";
 
@@ -403,3 +403,13 @@ export const deleteContentPage = async (id: string): Promise<string> => {
 
   return id;
 };
+
+export const contentPagesApi = {
+  getContentPages,
+  getContentPageById,
+  getContentPageBySlug,
+  createContentPage,
+  updateContentPage,
+  duplicateContentPage,
+  deleteContentPage,
+} satisfies T_ContentPagesApiContract;

@@ -1,64 +1,36 @@
-export type T_JsonPlaceholderProductReview = {
-  rating: number;
-  comment: string;
-  date: string;
-  reviewerName: string;
-  reviewerEmail: string;
+import type { T_CreateProductDto, T_Product, T_UpdateProductDto } from "@/entities/product";
+import { ApiError } from "@/shared/api/core";
+
+export type T_BulkUpdateProductsDto = {
+  ids: Array<string | number>;
+  changes: Partial<Omit<T_Product, "id" | "createdAt">>;
 };
 
-export type T_JsonPlaceholderProductDimensions = {
-  width: number;
-  height: number;
-  depth: number;
+export type T_ProductsTransferDocument = {
+  schemaVersion: 2;
+  exportedAt: string;
+  products: T_Product[];
 };
 
-export type T_JsonPlaceholderProductMeta = {
-  createdAt: string;
-  updatedAt: string;
-  barcode: string;
-  qrCode: string;
+export type T_ProductsApiContract = {
+  getProducts: () => Promise<T_Product[]>;
+  getProductById: (id: string) => Promise<T_Product>;
+  createProduct: (input: T_CreateProductDto) => Promise<T_Product>;
+  updateProduct: (input: T_UpdateProductDto) => Promise<T_Product>;
+  deleteProduct: (id: string | number) => Promise<string>;
+  bulkUpdateProducts: (input: T_BulkUpdateProductsDto) => Promise<T_Product[]>;
+  exportProducts: () => Promise<T_ProductsTransferDocument>;
+  importProducts: (document: T_ProductsTransferDocument) => Promise<T_Product[]>;
 };
 
-export type T_JsonPlaceholderProduct = {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-  tags: string[];
-  brand?: string;
-  sku: string;
-  weight: number;
-  dimensions: T_JsonPlaceholderProductDimensions;
-  warrantyInformation: string;
-  shippingInformation: string;
-  availabilityStatus: "In Stock" | "Low Stock" | "Out of Stock";
-  reviews: T_JsonPlaceholderProductReview[];
-  returnPolicy: string;
-  minimumOrderQuantity: number;
-  meta: T_JsonPlaceholderProductMeta;
-  thumbnail: string;
-  images: string[];
-};
+export type T_ProductsApiErrorCode = "NOT_FOUND" | "DUPLICATE_SLUG" | "FETCH_FAILED";
 
-export type T_JsonPlaceholderProductsResponse = {
-  products: T_JsonPlaceholderProduct[];
-  total: number;
-  skip: number;
-  limit: number;
-};
-
-export type T_ProductsApiErrorCode = "NOT_FOUND" | "DUPLICATE_SLUG";
-
-export class ProductsApiError extends Error {
+export class ProductsApiError extends ApiError<T_ProductsApiErrorCode> {
   constructor(
     public readonly code: T_ProductsApiErrorCode,
     message: string,
   ) {
-    super(message);
+    super(code, message);
     this.name = "ProductsApiError";
   }
 }

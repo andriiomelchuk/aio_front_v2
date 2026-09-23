@@ -5,8 +5,11 @@ import type {
 } from "@/entities/product/model/types";
 import {
   ProductsApiError,
-  type T_JsonPlaceholderProductsResponse,
+  type T_BulkUpdateProductsDto,
+  type T_ProductsTransferDocument,
+  type T_ProductsApiContract,
 } from "./types";
+import type { T_DummyJsonProductsResponse } from "./providerTypes";
 import { readSiteSettings } from "@/shared/api/siteSettings";
 import { getProductInventory } from "@/shared/api/warehouse";
 import { normalizeProductTranslations } from "@/entities/product";
@@ -42,16 +45,6 @@ const PRODUCTS_BACKUP_KEY_PREFIX = "admin-products-migration-backup-v";
 const PRODUCTS_SCHEMA_VERSION = "3";
 
 type T_ProductOverrides = Record<string, T_Product>;
-export type T_BulkUpdateProductsDto = {
-  ids: Array<string | number>;
-  changes: Partial<Omit<T_Product, "id" | "createdAt">>;
-};
-export type T_ProductsTransferDocument = {
-  schemaVersion: 2;
-  exportedAt: string;
-  products: T_Product[];
-};
-
 const applyStockThreshold = (products: T_Product[]) => {
   const threshold = readSiteSettings().commerce.lowStockThreshold;
   return products.map((product) => {
@@ -170,8 +163,6 @@ const createProductId = () => {
 export const createProduct = async (
   product: T_CreateProductDto
 ): Promise<T_Product> => {
-  console.log("Create product request:", product);
-
   const products = await getProducts();
   const slug = assertUniqueSlug(products, product.slug);
 
@@ -277,10 +268,10 @@ export const getProducts = async (): Promise<T_Product[]> => {
     const response = await fetch("https://dummyjson.com/products?limit=0");
 
     if (!response.ok) {
-      throw new Error("Failed to fetch products");
+      throw new ProductsApiError("FETCH_FAILED", "Failed to fetch products");
     }
 
-    const data: T_JsonPlaceholderProductsResponse = await response.json();
+    const data: T_DummyJsonProductsResponse = await response.json();
 
     allProducts = data.products.map((product) => ({
       id: String(product.id),
@@ -404,3 +395,14 @@ export const importProducts = async (
 
   return products;
 };
+
+export const productsApi = {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  bulkUpdateProducts,
+  exportProducts,
+  importProducts,
+} satisfies T_ProductsApiContract;

@@ -1,17 +1,20 @@
-export type T_JsonPlaceholderCategory = {
-  slug: string;
-  name: string;
-  url: string;
+import { ApiError } from "@/shared/api/core";
+import type { T_Categories, T_CreateCategoryDto, T_UpdateCategoryDto } from "@/entities/categories";
+
+export type T_CategoriesApiErrorCode = "NOT_FOUND" | "DUPLICATE_SLUG" | "FETCH_FAILED";
+
+export type T_CategoriesApiContract = {
+  getCategories: () => Promise<T_Categories[]>;
+  createCategory: (input: T_CreateCategoryDto) => Promise<T_Categories>;
+  updateCategory: (input: T_UpdateCategoryDto) => Promise<T_Categories>;
 };
 
-export type T_CategoriesApiErrorCode = "NOT_FOUND" | "DUPLICATE_SLUG";
-
-export class CategoriesApiError extends Error {
+export class CategoriesApiError extends ApiError<T_CategoriesApiErrorCode> {
   constructor(
     public readonly code: T_CategoriesApiErrorCode,
     message: string,
   ) {
-    super(message);
+    super(code, message);
     this.name = "CategoriesApiError";
   }
 }

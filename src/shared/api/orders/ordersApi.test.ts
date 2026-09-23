@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { T_Order } from "@/entities/order";
 import { getOrders, updateOrder } from "./ordersApi";
+import type { OrdersApiError } from "./types";
 
 const createStorage = (): Storage => {
   const values = new Map<string, string>();
@@ -71,7 +72,21 @@ describe("orders API", () => {
     const order = createOrder({ status: "completed" });
     window.localStorage.setItem("orders", JSON.stringify([order]));
 
-    await expect(updateOrder({ ...order, status: "processing" }))
-      .rejects.toThrow("A finalized order cannot return to an active workflow");
+    await expect(updateOrder({ id: order.id, status: "processing" }))
+      .rejects.toMatchObject<Partial<OrdersApiError>>({ code: "INVALID_STATE" });
+  });
+
+  it("supports patch updates and preserves immutable order data", async () => {
+    const order = createOrder();
+    window.localStorage.setItem("orders", JSON.stringify([order]));
+
+    const updatedOrder = await updateOrder({ id: order.id, internalNote: "Call before delivery" });
+
+    expect(updatedOrder).toMatchObject({
+      id: order.id,
+      customerId: order.customerId,
+      createdAt: order.createdAt,
+      internalNote: "Call before delivery",
+    });
   });
 });
