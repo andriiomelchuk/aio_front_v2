@@ -2,6 +2,7 @@ import type {
   T_CreateWarehouseDto,
   T_CreateWarehouseLocationDto,
   T_CreateInventoryItemDto,
+  T_ConsumeServiceMaterialsDto,
   T_InventoryBalance,
   T_InventoryCondition,
   T_InventoryMovement,
@@ -293,6 +294,34 @@ export const recordInventoryMovement = async (input: T_RecordInventoryMovementDt
   state.movements.unshift(movement);
   persist(state);
   return movement;
+};
+
+export const consumeServiceMaterials = async (input: T_ConsumeServiceMaterialsDto) => {
+  const state = readWarehouseState();
+  if (!input.appointmentId.trim() || !input.serviceTitle.trim() || !input.materials.length) return [];
+  if (state.movements.some((item) => item.type === "service_usage" && item.reference === input.appointmentId)) return [];
+  const totals = new Map<string, T_ConsumeServiceMaterialsDto["materials"][number]>();
+  for (const material of input.materials) {
+    if (!material.productId || !material.warehouseId || !material.locationId || !Number.isFinite(material.quantity) || material.quantity <= 0) throw new WarehouseApiError("INVALID_INPUT", "Service material configuration is invalid");
+    assertLocation(state, material.warehouseId, material.locationId);
+    const key = [material.itemType, material.productId, material.variantId ?? "", material.warehouseId, material.locationId].join("|");
+    const current = totals.get(key);
+    totals.set(key, current ? { ...current, quantity: current.quantity + material.quantity } : material);
+  }
+  for (const material of totals.values()) {
+    const balance = state.balances.find((item) => balanceMatches(item, material.productId, material.warehouseId, material.locationId, material.variantId, "sellable", material.itemType));
+    if (!balance || balance.physical - balance.reserved < material.quantity) throw new WarehouseApiError("INSUFFICIENT_STOCK", "Available stock is insufficient for service materials");
+  }
+  const timestamp = new Date().toISOString();
+  const movements: T_InventoryMovement[] = [];
+  for (const material of totals.values()) {
+    const balance = state.balances.find((item) => balanceMatches(item, material.productId, material.warehouseId, material.locationId, material.variantId, "sellable", material.itemType))!;
+    balance.physical -= material.quantity; balance.updatedAt = timestamp;
+    const movement: T_InventoryMovement = { id: createId(), type: "service_usage", itemType: material.itemType, productId: material.productId, variantId: material.variantId, fromWarehouseId: material.warehouseId, fromLocationId: material.locationId, quantity: material.quantity, condition: "sellable", reason: `Service completed: ${input.serviceTitle}`, reference: input.appointmentId, createdAt: timestamp, createdBy: input.createdBy.trim() || "System" };
+    state.movements.unshift(movement); movements.push(movement);
+  }
+  persist(state);
+  return movements;
 };
 
 export const getProductInventory = (productId: string, variantId?: string): T_ProductInventory => {

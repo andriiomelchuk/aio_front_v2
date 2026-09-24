@@ -4,11 +4,13 @@ import Link from "next/link";
 import { Heart, Scale, ShoppingCart } from "lucide-react";
 import { useI18n } from "@/shared/i18n";
 import { useAppSelector } from "@/shared/store/hooks";
+import { useSiteSettings } from "@/shared/siteSettings";
 
 const formatCount = (count: number) => count > 99 ? "99+" : String(count);
 
 export const HeaderActions = ({ onNavigate }: { onNavigate?: () => void }) => {
   const { t } = useI18n();
+  const settings = useSiteSettings();
   const cartCount = useAppSelector((state) =>
     state.cart.products.reduce((total, item) => total + item.quantity, 0),
   );
@@ -20,6 +22,8 @@ export const HeaderActions = ({ onNavigate }: { onNavigate?: () => void }) => {
     { href: "/wishlist", icon: Heart, count: wishlistCount, label: t("header.wishlist", { count: wishlistCount }) },
     { href: "/comparison", icon: Scale, count: comparisonCount, label: t("header.comparison", { count: comparisonCount }) },
   ];
+
+  if (settings.business.mode === "services") return null;
 
   return (
     <nav className="flex items-center gap-1" aria-label={t("header.shoppingActions")}>

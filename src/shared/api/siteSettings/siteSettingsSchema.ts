@@ -39,6 +39,9 @@ export const siteSettingsInputSchema = z.strictObject({
     allowBackorders: z.boolean(),
     orderPrefix: z.string().trim().min(1).max(12).regex(/^[A-Za-z0-9_-]+$/),
   }),
+  business: z.strictObject({
+    mode: z.enum(["commerce", "services", "both"]),
+  }),
   seo: z.strictObject({
     defaultTitle: z.string().trim().min(1).max(100),
     defaultDescription: z.string().max(500),

@@ -25,6 +25,9 @@ export const defaultSiteSettings: T_SiteSettings = {
     allowBackorders: false,
     orderPrefix: "AIO",
   },
+  business: {
+    mode: "both",
+  },
   seo: {
     defaultTitle: "AIO",
     defaultDescription: "A modular web platform with commerce, movie discovery, and GitHub tools.",

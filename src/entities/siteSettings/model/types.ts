@@ -33,6 +33,9 @@ export type T_SiteSettings = {
     allowBackorders: boolean;
     orderPrefix: string;
   };
+  business: {
+    mode: "commerce" | "services" | "both";
+  };
   seo: {
     defaultTitle: string;
     defaultDescription: string;

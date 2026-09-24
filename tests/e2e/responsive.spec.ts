@@ -5,13 +5,14 @@ const publicRoutes = [
   "/categories", "/categories/beauty", "/cart", "/wishlist", "/comparison",
   "/checkout", "/checkout/success", "/login", "/register", "/account",
   "/movies", "/battle", "/battle/result", "/popular?language=all", "/todos",
+  "/services", "/services/personal-consultation",
 ];
 
 const adminRoutes = [
   "/admin", "/admin/analytics", "/admin/products", "/admin/products/new",
   "/admin/categories", "/admin/orders", "/admin/customers", "/admin/pages",
   "/admin/pages/new", "/admin/menus", "/admin/menus/new", "/admin/translations",
-  "/admin/warehouse", "/admin/imports", "/admin/users", "/admin/settings", "/admin/developer-settings",
+  "/admin/warehouse", "/admin/imports", "/admin/services", "/admin/services/new", "/admin/services/service-consultation/edit", "/admin/services/schedules/provider/provider-anna", "/admin/users", "/admin/settings", "/admin/developer-settings",
 ];
 
 const loginAsDeveloper = async (page: Page) => {

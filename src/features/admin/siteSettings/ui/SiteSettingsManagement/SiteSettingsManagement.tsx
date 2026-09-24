@@ -44,6 +44,7 @@ export const SiteSettingsManagement = () => {
     const input = {
       general: settings.general, localization: settings.localization,
       contact: settings.contact, commerce: settings.commerce,
+      business: settings.business,
       seo: settings.seo, operations: settings.operations,
     };
     return run(() => updateSiteSettings(input, session?.displayName), t("admin.settings.success.saved"));
@@ -114,6 +115,11 @@ export const SiteSettingsManagement = () => {
           <Input type="url" label="Instagram" value={settings.contact.instagramUrl} disabled={!canManage} onChange={(event) => patchSection("contact", { instagramUrl: event.target.value })} />
         </div></AdminCard>
         <AdminCard title={t("admin.settings.commerce.title")} description={t("admin.settings.commerce.description")}><div className="grid gap-4 sm:grid-cols-2">
+          <Select label={t("admin.settings.fields.businessMode")} value={settings.business.mode} disabled={!canManage} onChange={(event) => patchSection("business", { mode: event.target.value as T_SiteSettings["business"]["mode"] })} options={[
+            { value: "commerce", label: t("admin.settings.businessMode.commerce") },
+            { value: "services", label: t("admin.settings.businessMode.services") },
+            { value: "both", label: t("admin.settings.businessMode.both") },
+          ]} className="sm:col-span-2" />
           <Input type="number" min={0} label={t("admin.settings.fields.lowStockThreshold")} value={settings.commerce.lowStockThreshold} disabled={!canManage} onChange={(event) => patchSection("commerce", { lowStockThreshold: Number(event.target.value) })} />
           <Input type="text" label={t("admin.settings.fields.orderPrefix")} value={settings.commerce.orderPrefix} disabled={!canManage} onChange={(event) => patchSection("commerce", { orderPrefix: event.target.value })} />
           <Switch label={t("admin.settings.fields.showOutOfStock")} checked={settings.commerce.showOutOfStockProducts} disabled={!canManage} onChange={(event) => patchSection("commerce", { showOutOfStockProducts: event.target.checked })} />
