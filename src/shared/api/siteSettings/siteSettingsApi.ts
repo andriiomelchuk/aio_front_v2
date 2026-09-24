@@ -11,7 +11,7 @@ import { siteSettingsImportSchema, siteSettingsInputSchema } from "./siteSetting
 const STORAGE_KEY = "aio-site-settings";
 const VERSION_KEY = "aio-site-settings-version";
 const BACKUP_KEY_PREFIX = "aio-site-settings-migration-backup-v";
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 export const SITE_SETTINGS_CHANGE_EVENT = "aio-site-settings-change";
 const createId = () => typeof crypto !== "undefined" && "randomUUID" in crypto
   ? crypto.randomUUID()
@@ -52,6 +52,7 @@ export const migrateSiteSettings = (value: unknown): T_SiteSettings => {
   const localization = isRecord(root.localization) ? root.localization : {};
   const contact = isRecord(root.contact) ? root.contact : {};
   const commerce = isRecord(root.commerce) ? root.commerce : {};
+  const business = isRecord(root.business) ? root.business : {};
   const seo = isRecord(root.seo) ? root.seo : {};
   const operations = isRecord(root.operations) ? root.operations : {};
   const locale = locales.includes(localization.defaultLocale as T_SiteLocale)
@@ -92,6 +93,11 @@ export const migrateSiteSettings = (value: unknown): T_SiteSettings => {
       showOutOfStockProducts: bool(commerce.showOutOfStockProducts, defaultSiteSettings.commerce.showOutOfStockProducts),
       allowBackorders: bool(commerce.allowBackorders, defaultSiteSettings.commerce.allowBackorders),
       orderPrefix: text(commerce.orderPrefix, defaultSiteSettings.commerce.orderPrefix),
+    },
+    business: {
+      mode: ["commerce", "services", "both"].includes(String(business.mode))
+        ? business.mode as T_SiteSettings["business"]["mode"]
+        : defaultSiteSettings.business.mode,
     },
     seo: {
       defaultTitle: text(seo.defaultTitle, defaultSiteSettings.seo.defaultTitle),
@@ -192,6 +198,7 @@ export const resetSiteSettings = async (updatedBy = "System") => {
     localization: defaultSiteSettings.localization,
     contact: defaultSiteSettings.contact,
     commerce: defaultSiteSettings.commerce,
+    business: defaultSiteSettings.business,
     seo: defaultSiteSettings.seo,
     operations: defaultSiteSettings.operations,
   }, "reset", updatedBy);
@@ -213,6 +220,7 @@ export const importSiteSettings = async (value: unknown, updatedBy = "System") =
     localization: migrated.localization,
     contact: migrated.contact,
     commerce: migrated.commerce,
+    business: migrated.business,
     seo: migrated.seo,
     operations: migrated.operations,
   };

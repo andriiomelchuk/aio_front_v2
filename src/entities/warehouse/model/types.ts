@@ -114,6 +114,20 @@ export type T_RecordInventoryMovementDto = {
   createdBy: string;
 };
 
+export type T_ConsumeServiceMaterialsDto = {
+  appointmentId: string;
+  serviceTitle: string;
+  createdBy: string;
+  materials: Array<{
+    itemType: T_InventoryItemType;
+    productId: string;
+    variantId?: string;
+    warehouseId: string;
+    locationId: string;
+    quantity: number;
+  }>;
+};
+
 export type T_ProductInventory = {
   isManaged: boolean;
   physical: number;

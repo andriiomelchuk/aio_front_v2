@@ -23,6 +23,7 @@ const createInput = () => ({
   localization: defaultSiteSettings.localization,
   contact: defaultSiteSettings.contact,
   commerce: defaultSiteSettings.commerce,
+  business: defaultSiteSettings.business,
   seo: defaultSiteSettings.seo,
   operations: defaultSiteSettings.operations,
 });
@@ -42,7 +43,7 @@ describe("site settings storage", () => {
     expect(settings.operations.maintenanceMode).toBe(true);
     expect(settings.localization.defaultLocale).toBe("uk");
     expect(settings.localization.enabledLocales).toEqual(["uk", "en", "de", "ru"]);
-    expect(storage.getItem("aio-site-settings-version")).toBe("3");
+    expect(storage.getItem("aio-site-settings-version")).toBe("4");
     expect(storage.getItem("aio-site-settings-migration-backup-v0")).not.toBeNull();
   });
 

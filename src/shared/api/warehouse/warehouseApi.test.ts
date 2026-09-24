@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createWarehouse,
   createInventoryItem,
+  consumeServiceMaterials,
   finalizeOrderStock,
   getProductInventory,
   getWarehouseState,
@@ -176,6 +177,17 @@ describe("warehouse inventory", () => {
     expect(state.inventoryItems[0]).toMatchObject({ name: "Hair dye", unit: "ml" });
     expect(state.balances[0].physical).toBe(437.5);
     expect(state.movements[0]).toMatchObject({ type: "service_usage", itemType: "consumable", reference: "appointment-1" });
+  });
+
+  it("consumes all service materials atomically and only once", async () => {
+    const warehouse = await createTestWarehouse(); const location = warehouse.locations[0];
+    await recordInventoryMovement({ type: "receipt", productId: "product-1", quantity: 5, reason: "Delivery", createdBy: "Manager", toWarehouseId: warehouse.id, toLocationId: location.id });
+    const input = { appointmentId: "appointment-atomic", serviceTitle: "Repair", createdBy: "Specialist", materials: [{ itemType: "product" as const, productId: "product-1", warehouseId: warehouse.id, locationId: location.id, quantity: 2 }] };
+    await consumeServiceMaterials(input); await consumeServiceMaterials(input);
+    expect(getProductInventory("product-1")).toMatchObject({ physical: 3, available: 3 });
+    expect((await getWarehouseState()).movements.filter((item) => item.reference === input.appointmentId)).toHaveLength(1);
+    await expect(consumeServiceMaterials({ ...input, appointmentId: "appointment-failed", materials: [{ ...input.materials[0], quantity: 4 }] })).rejects.toMatchObject({ code: "INSUFFICIENT_STOCK" });
+    expect(getProductInventory("product-1").physical).toBe(3);
   });
 
   it("reserves the selected product variant instead of base stock", async () => {

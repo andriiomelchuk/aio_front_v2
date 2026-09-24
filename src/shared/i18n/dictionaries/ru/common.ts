@@ -14,6 +14,7 @@ export const commonRu = {
     "nav.movies": "Фильмы",
     "nav.products": "Товары",
     "nav.categories": "Категории",
+    "nav.services": "Услуги",
     "nav.wishlist": "Избранное",
 
     "pagination.rowsPerPage": "Строк на странице",

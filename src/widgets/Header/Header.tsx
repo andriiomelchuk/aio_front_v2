@@ -19,6 +19,11 @@ export const Header = () => {
   const { session, isInitialized, logout } = useAuth();
   const { showToast } = useToast();
   const settings = useSiteSettings();
+  const navigation = siteNavigation.filter((item) => {
+    if (settings.business.mode === "both") return true;
+    if (settings.business.mode === "services") return !["products", "categories"].includes(item.id);
+    return item.id !== "services";
+  });
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -69,7 +74,7 @@ export const Header = () => {
         </Link>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <AssignedMenu target={{ type: "global" }} region="header" orientation="horizontal" fallback={<Navigation items={siteNavigation}/>} loadingFallback={<div className="invisible"><Navigation items={siteNavigation}/></div>} />
+          <AssignedMenu target={{ type: "global" }} region="header" orientation="horizontal" fallback={<Navigation items={navigation}/>} loadingFallback={<div className="invisible"><Navigation items={navigation}/></div>} />
           <HeaderActions />
           {authControls}
           <LanguageSwitcher variant="compact" mode="select" />
@@ -96,7 +101,7 @@ export const Header = () => {
       {isMenuOpen && (
         <div className="absolute left-0 right-0 top-full z-40 border-b border-border bg-surface px-4 py-4 shadow-lg lg:hidden">
           <div className="flex flex-col gap-4">
-            <AssignedMenu target={{ type: "global" }} region="header" orientation="vertical" onNavigate={closeMenu} fallback={<Navigation items={siteNavigation} direction="column" onNavigate={closeMenu} />} />
+            <AssignedMenu target={{ type: "global" }} region="header" orientation="vertical" onNavigate={closeMenu} fallback={<Navigation items={navigation} direction="column" onNavigate={closeMenu} />} />
 
             {authControls}
 

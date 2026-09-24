@@ -12,7 +12,7 @@ export const useAdminAccess = () => {
   const role = session && isStaffRole(session.role) ? session.role : null;
   const currentModule = getAdminModuleFromPath(pathName);
   const requiresManagePermission =
-    pathName === "/admin/products/new" || pathName.endsWith("/edit");
+    pathName.endsWith("/new") || pathName.endsWith("/edit");
   const moduleEnabled = role === "developer" || developerSettings.modules[currentModule];
 
   return {

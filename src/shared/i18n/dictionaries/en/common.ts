@@ -14,6 +14,7 @@ export const commonEn = {
     "nav.movies": "Movies",
     "nav.products": "Products",
     "nav.categories": "Categories",
+    "nav.services": "Services",
     "nav.wishlist": "Wishlist",
 
     "pagination.rowsPerPage": "Rows per page",
