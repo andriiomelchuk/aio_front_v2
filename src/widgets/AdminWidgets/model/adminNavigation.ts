@@ -44,6 +44,13 @@ export const getAdminNavigation = (t: T_I18nContext["t"]) => [
     description: t("admin.navigation.warehouse.description"),
   },
   {
+    module: "imports",
+    href: "/admin/imports",
+    label: t("admin.navigation.imports.label"),
+    title: t("admin.navigation.imports.title"),
+    description: t("admin.navigation.imports.description"),
+  },
+  {
     module: "categories",
     href: "/admin/categories",
     label: t("admin.navigation.categories.label"),

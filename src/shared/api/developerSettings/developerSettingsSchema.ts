@@ -8,6 +8,7 @@ export const developerSettingsInputSchema = z.strictObject({
     orders: z.boolean(),
     products: z.boolean(),
     warehouse: z.boolean(),
+    imports: z.boolean(),
     categories: z.boolean(),
     pages: z.boolean(),
     menus: z.boolean(),
