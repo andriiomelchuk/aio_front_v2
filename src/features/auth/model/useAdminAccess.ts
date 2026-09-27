@@ -10,22 +10,24 @@ export const useAdminAccess = () => {
   const { session, isInitialized } = useAppSelector((state) => state.auth);
   const developerSettings = useDeveloperSettings();
   const role = session && isStaffRole(session.role) ? session.role : null;
+  const roles = session?.roles?.filter(isStaffRole) ?? (role ? [role] : []);
   const currentModule = getAdminModuleFromPath(pathName);
-  const requiresManagePermission =
-    pathName.endsWith("/new") || pathName.endsWith("/edit");
+  const routePermission = pathName.endsWith("/new")
+    ? "create"
+    : pathName.endsWith("/edit")
+      ? "edit"
+      : "view";
   const moduleEnabled = role === "developer" || developerSettings.modules[currentModule];
 
   return {
     session,
     role,
+    roles,
     module: currentModule,
     isInitialized,
     isModuleEnabled: moduleEnabled,
-    canView: Boolean(role && moduleEnabled && hasAdminPermission(
-      role,
-      currentModule,
-      requiresManagePermission ? "manage" : "view",
-    )),
-    canManage: Boolean(role && moduleEnabled && hasAdminPermission(role, currentModule, "manage")),
+    canView: Boolean(role && moduleEnabled && roles.some((item) => hasAdminPermission(item, currentModule, routePermission))),
+    canManage: Boolean(role && moduleEnabled && roles.some((item) => hasAdminPermission(item, currentModule, "manage"))),
+    can: (permission: Parameters<typeof hasAdminPermission>[2], module = currentModule) => Boolean(role && moduleEnabled && roles.some((item) => hasAdminPermission(item, module, permission))),
   };
 };

@@ -1,9 +1,10 @@
-export type T_StaffRole =
+export type T_SystemStaffRole =
   | "viewer"
   | "manager"
   | "admin"
   | "owner"
   | "developer";
+export type T_StaffRole = T_SystemStaffRole | `custom:${string}`;
 
 export const assignableStaffRoles = [
   "owner",

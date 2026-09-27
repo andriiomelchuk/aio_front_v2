@@ -94,7 +94,7 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const value = useMemo<T_I18nContext>(() => {
-    const dictionary = {
+    const dictionary: Record<string, string> = {
       ...dictionaries[locale],
       ...(translationSnapshot ? getPublishedTranslationOverrides(locale) : {}),
     };

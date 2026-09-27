@@ -5,6 +5,7 @@ export type T_EditUserData = {
     login: string;
     email: string;
     role: T_UserRole;
+    roles: T_UserRole[];
     status: T_UserStatus;
 };
 

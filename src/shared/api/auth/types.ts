@@ -10,6 +10,7 @@ export type T_AuthSession = {
   email: string;
   displayName: string;
   role: T_AuthRole;
+  roles?: T_StaffRole[];
   expiresAt: string;
 };
 
@@ -32,6 +33,7 @@ export type T_StaffAccountInput = {
   password: string;
   displayName: string;
   role: T_StaffRole;
+  roles?: T_StaffRole[];
   status: "active" | "invited" | "blocked";
 };
 

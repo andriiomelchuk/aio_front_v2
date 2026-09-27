@@ -241,6 +241,7 @@ export const loginStaff = async (
     email: account.email,
     displayName: account.displayName,
     role: account.role,
+    roles: account.roles,
     expiresAt: new Date(Date.now() + SESSION_DURATION_MS).toISOString(),
   };
 };
@@ -261,7 +262,7 @@ export const loadAuthSession = (): T_AuthSession | null => {
         (account) => account.email === session.email,
       );
       if (developmentAccount) {
-        return { ...session, role: developmentAccount.role, displayName: developmentAccount.displayName };
+        return { ...session, role: developmentAccount.role, roles: [developmentAccount.role], displayName: developmentAccount.displayName };
       }
 
       const staffAccount = loadStaffAccounts().find(
@@ -271,7 +272,7 @@ export const loadAuthSession = (): T_AuthSession | null => {
         localStorage.removeItem(SESSION_STORAGE_KEY);
         return null;
       }
-      return { ...session, role: staffAccount.role, displayName: staffAccount.displayName };
+      return { ...session, role: staffAccount.role, roles: staffAccount.roles ?? [staffAccount.role], displayName: staffAccount.displayName };
     }
 
     return session;

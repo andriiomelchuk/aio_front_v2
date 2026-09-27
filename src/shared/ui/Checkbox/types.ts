@@ -4,7 +4,7 @@ export type T_CheckboxProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "type"
 > & {
-  label: string;
+  label?: string;
   description?: string;
   error?: string;
 };

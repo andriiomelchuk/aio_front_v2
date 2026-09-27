@@ -1,22 +1,24 @@
 "use client";
 
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 
 import { useI18n } from "@/shared/i18n";
-import { Input, Select } from "@/shared/ui";
+import { Checkbox, Input, Select } from "@/shared/ui";
 
 import type { T_EditUserData, T_EditUserFormProps } from "./types";
 import { updateUser } from "@/shared/api/users";
 import { useAdminAccess } from "@/features/auth";
 import { assignableStaffRoles, canAssignStaffRoles } from "@/shared/config/adminRoles";
 import { AdminFormActions, AdminFormAlert } from "@/widgets/AdminWidgets";
+import { getCustomRoles, recordCustomRoleAssignment } from "@/shared/api/customRoles";
+import type { T_CustomRole } from "@/entities/customRole";
 
 export const EditUserForm = ({
   user,
   onCancel,
   onUpdate,
 }: T_EditUserFormProps) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { role } = useAdminAccess();
 
   const [formData, setFormData] = useState<T_EditUserData>({
@@ -24,10 +26,13 @@ export const EditUserForm = ({
     login: user.login,
     email: user.email,
     role: user.role,
+    roles: user.roles ?? [user.role],
     status: user.status,
   });
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [customRoles, setCustomRoles] = useState<T_CustomRole[]>([]);
+  useEffect(() => { void getCustomRoles().then(setCustomRoles); }, []);
 
   const updateField = (field: keyof T_EditUserData, value: string) => {
     setFormData((prevFormData) => ({
@@ -47,7 +52,9 @@ export const EditUserForm = ({
       const updatedUser = await updateUser({
         ...user,
         ...formData,
+        roles: [formData.role, ...formData.roles.filter((item) => item !== formData.role)],
       });
+      updatedUser.roles?.filter((item) => item.startsWith("custom:") && !(user.roles ?? []).includes(item)).forEach((item) => recordCustomRoleAssignment(item as `custom:${string}`, role, String(updatedUser.id)));
       onUpdate(updatedUser);
     } catch {
       setError(t("admin.user.error.saveFailed"));
@@ -104,8 +111,16 @@ export const EditUserForm = ({
               value: staffRole,
               label: t(`admin.auth.role.${staffRole}`),
             })),
+            ...customRoles
+              .filter((customRole) => customRole.status === "active" || customRole.id === formData.role)
+              .map((customRole) => ({
+                value: customRole.id,
+                label: customRole.translations[locale].name || customRole.translations.uk.name || customRole.translations.en.name || customRole.key,
+              })),
           ]}
         />
+
+        <fieldset className="sm:col-span-2"><legend className="mb-2 text-sm font-medium">{t("admin.roles.additionalRoles")}</legend><div className="grid gap-2 sm:grid-cols-2">{customRoles.map((customRole) => <Checkbox key={customRole.id} label={`${customRole.translations.uk.name}${customRole.status === "archived" ? ` (${t("admin.roles.status.archived")})` : ""}`} disabled={customRole.status === "archived" && !formData.roles.includes(customRole.id)} checked={formData.roles.includes(customRole.id)} onChange={(event) => setFormData((current) => ({ ...current, roles: event.target.checked ? [...current.roles, customRole.id] : current.roles.filter((item) => item !== customRole.id) }))} />)}{!customRoles.length && <p className="text-sm text-muted">{t("admin.roles.noAssignable")}</p>}</div></fieldset>
 
         <Select
           label={t("admin.user.form.statusLabel")}

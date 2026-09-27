@@ -9,6 +9,7 @@ export type T_User = {
   login: string;
   email: string;
   role: T_UserRole;
+  roles?: T_UserRole[];
   status: T_UserStatus;
   address?: T_UserAddress;
   phone?: string;
