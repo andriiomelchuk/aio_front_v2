@@ -2,6 +2,7 @@ export const adminModules = {
     dashboard: true,
     users: true,
     roles: true,
+    staff: true,
     customers: true,
     orders: true,
     products: true,

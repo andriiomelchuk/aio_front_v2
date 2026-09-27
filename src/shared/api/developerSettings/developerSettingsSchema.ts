@@ -5,6 +5,7 @@ export const developerSettingsInputSchema = z.strictObject({
     dashboard: z.literal(true),
     users: z.boolean(),
     roles: z.boolean(),
+    staff: z.boolean(),
     customers: z.boolean(),
     orders: z.boolean(),
     products: z.boolean(),
