@@ -12,7 +12,7 @@ const adminRoutes = [
   "/admin", "/admin/analytics", "/admin/products", "/admin/products/new",
   "/admin/categories", "/admin/orders", "/admin/customers", "/admin/pages",
   "/admin/pages/new", "/admin/menus", "/admin/menus/new", "/admin/translations",
-  "/admin/warehouse", "/admin/imports", "/admin/services", "/admin/services/new", "/admin/services/service-consultation/edit", "/admin/services/schedules/provider/provider-anna", "/admin/staff", "/admin/users", "/admin/roles", "/admin/settings", "/admin/developer-settings",
+  "/admin/warehouse", "/admin/imports", "/admin/services", "/admin/services/new", "/admin/services/service-consultation/edit", "/admin/services/schedules/provider/provider-anna", "/admin/staff", "/admin/payroll", "/admin/users", "/admin/roles", "/admin/settings", "/admin/developer-settings",
 ];
 
 const loginAsDeveloper = async (page: Page) => {

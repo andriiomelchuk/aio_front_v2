@@ -3,6 +3,7 @@ export const adminModules = {
     users: true,
     roles: true,
     staff: true,
+    payroll: true,
     customers: true,
     orders: true,
     products: true,
