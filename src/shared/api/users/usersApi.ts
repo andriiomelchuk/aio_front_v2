@@ -28,7 +28,7 @@ const saveUsers = (users: T_User[]) => {
 export const createUser = async (input: T_CreateUserDto): Promise<T_User> => {
   const { password, ...profile } = input;
   const user: T_User = { id: Date.now(), ...profile };
-  await createStaffAccount({ userId: user.id, email: user.email, password, displayName: user.name, role: user.role, status: user.status });
+  await createStaffAccount({ userId: user.id, email: user.email, password, displayName: user.name, role: user.role, roles: user.roles, status: user.status });
   saveUsers([user, ...(loadStoredUsers() ?? [])]);
   return user;
 };
@@ -39,7 +39,7 @@ export const updateUser = async (user: T_UpdateUserDto): Promise<T_User> => {
   if (!currentUser) throw new UsersApiError("NOT_FOUND", "User not found");
   const updatedUser: T_User = { ...currentUser, ...user, id: currentUser.id };
   saveUsers(users.map((item) => item.id === user.id ? updatedUser : item));
-  updateStaffAccount({ userId: updatedUser.id, email: updatedUser.email, displayName: updatedUser.name, role: updatedUser.role, status: updatedUser.status });
+  updateStaffAccount({ userId: updatedUser.id, email: updatedUser.email, displayName: updatedUser.name, role: updatedUser.role, roles: updatedUser.roles, status: updatedUser.status });
   return updatedUser;
 };
 

@@ -12,7 +12,7 @@ export type T_I18nContext = {
   locale: T_Locale;
   setLocale: (locale: T_Locale) => void;
   t: (
-    key: T_I18nKey,
+    key: T_I18nKey | `admin.auth.role.custom:${string}`,
     params?: Record<string, string | number>,
   ) => string;
 };

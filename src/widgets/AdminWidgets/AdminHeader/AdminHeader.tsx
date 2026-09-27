@@ -5,6 +5,7 @@ import { LanguageSwitcher } from "@/shared/ui";
 import { useI18n } from "@/shared/i18n";
 import { useAdminAccess, useAuth } from "@/features/auth";
 import { Button } from "@/shared/ui";
+import { getStaffRoleLabel } from "@/shared/config/roleLabels";
 
 type AdminHeaderProps = {
   onMenuClick: () => void;
@@ -12,7 +13,7 @@ type AdminHeaderProps = {
 
 export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
 
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const pathName = usePathname();
   const router = useRouter();
   const { role } = useAdminAccess();
@@ -42,7 +43,7 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
         <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-end">
           {role && (
             <span className="hidden rounded-md border border-border px-3 py-2 text-xs font-semibold uppercase text-muted sm:inline-flex">
-              {t(`admin.auth.role.${role}`)}
+              {getStaffRoleLabel(role, locale, t)}
             </span>
           )}
           <LanguageSwitcher variant="flag" mode="buttons"/>

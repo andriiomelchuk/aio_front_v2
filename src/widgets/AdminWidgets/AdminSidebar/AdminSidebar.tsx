@@ -16,14 +16,14 @@ type AdminSidebarProps = {
 export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
   const { t } = useI18n();
   const pathName = usePathname();
-  const { role } = useAdminAccess();
+  const { role, roles } = useAdminAccess();
   const developerSettings = useDeveloperSettings();
 
   const adminNavigation = getAdminNavigation(t).filter((link) => {
     return Boolean(
       role &&
       (role === "developer" || developerSettings.modules[link.module]) &&
-      hasAdminPermission(role, link.module),
+      roles.some((item) => hasAdminPermission(item, link.module)),
     );
   });
 

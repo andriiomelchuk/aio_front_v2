@@ -6,6 +6,7 @@ export type T_UserData = {
   email: string;
   password: string;
   role: T_UserRole | "";
+  roles: T_UserRole[];
   status: T_UserStatus | "";
 };
 

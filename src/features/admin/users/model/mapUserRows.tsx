@@ -3,6 +3,7 @@ import { statusBadgeVariant, statusLabel } from "./userStatusView";
 import { AdminBadge } from "@/widgets/AdminWidgets";
 import { Button } from "@/shared/ui";
 import type { T_I18nContext } from "@/shared/i18n";
+import { getStaffRoleLabel } from "@/shared/config/roleLabels";
 
 
 export const mapUserRows = (
@@ -15,7 +16,7 @@ export const mapUserRows = (
     name: user.name,
     login: user.login,
     email: user.email,
-    role: t(`admin.auth.role.${user.role}`),
+    role: getStaffRoleLabel(user.role, "uk", t),
     status: (
       <AdminBadge variant={statusBadgeVariant[user.status]}>
         {statusLabel[user.status]}

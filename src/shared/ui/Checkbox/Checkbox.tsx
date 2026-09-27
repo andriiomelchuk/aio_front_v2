@@ -27,7 +27,7 @@ export const Checkbox = ({
           {...props}
         />
 
-        <span>
+        {(label || description) && <span>
           <span className="block text-sm font-medium text-foreground">
             {label}
           </span>
@@ -37,7 +37,7 @@ export const Checkbox = ({
               {description}
             </span>
           )}
-        </span>
+        </span>}
       </label>
 
       {error && (
