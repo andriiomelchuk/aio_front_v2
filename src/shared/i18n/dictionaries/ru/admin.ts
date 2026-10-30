@@ -1029,9 +1029,9 @@ export const adminRu = {
     "admin.imports.error.parse": "Could not read the file.",
     "admin.imports.error.execute": "Could not complete the import.",
 
-    "admin.navigation.services.label": "Services",
-    "admin.navigation.services.title": "Services and appointments",
-    "admin.navigation.services.description": "Manage services, specialists, schedules and bookings",
+    "admin.navigation.services.label": "Услуги",
+    "admin.navigation.services.title": "Услуги и записи",
+    "admin.navigation.services.description": "Управляйте услугами, специалистами, расписаниями и записями",
     "admin.settings.fields.businessMode": "Режим работы",
     "admin.settings.businessMode.commerce": "Только магазин",
     "admin.settings.businessMode.services": "Только услуги",

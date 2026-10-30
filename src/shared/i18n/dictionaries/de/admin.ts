@@ -1027,9 +1027,9 @@ export const adminDe = {
     "admin.imports.error.parse": "Could not read the file.",
     "admin.imports.error.execute": "Could not complete the import.",
 
-    "admin.navigation.services.label": "Services",
-    "admin.navigation.services.title": "Services and appointments",
-    "admin.navigation.services.description": "Manage services, specialists, schedules and bookings",
+    "admin.navigation.services.label": "Dienstleistungen",
+    "admin.navigation.services.title": "Dienstleistungen und Termine",
+    "admin.navigation.services.description": "Verwalten Sie Dienstleistungen, Fachkräfte, Zeitpläne und Buchungen",
     "admin.settings.fields.businessMode": "Geschaeftsmodus",
     "admin.settings.businessMode.commerce": "Nur Shop",
     "admin.settings.businessMode.services": "Nur Dienstleistungen",
