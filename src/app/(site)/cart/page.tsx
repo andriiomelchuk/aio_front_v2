@@ -1,4 +1,4 @@
-import { CartManagement } from "@/components/Cart";
+import { CartManagement } from "@/components/cart";
 
 export default function CartPage() {
     return (
