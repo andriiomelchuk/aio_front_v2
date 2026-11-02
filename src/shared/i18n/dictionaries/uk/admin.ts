@@ -1049,9 +1049,9 @@ export const adminUk = {
     "admin.imports.error.parse": "Не вдалося прочитати файл.",
     "admin.imports.error.execute": "Не вдалося завершити імпорт.",
 
-    "admin.navigation.services.label": "Services",
-    "admin.navigation.services.title": "Services and appointments",
-    "admin.navigation.services.description": "Manage services, specialists, schedules and bookings",
+    "admin.navigation.services.label": "Послуги",
+    "admin.navigation.services.title": "Послуги та записи",
+    "admin.navigation.services.description": "Керуйте послугами, спеціалістами, розкладами та записами",
     "admin.settings.fields.businessMode": "Режим роботи",
     "admin.settings.businessMode.commerce": "Лише магазин",
     "admin.settings.businessMode.services": "Лише послуги",
